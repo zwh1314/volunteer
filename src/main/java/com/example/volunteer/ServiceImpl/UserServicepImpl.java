@@ -25,4 +25,22 @@ public class UserServicepImpl implements UserService {
         //System.out.println(user);
         return user;
     }
+
+    @Override
+    public boolean update(User user) {
+        if(userdao.update(user) >= 0)
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        if(userdao.deleteById(id) >= 0)
+            return true;
+        else
+            return false;
+    }
+
+
 }

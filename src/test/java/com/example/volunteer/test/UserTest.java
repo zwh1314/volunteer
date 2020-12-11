@@ -16,14 +16,26 @@ public class UserTest {
 
     @Test
     public void firstTest() {
-//        User user1=new User();
-//        //user1.setId(1);
-//        user1.setUsername("张文瀚");
-//        user1.setPassword("991219");
-//        user1.setHeadPictureStr("123456");
-//        user1.setEmail("2439499577@qq.com");
-//        user1.setUserSentence("拨开云雾见太阳");
-//        userService.addUser(user1);
-          System.out.println(userService.findUserById(0));
+
+        User user1=new User();
+        user1.setId(1);
+        user1.setUsername("张文瀚");
+        user1.setPassword("991219");
+        user1.setHeadPictureStr("123456");
+        user1.setEmail("2439499577@qq.com");
+        user1.setUserSentence("拨开云雾见太阳");
+        userService.addUser(user1);
+        System.out.println(userService.findUserById(1));
+
+        user1.setPassword("1234");
+        userService.update(user1);
+        System.out.println(userService.findUserById(1));
+
+        System.out.println("here");
+    }
+    @Test
+    public void deleteTest(){
+        userService.deleteById(1);
+        System.out.println("here");
     }
 }
