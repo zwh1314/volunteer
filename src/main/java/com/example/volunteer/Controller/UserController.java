@@ -1,15 +1,16 @@
 package com.example.volunteer.Controller;
 
+import com.example.volunteer.Entity.User;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.UserService;
 import com.example.volunteer.ServiceImpl.UserServicepImpl;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class UserController {
     @Autowired
     UserService userervice;
@@ -25,9 +26,10 @@ public class UserController {
                            //@RequestParam("password") String password,
                            //@RequestParam("verifyCode") String verifyCode
                            ) {
-        System.out.println("进入");
-        Response response = new Response();
-        System.out.println(userervice.findUserById(0));
+//      System.out.println("进入");
+        Response<User> response = new Response<User>();
+//      System.out.println(userervice.findUserById(0));
+        response.setSuc(userervice.findUserById(0));
 //        try {
 //            validateUserInfoAndVerifyCode(tel, password, verifyCode);
 //
