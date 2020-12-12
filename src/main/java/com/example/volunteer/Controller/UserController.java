@@ -29,7 +29,8 @@ public class UserController {
 //      System.out.println("进入");
         Response<User> response = new Response<User>();
 //      System.out.println(userervice.findUserById(0));
-        response.setSuc(userervice.findUserById(0));
+        for(User user:userervice.findUserByUserId(0))
+        response.setSuc(user);
 //        try {
 //            validateUserInfoAndVerifyCode(tel, password, verifyCode);
 //

@@ -6,6 +6,8 @@ import com.example.volunteer.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServicepImpl implements UserService {
     @Autowired
@@ -20,10 +22,10 @@ public class UserServicepImpl implements UserService {
     }
 
     @Override
-    public User findUserById(int id){
-        User user =userdao.getUserById(id);
+    public List<User> findUserByUserId(int userid){
+        List<User> user_list =userdao.getUserByUserId(userid);
         //System.out.println(user);
-        return user;
+        return user_list;
     }
 
     @Override
@@ -35,8 +37,8 @@ public class UserServicepImpl implements UserService {
     }
 
     @Override
-    public boolean deleteById(int id) {
-        if(userdao.deleteById(id) >= 0)
+    public boolean deleteByUserId(int userid) {
+        if(userdao.deleteByUserId(userid) >= 0)
             return true;
         else
             return false;
