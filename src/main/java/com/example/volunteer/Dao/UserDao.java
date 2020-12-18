@@ -1,4 +1,5 @@
 package com.example.volunteer.Dao;
+import com.example.volunteer.DTO.UserDTO;
 import com.example.volunteer.Entity.User;
 import org.apache.ibatis.annotations.*;
 
@@ -7,17 +8,24 @@ import java.util.List;
 
 @Mapper
 public  interface UserDao {
-    @Insert("INSERT INTO user(userid,username,password,email,headpicturestr,usersentence) VALUES (#{UserId},#{Username},#{Password},#{Email},#{HeadPictureStr},#{UserSentence});")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Insert("INSERT INTO user(user_name,password,tel,priority) VALUES (#{userName},#{password},#{tel},#{priority});")
     int insertUser(User user);
 
-    @ResultType(User.class)
-    @Select("SELECT * FROM user WHERE userid = #{userid}")
-    List<User> getUserByUserId(@Param("userid") int userid);
+    @ResultType(UserDTO.class)
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE user_id = #{userId}")
+    UserDTO getUserByUserId(@Param("userId") long userId);
 
-    @Update("UPDATE user set password=#{Password},email=#{Email},headpicturestr=#{HeadPictureStr},usersentence=#{UserSentence} WHERE userid=#{UserId}")
-    int update(User user);
+    @ResultType(UserDTO.class)
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE user_name = #{userName} and password = #{password}")
+    UserDTO getUserByUserNameAndPassword(@Param("userName") String userName,@Param("password") String password);
 
-    @Delete("Delete From user WHERE userid=#{userid}")
-    public int deleteByUserId(@Param("userid")int userid);
+    @ResultType(UserDTO.class)
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE tel = #{tel}")
+    UserDTO getUserByTel(@Param("tel") String tel);
+
+    @Update("UPDATE user SET password = #{newPassword} WHERE tel = #{tel}")
+    int updatePassword(@Param("tel") String tel, @Param("newPassword") String newPassword);
+
+    @Delete("Delete From user WHERE user_id=#{userid}")
+    int deleteByUserId(@Param("userid")long userid);
 }

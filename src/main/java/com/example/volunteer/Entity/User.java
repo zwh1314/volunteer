@@ -1,33 +1,34 @@
 package com.example.volunteer.Entity;
 
-import lombok.AllArgsConstructor;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.io.Serializable;
+
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity(name = "user")
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "user_id")
+    @ApiModelProperty(value = "用户id")
+    private long userId;
 
-    @Column(name = "userid",nullable = false)
-    private long UserId;
-    @Column(name = "username",nullable = false)
-    private String Username;
+    @Column(name = "user_name",nullable = false)
+    @ApiModelProperty(value = "用户名")
+    private String userName;
+
     @Column(name = "password",nullable = false)
-    private String Password;
-    @Column(name = "email",nullable = false)
-    private String Email;
-    @Column(name = "headpicturestr",nullable = false)
-    private String HeadPictureStr;
-    @Column(name = "usersentence",nullable = false)
-    private String UserSentence;
+    @ApiModelProperty(value = "密码")
+    private String password;
 
+    @Column(name = "priority",nullable = false)
+    @ApiModelProperty(value = "优先级")
+    private String priority;
 
+    @Column(name = "tel",nullable = false)
+    @ApiModelProperty(value = "手机")
+    private String tel;
 }

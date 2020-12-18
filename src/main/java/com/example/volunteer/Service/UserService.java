@@ -1,6 +1,7 @@
 package com.example.volunteer.Service;
 
 
+import com.example.volunteer.DTO.UserDTO;
 import com.example.volunteer.Entity.User;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +10,33 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    public boolean addUser(User user);
+    /**
+     * 注册1
+     */
+    boolean signUp(User user, String verifyCode);
 
-    public List<User> findUserByUserId(int userid);
+    /**
+     * 登录
+     */
+    UserDTO signIn(String userName,String password);
 
-    public boolean update(User user);
+    /**
+     * 更新密码
+     */
+    boolean updatePassword(String tel, String oldPassword, String newPassword, String verifyCode);
 
-    public boolean deleteByUserId(int userid);
+    /**
+     * 忘记密码
+     */
+    boolean forgetPassword(String tel, String newPassword, String verifyCode);
+
+    /**
+     * 验证登录短信验证码
+     */
+    boolean getVerifyMsgCode(String tel);
+
+    /**
+     * 删除用户信息
+     */
+    boolean deleteUserByUserId(long userId);
 }

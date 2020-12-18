@@ -1,7 +1,8 @@
 package com.example.volunteer.test;
 
+import com.example.volunteer.DTO.UserDTO;
+import com.example.volunteer.Dao.UserDao;
 import com.example.volunteer.Entity.User;
-import com.example.volunteer.Service.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,30 +13,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 public class UserTest {
     @Autowired
-    private UserService userService;
+    private UserDao userDao;
 
     @Test
     public void firstTest() {
 
         User user1=new User();
-        user1.setUserId(1);
-        user1.setUsername("张文瀚");
+        user1.setUserName("张文瀚");
         user1.setPassword("991219");
-        user1.setHeadPictureStr("123456");
-        user1.setEmail("2439499577@qq.com");
-        user1.setUserSentence("拨开云雾见太阳");
-        userService.addUser(user1);
-        System.out.println(userService.findUserByUserId(1));
+        user1.setTel("15082361803");
+        user1.setPriority("管理员");
+        userDao.insertUser(user1);
+        UserDTO userDTO=userDao.getUserByTel(user1.getTel());
+        System.out.println(userDao.getUserByTel(user1.getTel()));
 
-        user1.setPassword("1234");
-        userService.update(user1);
-        System.out.println(userService.findUserByUserId(1));
-
-        System.out.println("here");
+//        user1.setPassword("1234");
+//        userDao.updatePassword(user1.getTel(),user1.getPassword());
+//        System.out.println(userDao.getUserByTel(user1.getTel()));
     }
     @Test
     public void deleteTest(){
-        userService.deleteByUserId(1);
-        System.out.println("here");
+        userDao.deleteByUserId(4L);
     }
 }
