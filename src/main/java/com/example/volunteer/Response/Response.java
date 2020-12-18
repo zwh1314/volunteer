@@ -1,6 +1,6 @@
 package com.example.volunteer.Response;
 
-import com.example.volunteer.ResponseEnum.Responseenum;
+import com.example.volunteer.enums.ResponseEnum;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,20 +30,20 @@ public class Response<T> {
 
     public void setSuc(String msg) {
         setSuccess(true);
-        setCode(Responseenum.SUCCESS.getCode());
+        setCode(ResponseEnum.SUCCESS.getCode());
         setMsg(msg);
     }
 
     public void setSuc(T data) {
         setSuccess(true);
-        setCode(Responseenum.SUCCESS.getCode());
-        setMsg(Responseenum.SUCCESS.getMsg());
+        setCode(ResponseEnum.SUCCESS.getCode());
+        setMsg(ResponseEnum.SUCCESS.getMsg());
         setResult(data);
     }
 
     public void setFail(String msg) {
         setSuccess(false);
-        setCode(Responseenum.FAIL.getCode());
+        setCode(ResponseEnum.FAIL.getCode());
         setMsg(msg);
         setResult(null);
     }
@@ -55,7 +55,7 @@ public class Response<T> {
         setResult(null);
     }
 
-    public void setFail(Responseenum responseStatus) {
+    public void setFail(ResponseEnum responseStatus) {
         setSuccess(false);
         setCode(responseStatus.getCode());
         setMsg(responseStatus.getMsg());
