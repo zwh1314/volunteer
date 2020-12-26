@@ -10,7 +10,7 @@ import java.util.Date;
  * @description: 返回给前端的活动信息实体类
  *
  **/
-
+@ApiModel("活动模型")
 @Data
 public class ActivityDTO{
 
