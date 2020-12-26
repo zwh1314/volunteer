@@ -24,7 +24,7 @@ public class ActivityUser {
     private long userId;
 
     @Column(name = "form_status")
-    @ApiModelProperty(value = "活动内容")
+    @ApiModelProperty(value = "报名表提交状态")
     private String formStatus;
 
 
