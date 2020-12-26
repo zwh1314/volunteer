@@ -9,7 +9,7 @@ import lombok.Data;
  * @description: 返回给前端的用户信息实体类
  * @author: KingJ
  **/
-@ApiModel("用户登录/注册模型")
+@ApiModel("用户登录注册模型")
 @Data
 public class UserDTO {
 
