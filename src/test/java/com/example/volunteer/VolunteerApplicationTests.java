@@ -20,7 +20,7 @@ class VolunteerApplicationTests {
 //        user1.setEmail("2439499577@qq.com");
 //        user1.setUserSentence("拨开云雾见太阳");
 //        new UserServicepImpl().addUser(user1);
-        System.out.println("here");
+//        System.out.println("here");
     }
 
 }
