@@ -1,12 +1,23 @@
 package com.example.volunteer.Controller;
 
+import com.example.volunteer.Entity.Video;
+import com.example.volunteer.Entity.VideoComment;
+import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.Request.VideoCommentRequest;
+import com.example.volunteer.Request.VideoRequest;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoCommentService;
+import com.example.volunteer.enums.ResponseEnum;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Api(tags = "视频评论Controller")
 @RestController
@@ -16,4 +27,181 @@ public class VideoCommentController {
 
     @Autowired
     private VideoCommentService videoCommentService;
+
+
+
+    @PostMapping("/getVideoCommentByPublisher")
+    @ApiOperation("获得视频评论by发布者Id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "publisherId", value = "视频发布者", paramType = "query", dataType = "long"),
+    })
+    public Response<List<VideoComment>> getVideoCommentByPublisher(@RequestParam("publisherId") long publisherId) {
+        Response<List<VideoComment>> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.getVideoCommentByPublisher(publisherId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getVideoCommentByPublisher Illegal Argument], publisherId: {}", publisherId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getVideoCommentByPublisher Runtime Exception], publisherId: {}", publisherId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getVideoCommentByPublisher Exception], publisherId: {}", publisherId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+    @PostMapping("/getVideoCommentByRelativeText")
+    @ApiOperation("获得视频评论by RelativeText")
+
+    public Response<List<VideoComment>> getVideoCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
+        Response<List<VideoComment>> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.getVideoCommentByRelativeText(relativeText));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getVideoCommentByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getVideoCommentByRelativeText Runtime Exception], relativeText: {}", relativeText, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getVideoCommentByRelativeText Exception], relativeText: {}", relativeText, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+
+    @PostMapping("/getVideoCommentInOneWeek();")
+    @ApiOperation("获得一周视频评论")
+    public Response<List<VideoComment>> getVideoCommentInOneWeek() {
+        Response<List<VideoComment>> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.getVideoCommentInOneWeek());
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getVideoCommentInOneWeek Runtime Exception]",  e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getVideoCommentInOneWeek Exception]", e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+
+    @PostMapping("/addVideoComment")
+    @ApiOperation("添加视频评论")
+    public Response<Boolean> addVideoComment(@RequestBody VideoCommentRequest videoCommentRequest) {
+        Response<Boolean> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.addVideoComment(videoCommentRequest));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[addVideoComment Illegal Argument], videoCommentRequest: {}", videoCommentRequest, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[addVideoComment Runtime Exception], videoCommentRequest: {}", videoCommentRequest, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[addVideoComment Exception], videoCommentRequest: {}", videoCommentRequest, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+    @PostMapping("/updateVideoCommentLikeNumber")
+    @ApiOperation("更新视频评论获赞")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentId", value = "评论id", paramType = "query", dataType = "long"),
+    })
+    public Response<Boolean>updateVideoCommentLikeNumber(@RequestParam("likeNumber")long likeNumber,@RequestParam("commentId") long commentId) {
+        Response<Boolean> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.updateVideoCommentLikeNumber(likeNumber, commentId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[updateVideoCommentLikeNumber Illegal Argument], : commentId {}", commentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[updateVideoCommentLikeNumber Runtime Exception], : commentId {}", commentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[updateVideoCommentLikeNumber Exception], :commentId {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+
+    @PostMapping("/updateVideoCommentText")
+    @ApiOperation("更新视频评论文本")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentId", value = "评论id", paramType = "query", dataType = "long"),
+    })
+    public Response<Boolean> updateVideoCommentText(@RequestParam("VideoCommentText")String VideoCommentText,@RequestParam("commentId") long commentId) {
+        Response<Boolean> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.updateVideoCommentText(VideoCommentText, commentId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[updateVideoCommentText Illegal Argument], : commentId {}", commentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[updateVideoCommentText Runtime Exception], : commentId {}", commentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[updateVideoCommentText Exception], :commentId {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+
+
+    @PostMapping("/deleteVideoCommentById")
+    @ApiOperation("删除视频评论By videoCommentId")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "videoCommentId", value = "视频评论id", paramType = "query", dataType = "long"),
+    })
+    public Response<Boolean> deleteVideoCommentById(@RequestParam("videoCommentId") long videoCommentId) {
+        Response<Boolean> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.deleteVideoCommentById(videoCommentId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[deleteVideoCommentById Illegal Argument], videoId: {}", videoCommentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[deleteVideoCommentById Runtime Exception], videoId: {}", videoCommentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[deleteVideoCommentById Exception], commentId: {}", videoCommentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
 }
