@@ -101,25 +101,25 @@ public class ActivityController extends BaseController{
     }
 
 
-    @PostMapping("/deleteActivityNewsByNewsId")
+    @PostMapping("/deleteActivityByActivityId")
     @ApiOperation("删除活动By activityId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
     })
-    public Response<Boolean> deleteActivityNewsByNewsId(@RequestParam("activityId") long activityId) {
+    public Response<Boolean> deleteActivityByActivityId(@RequestParam("activityId") long activityId) {
         Response<Boolean> response = new Response<>();
         try {
             response.setSuc(activityService.deleteActivityByActivityId(activityId));
         } catch (IllegalArgumentException e) {
-            logger.warn("[deleteActivityNewsByNewsId Illegal Argument], activityId: {}", activityId, e);
+            logger.warn("[deleteActivityByActivityId Illegal Argument], activityId: {}", activityId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[deleteActivityNewsByNewsId Runtime Exception], activityId: {}", activityId, e);
+            logger.error("[deleteActivityByActivityId Runtime Exception], activityId: {}", activityId, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[deleteActivityNewsByNewsId Exception], activityId: {}", activityId, e);
+            logger.error("[deleteActivityByActivityId Exception], activityId: {}", activityId, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

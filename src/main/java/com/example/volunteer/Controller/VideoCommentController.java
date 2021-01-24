@@ -81,7 +81,7 @@ public class VideoCommentController {
     }
 
 
-    @PostMapping("/getVideoCommentInOneWeek();")
+    @PostMapping("/getVideoCommentInOneWeek")
     @ApiOperation("获得一周视频评论")
     public Response<List<VideoComment>> getVideoCommentInOneWeek() {
         Response<List<VideoComment>> response = new Response<>();
