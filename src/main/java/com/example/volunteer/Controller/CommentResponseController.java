@@ -27,7 +27,7 @@ public class CommentResponseController {
     @Autowired
     private CommentResponseService responseService;
 
-    @PostMapping("/getCommentResponseByCommentId")
+    @GetMapping("/getCommentResponseByCommentId")
     @ApiOperation("获得评论Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "commentId", value = "评论id", paramType = "query", dataType = "long"),
@@ -54,7 +54,7 @@ public class CommentResponseController {
     }
 
 
-    @PostMapping("/getVideoCommentResponseByCommentId")
+    @GetMapping("/getVideoCommentResponseByCommentId")
     @ApiOperation("获得视频评论回复 by CommentId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "commentId", value = "评论id", paramType = "query", dataType = "long"),
@@ -80,7 +80,7 @@ public class CommentResponseController {
         return response;
     }
 
-    @PostMapping("/getCommentResponseInOneWeek")
+    @GetMapping("/getCommentResponseInOneWeek")
     @ApiOperation("获得一周评论回复")
     public Response<List<CommentResponse>> getCommentResponseInOneWeek() {
         Response<List<CommentResponse>> response = new Response<>();
@@ -99,7 +99,7 @@ public class CommentResponseController {
         return response;
     }
 
-    @PostMapping("/getVideoCommentResponseInOneWeek")
+    @GetMapping("/getVideoCommentResponseInOneWeek")
     @ApiOperation("获得一周视频回复")
     public Response<List<CommentResponse>> getVideoCommentResponseInOneWeek() {
         Response<List<CommentResponse>> response = new Response<>();
@@ -119,7 +119,7 @@ public class CommentResponseController {
     }
 
 
-    @PostMapping("/getCommentResponseByRelativeText")
+    @GetMapping("/getCommentResponseByRelativeText")
     @ApiOperation("获得相似评论by relativeText")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "relativeText", value = "相似文本", paramType = "query", dataType = "string"),
@@ -144,7 +144,7 @@ public class CommentResponseController {
 
         return response;
     }
-    @PostMapping("/getVideoCommentResponseByRelativeText")
+    @GetMapping("/getVideoCommentResponseByRelativeText")
     @ApiOperation("获得相似视频评论回复by relativeText")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "relativeText", value = "相似文本", paramType = "query", dataType = "string"),
@@ -170,7 +170,7 @@ public class CommentResponseController {
         return response;
     }
 
-    @PostMapping("/getCommentResponseByPublisherId")
+    @GetMapping("/getCommentResponseByPublisherId")
     @ApiOperation("获得评论回复 by PublisherId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "评论者", paramType = "query", dataType = "long"),
@@ -195,7 +195,7 @@ public class CommentResponseController {
 
         return response;
     }
-    @PostMapping("/getVideoCommentResponseByPublisherId")
+    @GetMapping("/getVideoCommentResponseByPublisherId")
     @ApiOperation("获得视频评论回复 by PublisherId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "评论者", paramType = "query", dataType = "long"),

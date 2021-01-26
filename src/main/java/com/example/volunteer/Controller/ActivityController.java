@@ -27,7 +27,7 @@ public class ActivityController extends BaseController{
     private ActivityService activityService;
 
 
-    @PostMapping("/getActivityByActivityId")
+    @GetMapping("/getActivityByActivityId")
     @ApiOperation("获得活动 by活动Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
