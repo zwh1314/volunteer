@@ -81,20 +81,20 @@ public class ActivityUserController extends BaseController{
 
     @PostMapping("/addActivityUser")
     @ApiOperation("添加活动用户")
-    public Response<Boolean> addActivityUser(@RequestParam("ActivityUser")ActivityUser ativityUser) {
+    public Response<Boolean> addActivityUser(@RequestParam("ActivityUser")ActivityUser activityUser) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityUserService.addActivityUser(ativityUser));
+            response.setSuc(activityUserService.addActivityUser(activityUser));
         } catch (IllegalArgumentException e) {
-            logger.warn("[addActivityUser Illegal Argument], ativityUser: {}", ativityUser, e);
+            logger.warn("[addActivityUser Illegal Argument], activityUser: {}", activityUser, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivityUser Runtime Exception], ativityUser: {}", ativityUser, e);
+            logger.error("[addActivityUser Runtime Exception], activityUser: {}", activityUser, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addActivityUser Exception], ativityUser: {}", ativityUser, e);
+            logger.error("[addActivityUser Exception], activityUser: {}", activityUser, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
@@ -158,7 +158,7 @@ public class ActivityUserController extends BaseController{
     @PostMapping("/deleteActivityUserByUserId")
     @ApiOperation("删除活动用户userId")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "activityUserId", value = "活动用户id", paramType = "query", dataType = "long"),
     })
     public Response<Boolean> deleteActivityUserByUserId(@RequestParam("userId") long userId) {
         Response<Boolean> response = new Response<>();

@@ -171,7 +171,7 @@ public class CommentResponseController {
     }
 
     @PostMapping("/getCommentResponseByPublisherId")
-    @ApiOperation("获得评论恢复 by PublisherId")
+    @ApiOperation("获得评论回复 by PublisherId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "评论者", paramType = "query", dataType = "long"),
     })
@@ -196,7 +196,7 @@ public class CommentResponseController {
         return response;
     }
     @PostMapping("/getVideoCommentResponseByPublisherId")
-    @ApiOperation("获得视频评论恢复 by PublisherId")
+    @ApiOperation("获得视频评论回复 by PublisherId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "评论者", paramType = "query", dataType = "long"),
     })
