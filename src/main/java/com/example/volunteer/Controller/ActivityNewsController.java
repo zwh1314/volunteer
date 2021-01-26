@@ -27,7 +27,7 @@ public class ActivityNewsController extends BaseController{
     private ActivityNewsService activityNewsService;
 
 
-    @PostMapping("/getActivityNewsByActivityId")
+    @GetMapping("/getActivityNewsByActivityId")
     @ApiOperation("获得活动 Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),

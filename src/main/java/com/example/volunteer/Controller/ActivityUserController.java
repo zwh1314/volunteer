@@ -28,7 +28,7 @@ public class ActivityUserController extends BaseController{
     private ActivityUserService activityUserService;
 
 
-    @PostMapping("/getActivityUserByActivityId")
+    @GetMapping("/getActivityUserByActivityId")
     @ApiOperation("获得活动用户by 活动Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
@@ -53,7 +53,7 @@ public class ActivityUserController extends BaseController{
 
         return response;
     }
-    @PostMapping("/getActivityUserByUserId")
+    @GetMapping("/getActivityUserByUserId")
     @ApiOperation("获得活动用户by 用户Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "long"),

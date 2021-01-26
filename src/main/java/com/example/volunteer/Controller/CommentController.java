@@ -31,12 +31,12 @@ public class CommentController extends BaseController{
 
 
 
-        @PostMapping("/getCommentByPublisherId")
-        @ApiOperation("获得评论by发布者Id")
-        @ApiImplicitParams({
-                @ApiImplicitParam(name = "publisherId", value = "评论发布者", paramType = "query", dataType = "long"),
-        })
-        public Response<List<Comment>> getCommentByPublisher(@RequestParam("publisherId") long publisherId) {
+    @GetMapping("/getCommentByPublisherId")
+    @ApiOperation("获得评论by发布者Id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "publisherId", value = "评论发布者", paramType = "query", dataType = "long"),
+    })
+    public Response<List<Comment>> getCommentByPublisher(@RequestParam("publisherId") long publisherId) {
             Response<List<Comment>> response = new Response<>();
             try {
                 response.setSuc(commentService.getCommentByPublisher(publisherId));
@@ -55,9 +55,9 @@ public class CommentController extends BaseController{
             }
 
             return response;
-        }
+    }
 
-    @PostMapping("/getCommentByRelativeText")
+    @GetMapping("/getCommentByRelativeText")
     @ApiOperation("获得相似文本by commentId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "relativeText", value = "相似文本", paramType = "query", dataType = "string"),
@@ -84,7 +84,7 @@ public class CommentController extends BaseController{
     }
 
 
-    @PostMapping("/getCommentInOneWeek")
+    @GetMapping("/getCommentInOneWeek")
     @ApiOperation("获得一周评论")
     public Response<List<Comment>> getCommentInOneWeek() {
         Response<List<Comment>> response = new Response<>();

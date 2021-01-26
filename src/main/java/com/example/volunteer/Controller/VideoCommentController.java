@@ -30,7 +30,7 @@ public class VideoCommentController {
 
 
 
-    @PostMapping("/getVideoCommentByPublisher")
+    @GetMapping("/getVideoCommentByPublisher")
     @ApiOperation("获得视频评论by发布者Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "视频发布者", paramType = "query", dataType = "long"),
@@ -56,7 +56,7 @@ public class VideoCommentController {
         return response;
     }
 
-    @PostMapping("/getVideoCommentByRelativeText")
+    @GetMapping("/getVideoCommentByRelativeText")
     @ApiOperation("获得视频评论by RelativeText")
 
     public Response<List<VideoComment>> getVideoCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
@@ -81,7 +81,7 @@ public class VideoCommentController {
     }
 
 
-    @PostMapping("/getVideoCommentInOneWeek")
+    @GetMapping("/getVideoCommentInOneWeek")
     @ApiOperation("获得一周视频评论")
     public Response<List<VideoComment>> getVideoCommentInOneWeek() {
         Response<List<VideoComment>> response = new Response<>();

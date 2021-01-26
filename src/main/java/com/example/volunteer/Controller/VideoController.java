@@ -29,7 +29,7 @@ public class VideoController extends BaseController{
     private VideoService videoService;
 
 
-    @PostMapping("/getVideoByPublisherId")
+    @GetMapping("/getVideoByPublisherId")
     @ApiOperation("获得视频by发布者Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "视频发布者", paramType = "query", dataType = "long"),
@@ -55,7 +55,7 @@ public class VideoController extends BaseController{
         return response;
     }
 
-    @PostMapping("/getVideoByRelativeText")
+    @GetMapping("/getVideoByRelativeText")
     @ApiOperation("获得视频by RelativeText")
 
     public Response<List<Video>> getVideoByRelativeText(@RequestParam("relativeText") String relativeText) {
@@ -80,7 +80,7 @@ public class VideoController extends BaseController{
     }
 
 
-    @PostMapping("/getVideoInOneWeek")
+    @GetMapping("/getVideoInOneWeek")
     @ApiOperation("获得一周视频")
     public Response<List<Video>> getVideoInOneWeek() {
         Response<List<Video>> response = new Response<>();

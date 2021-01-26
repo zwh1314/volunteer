@@ -26,7 +26,7 @@ public class UserInfoController extends BaseController{
     @Autowired
     private UserInfoService userInfoService;
 
-    @PostMapping("/getUserInfoByUserId")
+    @GetMapping("/getUserInfoByUserId")
     @ApiOperation("获得用户信息By userId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "账户id", paramType = "query", dataType = "long"),

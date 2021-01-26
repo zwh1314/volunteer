@@ -28,7 +28,7 @@ public class SwiperContorller extends BaseController{
     private SwiperService swiperService;
 
 
-    @PostMapping("/getSwiperByNewsId")
+    @GetMapping("/getSwiperByNewsId")
     @ApiOperation("获得轮播图by newsId")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "newsId", value = "轮播图对应新闻id", paramType = "query", dataType = "long"),
@@ -53,7 +53,7 @@ public class SwiperContorller extends BaseController{
 
         return response;
     }
-    @PostMapping("/getSwiperByPriority")
+    @GetMapping("/getSwiperByPriority")
     @ApiOperation("获得轮播图by priority")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "priority", value = "轮播图优先级", paramType = "query", dataType = "string"),
