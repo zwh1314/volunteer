@@ -28,14 +28,12 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "priority", value = "优先级", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
     public Response<Boolean> signIn(@RequestParam("tel") String tel,
                                     @RequestParam("userName") String userName,
                                     @RequestParam("password") String password,
-                                    @RequestParam("priority") String priority,
                                     @RequestParam("verifyCode") String verifyCode) {
         Response<Boolean> response = new Response<>();
         try {
@@ -45,7 +43,7 @@ public class UserController extends BaseController {
             user.setUserName(userName);
             user.setPassword(password);
             user.setTel(tel);
-            user.setPriority(priority);
+            user.setPriority("普通用户");
             response.setSuc(userService.signUp(user,verifyCode));
         } catch (IllegalArgumentException e) {
             logger.warn("[signIn Illegal Argument], tel: {}, password: {}", tel, password, e);

@@ -5,11 +5,12 @@ import lombok.Data;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity(name = "activity_news")
-public class ActivityNews {
+public class ActivityNews implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "news_id")

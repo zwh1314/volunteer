@@ -5,12 +5,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @Entity(name = "activity_user")
 @IdClass(ActivityUserKey.class)
-public class ActivityUser {
+public class ActivityUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "activity_id")
