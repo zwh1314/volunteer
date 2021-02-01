@@ -106,6 +106,7 @@ public class SwiperContorller extends BaseController{
     @PostMapping("/updateSwiperPriority")
     @ApiOperation("更新轮播图优先级")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "newSwiperPriority", value = "轮播图优先级", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "swiperId", value = "轮播图id", paramType = "query", dataType = "long"),
     })
     public Response<Boolean> updateCommentLikeNumber(@RequestParam("newSwiperPriority")String newSwiperPriority,@RequestParam("swiperId") long swiperId) {
@@ -132,6 +133,7 @@ public class SwiperContorller extends BaseController{
     @PostMapping("/updateSwiperText")
     @ApiOperation("更新轮播图文本")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "newSwiperText", value = "轮播图文本", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "swiperId", value = "轮播图id", paramType = "query", dataType = "long"),
     })
     public Response<Boolean> updateSwiperText(@RequestParam("newSwiperText")String newSwiperText,@RequestParam("swiperId") long swiperId) {
