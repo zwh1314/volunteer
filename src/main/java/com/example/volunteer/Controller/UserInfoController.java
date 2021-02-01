@@ -35,7 +35,6 @@ public class UserInfoController extends BaseController{
         Response<UserInfoDTO> response = new Response<>();
         try {
             validateUserId(userId);
-
             response.setSuc(userInfoService.getUserInfoByUserId(userId));
         } catch (IllegalArgumentException e) {
             logger.warn("[getUserInfoByUserId Illegal Argument], userId: {}", userId, e);
@@ -60,7 +59,6 @@ public class UserInfoController extends BaseController{
         Response<Boolean> response = new Response<>();
         try {
             validateUserInfoRequest(userInfoRequest);
-
             response.setSuc(userInfoService.addUserInfo(userInfoRequest));
         } catch (IllegalArgumentException e) {
             logger.warn("[addUserInfo Illegal Argument], userInfoRequest: {}", userInfoRequest, e);
@@ -113,7 +111,6 @@ public class UserInfoController extends BaseController{
         Response<Boolean> response = new Response<>();
         try {
             validateUserId(userId);
-
             response.setSuc(userInfoService.deleteUserInfoByUserId(userId));
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteUserInfoByUserId Illegal Argument], userId: {}", userId, e);
@@ -135,5 +132,28 @@ public class UserInfoController extends BaseController{
     private void validateUserInfoRequest(UserInfoRequest request) {
         Validate.notNull(request);
         Validate.isTrue(CollectionUtils.isNotEmpty(request.getUserInfoList()));
+    }
+
+    @GetMapping("/getCreditsByUserId")
+    @ApiOperation("查询用户积分By UserId")
+    public Response<Integer> selectCreditsByUserId(@RequestParam("userId") long userId){
+        Response<Integer> response = new Response<>();
+        try{
+            validateUserId(userId);
+            response.setSuc(userInfoService.getCreditsByUserId(userId));
+        }catch (IllegalArgumentException e) {
+            logger.warn("[getCreditsByUserId Illegal Argument], userId: {}", userId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getCreditsByUserId Runtime Exception], userId: {}", userId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getCreditsByUserId Exception], userId: {}", userId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+        return response;
     }
 }

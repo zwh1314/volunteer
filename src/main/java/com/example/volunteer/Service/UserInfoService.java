@@ -11,4 +11,9 @@ public interface UserInfoService {
     boolean updateUserInfo(UserInfoRequest userInfoRequest);
 
     boolean deleteUserInfoByUserId(long userId);
+
+    int getCreditsByUserId(long userId);
+
+
+
 }

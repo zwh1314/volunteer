@@ -13,7 +13,7 @@ class VolunteerApplicationTests {
     @Test
     void contextLoads() {
 //        User user1=new User();
-//        //user1.setId(1);
+//        user1.setId(1);
 //        user1.setUsername("张文瀚");
 //        user1.setPassword("991219");
 //        user1.setHeadPictureStr("123456");

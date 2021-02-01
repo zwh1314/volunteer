@@ -37,4 +37,7 @@ public class UserInfoDTO {
 
     @ApiModelProperty(value = "个性签名")
     private String introduction;
+
+    @ApiModelProperty(value = "积分")
+    private Integer credits;
 }

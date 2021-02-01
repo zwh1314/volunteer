@@ -22,8 +22,9 @@ public class UserInfoTest {
     @Test
     public void userInfoTest(){
         UserInfoRequest  userInfoRequest=new UserInfoRequest();
-        List<UserInfo> list=new ArrayList<UserInfo>();
+        List<UserInfo> list=new ArrayList<>();
         UserInfo userInfo=new UserInfo();
+        userInfo.setUserId(1L);
         userInfo.setUserName("张文瀚");
         userInfo.setAddress("攀枝花");
         userInfo.setFax("123");
@@ -33,14 +34,17 @@ public class UserInfoTest {
         userInfo.setHeadPicture("1314");
         userInfo.setMailAddress("2439499577@qq.com");
         userInfo.setQq("2439499577");
+        userInfo.setCredits(321);
         list.add(userInfo);
         userInfoRequest.setUserInfoList(list);
-//        userInfoService.addUserInfo(userInfoRequest);
-//        System.out.println(userInfoService.getUserInfoByUserId(3L));
-        userInfo.setUserId(4L);
-        userInfo.setUserName("猪猪侠");
-        userInfoService.updateUserInfo(userInfoRequest);
-        System.out.println(userInfoService.getUserInfoByUserId(4L));
+        userInfoService.addUserInfo(userInfoRequest);
+        System.out.println(userInfoService.getCreditsByUserId(1L));
+        System.out.println(userInfoService.deleteUserInfoByUserId(1L));
+//        System.out.println(userInfoService.getUserInfoByUserId(1L));
+//        userInfo.setUserId(4L);
+//        userInfoService.updateUserInfo(userInfoRequest);
+//        System.out.println(userInfoService.getUserInfoByUserId(1L));
+
 //        userInfoService.deleteUserInfoByUserId(3L);
     }
 }

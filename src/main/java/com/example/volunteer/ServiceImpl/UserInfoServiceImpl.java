@@ -69,4 +69,14 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
         return result;
     }
+
+    @Override
+    public int getCreditsByUserId(long userId) {
+        UserInfoDTO userInfoDTO = userInfoDao.getCreditsById(userId);
+        if(null == userInfoDTO){
+            logger.error("[getCreditsById Fail], request:{}",SerialUtil.toJsonStr(userId));
+            throw new VolunteerRuntimeException(ResponseEnum.USERINFO_NOT_FOUND);
+        }
+        return userInfoDTO.getCredits();
+    }
 }
