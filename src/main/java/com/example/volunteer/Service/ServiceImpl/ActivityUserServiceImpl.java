@@ -1,12 +1,8 @@
-package com.example.volunteer.ServiceImpl;
+package com.example.volunteer.Service.ServiceImpl;
 
-import com.example.volunteer.Dao.ActivityNewsDao;
 import com.example.volunteer.Dao.ActivityUserDao;
-import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
-import com.example.volunteer.Request.ActivityNewsRequest;
-import com.example.volunteer.Service.ActivityNewsService;
 import com.example.volunteer.Service.ActivityUserService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.SerialUtil;

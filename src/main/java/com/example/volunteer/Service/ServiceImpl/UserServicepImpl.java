@@ -1,6 +1,7 @@
-package com.example.volunteer.ServiceImpl;
+package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.MsgUtil;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -31,13 +32,21 @@ public class UserServicepImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public boolean signUp(User user, String verifyCode) {
+    public Response<Boolean> signUp(User user, String verifyCode) {
+        Response<Boolean> response=new Response<>();
         if (StringUtils.isBlank(cache.getIfPresent(user.getTel()))) {
             throw new VolunteerRuntimeException(ResponseEnum.VERIFY_MSG_CODE_INVALID);
         }
 
 
-        return userDao.insertUser(user) > 0;
+        boolean result = userDao.insertUser(user) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
     }
 
     @Override
@@ -53,7 +62,8 @@ public class UserServicepImpl implements UserService {
     }
 
     @Override
-    public boolean updatePassword(String tel, String oldPassword, String newPassword, String verifyCode) {
+    public Response<Boolean> updatePassword(String tel, String oldPassword, String newPassword, String verifyCode) {
+        Response<Boolean> response = new Response<>();
         UserDTO userDTO = userDao.getUserByTel(tel);
         if (userDTO == null) {
             throw new VolunteerRuntimeException(ResponseEnum.USER_NAME_OR_PWD_ERROR);
@@ -63,11 +73,23 @@ public class UserServicepImpl implements UserService {
             throw new VolunteerRuntimeException(ResponseEnum.VERIFY_MSG_CODE_INVALID);
         }
 
-        return userDao.updatePassword(tel, newPassword) > 0;
+        boolean result=userDao.updatePassword(tel, newPassword) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
     }
 
     @Override
-    public boolean forgetPassword(String tel, String newPassword, String verifyCode) {
+    public Response<Boolean> forgetPassword(String tel, String newPassword, String verifyCode) {
+        Response<Boolean> response = new Response<>();
+        if (StringUtils.isBlank(cache.getIfPresent(tel))) {
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+            return response;
+        }
         // TODO 密码错误上限次数
         // TODO 用户信息缓存
         UserDTO userDTO = userDao.getUserByTel(tel);
@@ -79,26 +101,44 @@ public class UserServicepImpl implements UserService {
             throw new VolunteerRuntimeException(ResponseEnum.VERIFY_MSG_CODE_INVALID);
         }
 
-        return userDao.updatePassword(tel, newPassword) > 0;
+        boolean result=userDao.updatePassword(tel, newPassword) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
     }
 
     @Override
-    public boolean getVerifyMsgCode(String tel) {
+    public Response<Boolean> getVerifyMsgCode(String tel) {
+        Response<Boolean> response = new Response<>();
         if (StringUtils.isNotBlank(cache.getIfPresent(tel))) {
-            return true;
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
+            return response;
         }
         String msgCode = msgUtil.sendSignUpMsgCode(tel);
         cache.put(tel, msgCode);
+        response.setSuc(true);
 
-        return false;
+        return response;
     }
 
     @Override
-    public boolean deleteUserByUserId(long userId){
+    public Response<Boolean> deleteUserByUserId(long userId){
+        Response<Boolean> response=new Response<>();
         UserDTO userDTO=userDao.getUserByUserId(userId);
         if (userDTO == null) {
             throw new VolunteerRuntimeException(ResponseEnum.USER_NOT_FOUND);
         }
-        return userDao.deleteByUserId(userId) > 0;
+        boolean result = userDao.deleteByUserId(userId) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
     }
 }

@@ -1,16 +1,10 @@
-package com.example.volunteer.Service;
-
+package com.example.volunteer.RedisService;
 
 import com.example.volunteer.DTO.UserDTO;
 import com.example.volunteer.Entity.User;
 import com.example.volunteer.Response.Response;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@Service
-public interface UserService {
-
+public interface UserRedisService {
     /**
      * 注册1
      */
@@ -19,7 +13,7 @@ public interface UserService {
     /**
      * 登录
      */
-    UserDTO signIn(String userName,String password);
+    UserDTO signIn(String userName, String password);
 
     /**
      * 更新密码
