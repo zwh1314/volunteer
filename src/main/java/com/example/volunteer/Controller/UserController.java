@@ -44,7 +44,7 @@ public class UserController extends BaseController {
             user.setPassword(password);
             user.setTel(tel);
             user.setPriority("普通用户");
-            response.setSuc(userService.signUp(user,verifyCode));
+            return userService.signUp(user,verifyCode);
         } catch (IllegalArgumentException e) {
             logger.warn("[signIn Illegal Argument], tel: {}, password: {}", tel, password, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -58,8 +58,6 @@ public class UserController extends BaseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/login")
@@ -110,7 +108,7 @@ public class UserController extends BaseController {
         try {
             validateUserPasswordAndMsgCode(tel, oldPassword, newPassword, verifyCode);
 
-            response.setSuc(userService.updatePassword(tel, oldPassword, newPassword, verifyCode));
+            return userService.updatePassword(tel, oldPassword, newPassword, verifyCode);
         } catch (IllegalArgumentException e) {
             logger.warn("[updatePassword Illegal Argument], tel: {}, oldPassword: {}, newPassword: {}", tel, oldPassword, newPassword, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -124,8 +122,6 @@ public class UserController extends BaseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/forgetPassword")
@@ -143,7 +139,7 @@ public class UserController extends BaseController {
         try {
             validateUserPasswordAndMsgCode(tel, newPassword, verifyCode);
 
-            response.setSuc(userService.forgetPassword(tel, newPassword, verifyCode));
+            return userService.forgetPassword(tel, newPassword, verifyCode);
         } catch (IllegalArgumentException e) {
             logger.warn("[forgetPassword Illegal Argument], tel: {}, newPassword: {}", tel, newPassword, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -157,8 +153,6 @@ public class UserController extends BaseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getVerifyCode")
@@ -172,7 +166,7 @@ public class UserController extends BaseController {
         try {
             validateBaseUserInfo(tel);
 
-            response.setSuc(userService.getVerifyMsgCode(tel));
+            return userService.getVerifyMsgCode(tel);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVerifyCode Illegal Argument], tel: {}", tel, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -186,8 +180,6 @@ public class UserController extends BaseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     private void validateBaseUserInfo(String tel, String password) {

@@ -1,4 +1,4 @@
-package com.example.volunteer.ServiceImpl;
+package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.UserInfoDao;
 import com.example.volunteer.DTO.UserInfoDTO;

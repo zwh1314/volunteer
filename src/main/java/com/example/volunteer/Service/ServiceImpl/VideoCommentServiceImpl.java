@@ -1,4 +1,4 @@
-package com.example.volunteer.ServiceImpl;
+package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.VideoCommentDao;
 import com.example.volunteer.Entity.VideoComment;
