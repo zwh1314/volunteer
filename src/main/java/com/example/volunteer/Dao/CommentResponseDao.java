@@ -48,4 +48,10 @@ public interface CommentResponseDao {
 
     @Delete("DELETE FROM comment_response WHERE response_id = #{responseId}")
     int deleteCommentResponseById(@Param("responseId")long responseId);
+
+    @Select("SELECT response_like as responseLike FROM comment_response WHERE response_id =#{responseId}")
+    Long getResponseLikeByResponseId(@Param("responseId") long responseId);
+
+    @Select("SELECT response_id from comment_response as responseId")
+    List<Long> getResponseIds();
 }

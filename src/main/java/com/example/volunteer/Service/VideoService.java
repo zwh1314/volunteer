@@ -19,4 +19,8 @@ public interface VideoService {
   List<Video> getVideoInOneWeek();
 
   boolean deleteVideoById(long videoId);
+
+  long getVideoLikeByVideoId(long videoId);
+
+  boolean likesVideo(long videoId);
 }

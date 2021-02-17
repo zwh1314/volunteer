@@ -6,6 +6,7 @@ import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.VideoRequest;
 import com.example.volunteer.Service.VideoService;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -21,6 +23,8 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private VideoDao videoDao;
 
+    @Autowired
+   private RedisUtil redisUtil;
     @Override
     public boolean addVideo(VideoRequest videoRequest){
         boolean result;
@@ -89,6 +93,49 @@ public class VideoServiceImpl implements VideoService {
         result=videoDao.deleteVideoById(videoId) > 0;
         if(!result){
             logger.error("[deleteVideoById Fail], videoId: {}", SerialUtil.toJsonStr(videoId));
+        }
+        return result;
+    }
+
+    public static String VIDEO_LIKE_KEY(long videoId){
+        return "redis:videoLike:" + videoId;
+    }
+
+    private Long getVideoLikeFromRedis(long videoId){
+        Long like;
+        try{
+            Object o = redisUtil.get(VIDEO_LIKE_KEY(videoId));
+            if (o == null)
+                return null;
+            else like = Long.valueOf(String.valueOf(o));
+        }catch (Exception e){
+            logger.error("[getVideoLikeFromRedis Fail], videoId：{}",SerialUtil.toJsonStr(videoId));
+            e.printStackTrace();
+            return  null;
+        }
+        return like;
+    }
+
+    @Override
+    public long getVideoLikeByVideoId(long videoId){
+        Long like = getVideoLikeFromRedis(videoId);
+        if(like != null){
+            return like;
+        }
+        like  = Optional.ofNullable(videoDao.getVideoLikeByVideoId(videoId)).orElse(0L);
+        redisUtil.set(VIDEO_LIKE_KEY(videoId),like);
+        return like;
+    }
+
+    @Override
+    public boolean likesVideo(long videoId) {
+        boolean result;
+        Long like = getVideoLikeFromRedis(videoId);
+        if (like != null){
+            result = redisUtil.set(VIDEO_LIKE_KEY(videoId),like+1);
+        }else{
+            like = Optional.ofNullable(videoDao.getVideoLikeByVideoId(videoId)).orElse(0L);
+            result =  redisUtil.set(VIDEO_LIKE_KEY(videoId),like+1);
         }
         return result;
     }

@@ -19,4 +19,8 @@ public interface VideoCommentService {
     List<VideoComment> getVideoCommentByRelativeText(String relativeText);
 
     boolean deleteVideoCommentById(long videoCommentId);
+
+    long getCommentLikeByCommentId(long commentId);
+
+    boolean LikesComment(long commentId);
 }
