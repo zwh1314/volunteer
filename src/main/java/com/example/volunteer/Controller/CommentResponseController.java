@@ -324,4 +324,50 @@ public class CommentResponseController {
         return response;
     }
 
+    @GetMapping("/getResponseLikeByResponseId")
+    @ApiOperation("通过responseId查询点赞")
+    public Response<Long> getResponseLikeByResponseId(@RequestParam("responseId") long responseId) {
+        Response<Long> response = new Response<>();
+        try {
+            response.setSuc(responseService.getResponseLikeByResponseId(responseId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getResponseLikeByResponseId Illegal Argument], responseId: {}", responseId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getResponseLikeByResponseId Runtime Exception],responseId: {}",responseId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("getResponseLikeByResponseId Exception], responseId: {}",responseId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+    @PostMapping("likesResponse")
+    @ApiOperation("点赞评论")
+    public Response<Boolean> likesResponse(@RequestParam("responseId") long responseId){
+        Response<Boolean> response = new Response<>();
+        try {
+            response.setSuc(responseService.likesResponse(responseId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[likesResponse Illegal Argument], : commentId {}", responseId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[likesResponse Runtime Exception], : commentId {}", responseId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[likesResponse Exception], :commentId {}", responseId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
 }

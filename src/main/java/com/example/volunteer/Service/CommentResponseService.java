@@ -18,6 +18,10 @@ public interface CommentResponseService {
 
     List<CommentResponse> getCommentResponseInOneWeek();
 
+    long getResponseLikeByResponseId(long responseId);
+
+    boolean likesResponse(long responseId);
+
     List<CommentResponse> getVideoCommentResponseInOneWeek();
 
     List<CommentResponse> getCommentResponseByRelativeText(String relativeText);

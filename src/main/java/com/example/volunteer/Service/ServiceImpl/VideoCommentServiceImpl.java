@@ -6,6 +6,7 @@ import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.VideoCommentRequest;
 import com.example.volunteer.Service.VideoCommentService;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VideoCommentServiceImpl implements VideoCommentService {
@@ -20,6 +22,9 @@ public class VideoCommentServiceImpl implements VideoCommentService {
 
     @Autowired
     private VideoCommentDao videoCommentDao;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     public boolean addVideoComment(VideoCommentRequest videoCommentRequest){
@@ -89,6 +94,52 @@ public class VideoCommentServiceImpl implements VideoCommentService {
         result=videoCommentDao.deleteCommentById(commentId) > 0;
         if(!result){
             logger.error("[deleteCommentById Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+        }
+        return result;
+    }
+
+    public static String VIDEO_COMMENT_LIKE_KEY(long commentId){
+        return "redis:videoCommentLike:" + commentId;
+    }
+
+
+    private Long getCommentLikeFromRedis(long commentId){
+
+        Long commentLike;
+        try{
+            Object o = redisUtil.get(VIDEO_COMMENT_LIKE_KEY(commentId));
+            if (o == null)
+                return null;
+            else commentLike = Long.valueOf(String.valueOf(o));
+        }catch (Exception e){
+            logger.error("[getCommentLikeFromRedis Fail], commentId:{}",SerialUtil.toJsonStr(commentId));
+            e.printStackTrace();
+            return null;
+        }
+        return commentLike;
+    }
+
+
+    @Override
+    public long getCommentLikeByCommentId(long commentId) {
+        Long like = getCommentLikeFromRedis(commentId);
+        if (like != null) {
+            return like;
+        }
+        like  = Optional.ofNullable(videoCommentDao.getCommentLikeByCommentId(commentId)).orElse(0L);
+        redisUtil.set(VIDEO_COMMENT_LIKE_KEY(commentId),like);
+        return like;
+    }
+
+    @Override
+    public boolean LikesComment(long commentId) {
+        boolean result;
+        Long like = getCommentLikeFromRedis(commentId);
+        if(like != null){
+            result = redisUtil.set(VIDEO_COMMENT_LIKE_KEY(commentId),like+1);
+        }else{
+            like = Optional.ofNullable(videoCommentDao.getCommentLikeByCommentId(commentId)).orElse(0L);
+            result =  redisUtil.set(VIDEO_COMMENT_LIKE_KEY(commentId),like+1);
         }
         return result;
     }

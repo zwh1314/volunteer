@@ -19,4 +19,8 @@ public interface CommentService {
     List<Comment> getCommentByRelativeText(String relativeText);
 
     boolean deleteCommentById(long commentId);
+
+    long getCommentLikeByCommentId(long commentId);
+
+    boolean LikesComment(long commentId);
 }
