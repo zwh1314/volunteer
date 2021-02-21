@@ -1,9 +1,7 @@
-package com.example.volunteer.RedisDao.RedisDaoImp;
+package com.example.volunteer.RedisService.RedisServiceImpl;
 
-import com.example.volunteer.Dao.CommentResponseDao;
 import com.example.volunteer.Dao.VideoDao;
-import com.example.volunteer.RedisDao.VideoRedisDao;
-import com.example.volunteer.Service.ServiceImpl.CommentResponseServiceImpl;
+import com.example.volunteer.RedisService.VideoRedisService;
 import com.example.volunteer.Service.ServiceImpl.VideoServiceImpl;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
@@ -16,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class VideoRedisDaoImp implements VideoRedisDao {
+public class VideoRedisDaoImpl implements VideoRedisService {
 
     @Autowired
     RedisUtil redisUtil;
@@ -24,7 +22,7 @@ public class VideoRedisDaoImp implements VideoRedisDao {
     @Autowired
     VideoDao videoDao;
 
-    private static final Logger logger = LoggerFactory.getLogger(VideoRedisDaoImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(VideoRedisDaoImpl.class);
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Override

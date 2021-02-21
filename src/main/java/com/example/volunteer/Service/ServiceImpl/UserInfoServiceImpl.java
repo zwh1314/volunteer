@@ -5,7 +5,6 @@ import com.example.volunteer.DTO.UserInfoDTO;
 import com.example.volunteer.Entity.UserInfo;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
-import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.UserInfoRequest;
 import com.example.volunteer.Service.UserInfoService;
 import com.example.volunteer.utils.SerialUtil;

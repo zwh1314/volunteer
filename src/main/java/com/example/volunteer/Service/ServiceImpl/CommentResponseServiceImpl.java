@@ -2,14 +2,12 @@ package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.CommentResponseDao;
 import com.example.volunteer.Entity.CommentResponse;
-import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.CommentResponseRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentResponseService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
-import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
