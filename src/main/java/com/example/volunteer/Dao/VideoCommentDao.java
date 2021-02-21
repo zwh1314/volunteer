@@ -36,4 +36,10 @@ public interface VideoCommentDao {
 
     @Delete("DELETE FROM video_comment WHERE comment_id = #{commentId}")
     int deleteCommentById(@Param("commentId")long commentId);
+
+    @Select("SELECT comment_like as commentLike FROM video_comment WHERE comment_id =#{commentId}")
+    Long getCommentLikeByCommentId(@Param("commentId") long commentId);
+
+    @Select("SELECT comment_id from video_comment as commentId")
+    List<Long> getCommentIds();
 }

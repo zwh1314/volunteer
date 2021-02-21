@@ -188,4 +188,51 @@ public class VideoCommentController {
             return response;
         }
     }
+
+
+    @GetMapping("/getCommentLikeByCommentId")
+    @ApiOperation("通过commentId查询视频点赞")
+    public Response<Long> getCommentLikeByCommentId(@RequestParam("commentId") long commentId) {
+        Response<Long> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.getCommentLikeByCommentId(commentId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getCommentLikeByCommentId Illegal Argument], commentId: {}", commentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getCommentLikeByCommentId Runtime Exception],commentId: {}",commentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getCommentLikeByCommentId Exception], commentId: {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
+
+    @PostMapping("likesComment")
+    @ApiOperation("点赞视频评论")
+    public Response<Boolean> likesComment(@RequestParam("commentId") long commentId){
+        Response<Boolean> response = new Response<>();
+        try {
+            response.setSuc(videoCommentService.LikesComment(commentId));
+        } catch (IllegalArgumentException e) {
+            logger.warn("[likesComment Illegal Argument], : commentId {}", commentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[likesComment Runtime Exception], : commentId {}", commentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[likesComment Exception], :commentId {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+        return response;
+    }
 }

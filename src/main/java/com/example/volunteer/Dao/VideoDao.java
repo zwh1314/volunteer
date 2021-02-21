@@ -37,4 +37,10 @@ public interface VideoDao {
 
     @Delete("DELETE FROM video WHERE video_id = #{videoId}")
     int deleteVideoById(@Param("videoId")long videoId);
+
+    @Select("SELECT video_like as videoLike FROM video WHERE video_id =#{videoId}")
+    Long getVideoLikeByVideoId(@Param("videoId") long videoId);
+
+    @Select("SELECT video_id from video as videoId")
+    List<Long> getVideoIds();
 }

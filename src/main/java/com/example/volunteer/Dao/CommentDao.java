@@ -35,4 +35,10 @@ public interface CommentDao {
 
     @Delete("DELETE FROM comment WHERE comment_id = #{commentId}")
     int deleteCommentById(@Param("commentId")long commentId);
+
+    @Select("SELECT comment_like as commentLike FROM comment WHERE comment_id =#{commentId}")
+    Long getCommentLikeByCommentId(@Param("commentId") long commentId);
+
+    @Select("SELECT comment_id from comment as commentId")
+    List<Long> getCommentIds();
 }
