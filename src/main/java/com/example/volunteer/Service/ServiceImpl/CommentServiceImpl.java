@@ -2,7 +2,6 @@ package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.CommentDao;
 import com.example.volunteer.Entity.Comment;
-import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentService;

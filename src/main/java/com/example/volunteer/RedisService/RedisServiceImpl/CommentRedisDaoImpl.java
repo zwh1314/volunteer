@@ -1,10 +1,8 @@
-package com.example.volunteer.RedisDao.RedisDaoImp;
+package com.example.volunteer.RedisService.RedisServiceImpl;
 
 import com.example.volunteer.Dao.CommentDao;
-import com.example.volunteer.Dao.VideoCommentDao;
-import com.example.volunteer.RedisDao.VideoCommentRedisDao;
+import com.example.volunteer.RedisService.CommentRedisService;
 import com.example.volunteer.Service.ServiceImpl.CommentServiceImpl;
-import com.example.volunteer.Service.ServiceImpl.VideoCommentServiceImpl;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
 import org.slf4j.Logger;
@@ -16,26 +14,27 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class VideoCommentRedisDaoImp implements VideoCommentRedisDao {
+public class CommentRedisDaoImpl implements CommentRedisService {
     @Autowired
     RedisUtil redisUtil;
 
     @Autowired
-    VideoCommentDao videoCommentDao;
+    CommentDao commentDao;
 
-    private static final Logger logger = LoggerFactory.getLogger(VideoCommentRedisDaoImp.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommentRedisDaoImpl.class);
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Override
     public void commentLikeSchedule(){
-        List<Long> commentIds = videoCommentDao.getCommentIds();
+        List<Long> commentIds = commentDao.getCommentIds();
         Long like;
         for (Long commentId : commentIds) {
             try {
-                Object o = redisUtil.get(VideoCommentServiceImpl.VIDEO_COMMENT_LIKE_KEY(commentId));
+
+                Object o = redisUtil.get(CommentServiceImpl.COMMENT_LIKE_KEY(commentId));
                 if (o != null) {
                     like = Long.valueOf(String.valueOf(o));
-                    videoCommentDao.updateCommentLike(like, commentId);
+                    commentDao.updateCommentLike(like, commentId);
                 }
             } catch (Exception e) {
                 logger.warn("[Redis is not maintained], commentId:{}", SerialUtil.toJsonStr(commentId),e);

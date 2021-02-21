@@ -2,7 +2,6 @@ package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.SwiperDao;
 import com.example.volunteer.Entity.Swiper;
-import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.SwiperService;
 import com.example.volunteer.enums.ResponseEnum;

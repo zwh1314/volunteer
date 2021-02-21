@@ -5,7 +5,6 @@ import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
-import com.example.volunteer.Exception.VolunteerRuntimeException;
 
 import com.example.volunteer.Service.ActivityService;
 import org.slf4j.Logger;
