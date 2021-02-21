@@ -2,31 +2,32 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.CommentResponse;
 import com.example.volunteer.Request.CommentResponseRequest;
+import com.example.volunteer.Response.Response;
 
 import java.util.List;
 
 public interface CommentResponseService {
-    boolean addCommentResponse(CommentResponseRequest commentResponseRequest);
+    Response<Boolean> addCommentResponse(CommentResponseRequest commentResponseRequest);
 
-    boolean updateResponseLikeNumber(long responseLikeNumber, long responseId);
+    Response<Boolean> updateResponseLikeNumber(long responseLikeNumber, long responseId);
 
-    boolean updateResponseText(String responseText, long responseId);
+    Response<Boolean> updateResponseText(String responseText, long responseId);
 
-    List<CommentResponse> getCommentResponseByCommentId(long commentId);
+    Response<List<CommentResponse>> getCommentResponseByCommentId(long commentId);
 
-    List<CommentResponse> getVideoCommentResponseByCommentId(long commentId);
+    Response<List<CommentResponse>> getVideoCommentResponseByCommentId(long commentId);
 
-    List<CommentResponse> getCommentResponseInOneWeek();
+    Response<List<CommentResponse>> getCommentResponseInOneWeek();
 
-    List<CommentResponse> getVideoCommentResponseInOneWeek();
+    Response<List<CommentResponse>> getVideoCommentResponseInOneWeek();
 
-    List<CommentResponse> getCommentResponseByRelativeText(String relativeText);
+    Response<List<CommentResponse>> getCommentResponseByRelativeText(String relativeText);
 
-    List<CommentResponse> getVideoCommentResponseByRelativeText(String relativeText);
+    Response<List<CommentResponse>> getVideoCommentResponseByRelativeText(String relativeText);
 
-    List<CommentResponse> getCommentResponseByPublisherId(long publisherId);
+    Response<List<CommentResponse>> getCommentResponseByPublisherId(long publisherId);
 
-    List<CommentResponse> getVideoCommentResponseByPublisherId(long publisherId);
+    Response<List<CommentResponse>> getVideoCommentResponseByPublisherId(long publisherId);
 
-    boolean deleteCommentResponseById(long responseId);
+    Response<Boolean> deleteCommentResponseById(long responseId);
 }

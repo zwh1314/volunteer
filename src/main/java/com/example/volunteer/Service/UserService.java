@@ -2,11 +2,11 @@ package com.example.volunteer.Service;
 
 
 import com.example.volunteer.DTO.UserDTO;
-import com.example.volunteer.Entity.User;
 import com.example.volunteer.Response.Response;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Service
 public interface UserService {
@@ -14,12 +14,12 @@ public interface UserService {
     /**
      * 注册1
      */
-    Response<Boolean> signUp(User user, String verifyCode);
+    Response<Boolean> signUp(String tel, String userName, String password, String verifyCode);
 
     /**
      * 登录
      */
-    UserDTO signIn(String userName,String password);
+    Response<UserDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 
     /**
      * 更新密码

@@ -39,7 +39,7 @@ public class TokenUtil {
         return token;
     }
 
-    public String getToken(HttpServletRequest request, HttpServletResponse response) {
+    public String getToken(HttpServletRequest request) {
         String token = request.getHeader(CommonConstant.TOKEN);
         if (StringUtils.isBlank(token)) {
             return null;

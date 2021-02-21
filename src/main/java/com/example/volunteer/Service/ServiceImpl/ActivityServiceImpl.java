@@ -3,6 +3,7 @@ package com.example.volunteer.Service.ServiceImpl;
 import com.example.volunteer.Dao.ActivityDao;
 import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
@@ -21,37 +22,63 @@ public class ActivityServiceImpl implements ActivityService {
 
 
     @Override
-    public boolean addActivity(Activity activity){
-        boolean result=true;
-        result = activityDao.insertActivity(activity) > 0;
-        return result;
+    public Response<Boolean> addActivity(Activity activity){
+        Response<Boolean> response = new Response<>();
+        boolean result = activityDao.insertActivity(activity) > 0;
+        if(!result){
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+        else{
+            response.setSuc(true);
+        }
+        return response;
 
     }
 
     @Override
-    public boolean updateActivity(Activity activity) {
-        boolean result = true;
-        result = activityDao.updateActivity(activity) > 0;
-        return result;
+    public Response<Boolean> updateActivity(Activity activity) {
+        Response<Boolean> response=new Response<>();
+        boolean result = activityDao.updateActivity(activity) > 0;
+        if(!result){
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public ActivityDTO getActivityByActivityId(long activityId) {
+    public Response<ActivityDTO> getActivityByActivityId(long activityId) {
+        Response<ActivityDTO> response=new Response<>();
+
         ActivityDTO activityDTO = activityDao.getActivityByActivityId(activityId);
         if (activityDTO == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.FAIL);
+            response.setFail(ResponseEnum.FAIL);
         }
-
-        return activityDTO;
-
+        else {
+            response.setSuc(activityDTO);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteActivityByActivityId(long activityId){
+    public Response<Boolean> deleteActivityByActivityId(long activityId){
+        Response<Boolean> response=new Response<>();
+
         ActivityDTO activityDTO=activityDao.getActivityByActivityId(activityId);
         if (activityDTO == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.FAIL);
+            response.setFail(ResponseEnum.FAIL);
         }
-        return activityDao.deleteActivityByActivityId(activityId) > 0;
+        else {
+            boolean result=activityDao.deleteActivityByActivityId(activityId) > 0;
+            if(!result){
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            }
+            else {
+                response.setSuc(true);
+            }
+        }
+        return response;
     }
 }

@@ -10,7 +10,7 @@ public enum ResponseEnum {
     FAIL(1, "失败"),
 
     ILLEGAL_PARAM(101, "参数错误"),
-    USER_NAME_OR_PWD_ERROR(102, "用户名或密码错误"),
+    TEL_OR_PWD_ERROR(102, "手机号或密码错误"),
     VERIFY_MSG_CODE_INVALID(103, "短信验证码已失效，请重试"),
     VERIFY_MSG_CODE_VALID(104,"短信验证码已发送，请查收"),
     USER_NOT_FOUND(105, "未找到对应的用户"),
@@ -24,6 +24,9 @@ public enum ResponseEnum {
     COMMENT_RESPONSE_COMMENT_NOT_FOUND(113,"未找到该普通评论对应的评论回复信息"),
     COMMENT_RESPONSE_VIDEO_COMMENT_NOT_FOUND(114,"未找到该视频评论对应的评论回复信息"),
     OPERATE_DATABASE_FAIL(115,"数据库操作失败"),
+    TEL_HAS_BEEN_USED(116,"该手机号已注册"),
+    VERIFY_MSG_CODE_ERROR(117,"验证码错误"),
+    USER_ERROR_FREQUENCY_LIMIT(118,"用户尝试次数已达上限，请5分钟后再试"),
 
 
 

@@ -1,10 +1,8 @@
 package com.example.volunteer.Controller;
 
-import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Entity.VideoComment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.VideoCommentRequest;
-import com.example.volunteer.Request.VideoRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoCommentService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -38,7 +36,7 @@ public class VideoCommentController {
     public Response<List<VideoComment>> getVideoCommentByPublisher(@RequestParam("publisherId") long publisherId) {
         Response<List<VideoComment>> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.getVideoCommentByPublisher(publisherId));
+            return videoCommentService.getVideoCommentByPublisher(publisherId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoCommentByPublisher Illegal Argument], publisherId: {}", publisherId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -52,8 +50,6 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getVideoCommentByRelativeText")
@@ -62,7 +58,7 @@ public class VideoCommentController {
     public Response<List<VideoComment>> getVideoCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
         Response<List<VideoComment>> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.getVideoCommentByRelativeText(relativeText));
+            return videoCommentService.getVideoCommentByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoCommentByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -76,8 +72,6 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -86,7 +80,7 @@ public class VideoCommentController {
     public Response<List<VideoComment>> getVideoCommentInOneWeek() {
         Response<List<VideoComment>> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.getVideoCommentInOneWeek());
+            return videoCommentService.getVideoCommentInOneWeek();
         } catch (VolunteerRuntimeException e) {
             logger.error("[getVideoCommentInOneWeek Runtime Exception]",  e);
             response.setFail(e.getExceptionCode(), e.getMessage());
@@ -96,8 +90,6 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -106,7 +98,7 @@ public class VideoCommentController {
     public Response<Boolean> addVideoComment(@RequestBody VideoCommentRequest videoCommentRequest) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.addVideoComment(videoCommentRequest));
+            return videoCommentService.addVideoComment(videoCommentRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[addVideoComment Illegal Argument], videoCommentRequest: {}", videoCommentRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -120,8 +112,6 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateVideoCommentLikeNumber")
@@ -132,7 +122,7 @@ public class VideoCommentController {
     public Response<Boolean>updateVideoCommentLikeNumber(@RequestParam("likeNumber")long likeNumber,@RequestParam("commentId") long commentId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.updateVideoCommentLikeNumber(likeNumber, commentId));
+            return videoCommentService.updateVideoCommentLikeNumber(likeNumber, commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateVideoCommentLikeNumber Illegal Argument], : commentId {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -146,8 +136,6 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -159,7 +147,7 @@ public class VideoCommentController {
     public Response<Boolean> updateVideoCommentText(@RequestParam("VideoCommentText")String VideoCommentText,@RequestParam("commentId") long commentId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.updateVideoCommentText(VideoCommentText, commentId));
+            return videoCommentService.updateVideoCommentText(VideoCommentText, commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateVideoCommentText Illegal Argument], : commentId {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -173,8 +161,6 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -187,7 +173,7 @@ public class VideoCommentController {
     public Response<Boolean> deleteVideoCommentById(@RequestParam("videoCommentId") long videoCommentId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.deleteVideoCommentById(videoCommentId));
+            return videoCommentService.deleteVideoCommentById(videoCommentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteVideoCommentById Illegal Argument], videoId: {}", videoCommentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -201,7 +187,5 @@ public class VideoCommentController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 }

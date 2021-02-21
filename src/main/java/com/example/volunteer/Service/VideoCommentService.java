@@ -2,21 +2,23 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.VideoComment;
 import com.example.volunteer.Request.VideoCommentRequest;
+import com.example.volunteer.Response.Response;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.List;
 
 public interface VideoCommentService {
-    boolean addVideoComment(VideoCommentRequest videoCommentRequest);
+    Response<Boolean> addVideoComment(VideoCommentRequest videoCommentRequest);
 
-    boolean updateVideoCommentLikeNumber(long videoCommentLikeNumber, long commentId);
+    Response<Boolean> updateVideoCommentLikeNumber(long videoCommentLikeNumber, long commentId);
 
-    boolean updateVideoCommentText(String VideoCommentText, long commentId);
+    Response<Boolean> updateVideoCommentText(String VideoCommentText, long commentId);
 
-    List<VideoComment> getVideoCommentByPublisher(long publisherId);
+    Response<List<VideoComment>> getVideoCommentByPublisher(long publisherId);
 
-    List<VideoComment> getVideoCommentInOneWeek();
+    Response<List<VideoComment>> getVideoCommentInOneWeek();
 
-    List<VideoComment> getVideoCommentByRelativeText(String relativeText);
+    Response<List<VideoComment>> getVideoCommentByRelativeText(String relativeText);
 
-    boolean deleteVideoCommentById(long videoCommentId);
+    Response<Boolean> deleteVideoCommentById(long videoCommentId);
 }

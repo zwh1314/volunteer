@@ -3,6 +3,7 @@ package com.example.volunteer.Service.ServiceImpl;
 import com.example.volunteer.Dao.SwiperDao;
 import com.example.volunteer.Entity.Swiper;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.SwiperService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.SerialUtil;
@@ -21,61 +22,87 @@ public class SwiperServiceImpl implements SwiperService {
     private SwiperDao swiperDao;
 
     @Override
-    public boolean addSwiper(Swiper swiper){
-        boolean result;
-        result = swiperDao.addSwiper(swiper) > 0;
-            if (!result) {
-                logger.error("[addSwiper Fail], swiper: {}", SerialUtil.toJsonStr(swiper));
-            }
-        return result;
+    public Response<Boolean> addSwiper(Swiper swiper){
+        Response<Boolean> response=new Response<>();
+        boolean result = swiperDao.addSwiper(swiper) > 0;
+        if (!result) {
+            logger.error("[addSwiper Fail], swiper: {}", SerialUtil.toJsonStr(swiper));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateSwiperPriority(String newSwiperPriority, long swiperId){
-        boolean result;
-        result = swiperDao.updateSwiperPriority(newSwiperPriority,swiperId) > 0;
+    public Response<Boolean> updateSwiperPriority(String newSwiperPriority, long swiperId){
+        Response<Boolean> response=new Response<>();
+        boolean result = swiperDao.updateSwiperPriority(newSwiperPriority,swiperId) > 0;
         if (!result) {
             logger.error("[updateSwiperPriority Fail], swiperId: {}", SerialUtil.toJsonStr(swiperId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateSwiperText(String newSwiperText, long swiperId){
-        boolean result;
-        result = swiperDao.updateSwiperText(newSwiperText,swiperId) > 0;
+    public Response<Boolean> updateSwiperText(String newSwiperText, long swiperId){
+        Response<Boolean> response=new Response<>();
+        boolean result = swiperDao.updateSwiperText(newSwiperText,swiperId) > 0;
         if (!result) {
             logger.error("[updateSwiperText Fail], swiperId: {}", SerialUtil.toJsonStr(swiperId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public List<Swiper> getSwiperByNewsId(long newsId){
+    public Response<List<Swiper>> getSwiperByNewsId(long newsId){
+        Response<List<Swiper>> response=new Response<>();
+
         List<Swiper> swiperList = swiperDao.findSwiperByNews(newsId);
-        if (swiperList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.SWIPER_NEWS_NOT_FOUND);
+        if (swiperList.size() == 0) {
+            response.setFail(ResponseEnum.SWIPER_NEWS_NOT_FOUND);
         }
-        return swiperList;
+        else {
+            response.setSuc(swiperList);
+        }
+        return response;
     }
 
     @Override
-    public List<Swiper> getSwiperByPriority(String priority){
+    public Response<List<Swiper>> getSwiperByPriority(String priority){
+        Response<List<Swiper>> response=new Response<>();
+
         List<Swiper> swiperList = swiperDao.findSwiperByPriority(priority);
         if (swiperList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.SWIPER_PRIORITY_NOT_FOUND);
+            response.setFail(ResponseEnum.SWIPER_PRIORITY_NOT_FOUND);
         }
-        return swiperList;
+        else {
+            response.setSuc(swiperList);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteSwiperById(long swiperId){
-        boolean result;
+    public Response<Boolean> deleteSwiperById(long swiperId){
+        Response<Boolean> response=new Response<>();
 
-        result=swiperDao.deleteSwiperById(swiperId) > 0;
+        boolean result=swiperDao.deleteSwiperById(swiperId) > 0;
         if(!result){
             logger.error("[deleteSwiperById Fail], swiperId: {}", SerialUtil.toJsonStr(swiperId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 }

@@ -4,6 +4,7 @@ import com.example.volunteer.Dao.VideoDao;
 import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.VideoRequest;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.SerialUtil;
@@ -22,74 +23,105 @@ public class VideoServiceImpl implements VideoService {
     private VideoDao videoDao;
 
     @Override
-    public boolean addVideo(VideoRequest videoRequest){
-        boolean result;
+    public Response<Boolean> addVideo(VideoRequest videoRequest){
+        Response<Boolean> response=new Response<>();
 
         for(Video video:videoRequest.getVideoList()) {
-            result = videoDao.addVideo(video) > 0;
+            boolean result = videoDao.addVideo(video) > 0;
             if (!result) {
                 logger.error("[addVideo Fail], request: {}", SerialUtil.toJsonStr(videoRequest));
-                return false;
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
             }
         }
-        return true;
+        response.setSuc(true);
+        return response;
     }
 
     @Override
-    public boolean updateVideoTextContent(String textContent, long videoId){
-        boolean result;
-        result = videoDao.updateVideoText(textContent,videoId) > 0;
+    public Response<Boolean> updateVideoTextContent(String textContent, long videoId){
+        Response<Boolean> response=new Response<>();
+
+        boolean result = videoDao.updateVideoText(textContent,videoId) > 0;
         if (!result) {
             logger.error("[updateVideoText Fail], videoId: {}", SerialUtil.toJsonStr(videoId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateVideoLikeNumber(long likeNumber, long videoId){
-        boolean result;
-        result = videoDao.updateVideoLike(likeNumber,videoId) > 0;
+    public Response<Boolean> updateVideoLikeNumber(long likeNumber, long videoId){
+        Response<Boolean> response=new Response<>();
+
+        boolean result = videoDao.updateVideoLike(likeNumber,videoId) > 0;
         if (!result) {
             logger.error("[updateVideoLike Fail], videoId: {}", SerialUtil.toJsonStr(videoId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public List<Video> getVideoByPublisherId(long publisherId){
+    public Response<List<Video>> getVideoByPublisherId(long publisherId){
+        Response<List<Video>> response=new Response<>();
+
         List<Video> videoList = videoDao.findVideoByUser(publisherId);
-        if (videoList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        if (videoList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
         }
-        return videoList;
+        else {
+            response.setSuc(videoList);
+        }
+        return response;
     }
 
     @Override
-    public List<Video> getVideoByRelativeText(String relativeText){
+    public Response<List<Video>> getVideoByRelativeText(String relativeText){
+        Response<List<Video>> response=new Response<>();
+
         List<Video> videoList = videoDao.findVideoByText(relativeText);
-        if (videoList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        if (videoList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
         }
-        return videoList;
+        else {
+            response.setSuc(videoList);
+        }
+        return response;
     }
 
     @Override
-    public List<Video> getVideoInOneWeek(){
+    public Response<List<Video>> getVideoInOneWeek(){
+        Response<List<Video>> response=new Response<>();
+
         List<Video> videoList = videoDao.findVideoInOneWeek();
-        if (videoList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        if (videoList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
-        return videoList;
+        else {
+            response.setSuc(videoList);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteVideoById(long videoId){
-        boolean result;
+    public Response<Boolean> deleteVideoById(long videoId){
+        Response<Boolean> response=new Response<>();
 
-        result=videoDao.deleteVideoById(videoId) > 0;
+        boolean result=videoDao.deleteVideoById(videoId) > 0;
         if(!result){
             logger.error("[deleteVideoById Fail], videoId: {}", SerialUtil.toJsonStr(videoId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 }

@@ -36,7 +36,7 @@ public class ActivityUserController extends BaseController{
     public Response<List<ActivityUser>> getActivityUserByActivityId(@RequestParam("activityId") long activityId) {
         Response<List<ActivityUser>> response = new Response<>();
         try {
-            response.setSuc(activityUserService.getActivityUserByActivityId(activityId));
+            return activityUserService.getActivityUserByActivityId(activityId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getActivityUserByActivityId Illegal Argument], activityId: {}", activityId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -50,9 +50,8 @@ public class ActivityUserController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
+
     @GetMapping("/getActivityUserByUserId")
     @ApiOperation("获得活动用户by 用户Id")
     @ApiImplicitParams({
@@ -61,7 +60,7 @@ public class ActivityUserController extends BaseController{
     public Response<List<ActivityUser>> getActivityUserByUserId(@RequestParam("userId") long userId) {
         Response<List<ActivityUser>> response = new Response<>();
         try {
-            response.setSuc(activityUserService.getActivityUserByUserId(userId));
+            return activityUserService.getActivityUserByUserId(userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getActivityUserByUserId Illegal Argument], userId: {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -75,8 +74,6 @@ public class ActivityUserController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/addActivityUser")
@@ -84,7 +81,7 @@ public class ActivityUserController extends BaseController{
     public Response<Boolean> addActivityUser(@RequestParam("ActivityUser")ActivityUser activityUser) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityUserService.addActivityUser(activityUser));
+            return activityUserService.addActivityUser(activityUser);
         } catch (IllegalArgumentException e) {
             logger.warn("[addActivityUser Illegal Argument], activityUser: {}", activityUser, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -98,8 +95,6 @@ public class ActivityUserController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateFormStatusByUserId")
@@ -110,7 +105,7 @@ public class ActivityUserController extends BaseController{
     public Response<Boolean> updateFormStatusByUserId(@RequestParam("userId") long userId,@RequestParam("formStatus") String formStatus) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityUserService.updateFormStatusByUserId(formStatus,userId));
+            return activityUserService.updateFormStatusByUserId(formStatus,userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateFormStatusByUserId Illegal Argument], : userId {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -124,8 +119,6 @@ public class ActivityUserController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateFormDateByUserId")
@@ -136,7 +129,7 @@ public class ActivityUserController extends BaseController{
     public Response<Boolean> updateFormDateByUserId(@RequestParam("userId") long userId,@RequestParam("formDate") Date formDate) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityUserService.updateFormDateByUserId(formDate,userId));
+            return activityUserService.updateFormDateByUserId(formDate,userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateFormDateByUserId Illegal Argument], : userId {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -150,8 +143,6 @@ public class ActivityUserController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -163,7 +154,7 @@ public class ActivityUserController extends BaseController{
     public Response<Boolean> deleteActivityUserByUserId(@RequestParam("userId") long userId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityUserService.deleteActivityUserByUserId(userId));
+            return activityUserService.deleteActivityUserByUserId(userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteActivityUserByUserId Illegal Argument], userId: {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -177,9 +168,5 @@ public class ActivityUserController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
-
-
 }
