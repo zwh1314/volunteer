@@ -35,7 +35,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getCommentResponseByCommentId(@RequestParam("commentId") long commentId) {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getCommentResponseByCommentId(commentId));
+            return responseService.getCommentResponseByCommentId(commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getCommentResponseByCommentId Illegal Argument], commentId: {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -49,8 +49,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -62,7 +60,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getVideoCommentResponseByCommentId(@RequestParam("commentId") long commentId) {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getVideoCommentResponseByCommentId(commentId));
+            return responseService.getVideoCommentResponseByCommentId(commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoCommentResponseByCommentId Illegal Argument], commentId: {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -76,8 +74,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getCommentResponseInOneWeek")
@@ -85,7 +81,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getCommentResponseInOneWeek() {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getCommentResponseInOneWeek());
+            return responseService.getCommentResponseInOneWeek();
         } catch (VolunteerRuntimeException e) {
             logger.error("[getCommentResponseInOneWeek Runtime Exception]",  e);
             response.setFail(e.getExceptionCode(), e.getMessage());
@@ -95,8 +91,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getVideoCommentResponseInOneWeek")
@@ -104,7 +98,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getVideoCommentResponseInOneWeek() {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getVideoCommentResponseInOneWeek());
+            return responseService.getVideoCommentResponseInOneWeek();
         } catch (VolunteerRuntimeException e) {
             logger.error("[getVideoCommentResponseInOneWeek Runtime Exception]",  e);
             response.setFail(e.getExceptionCode(), e.getMessage());
@@ -114,8 +108,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -127,7 +119,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getCommentResponseByRelativeText(@RequestParam("relativeText") String relativeText) {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getCommentResponseByRelativeText(relativeText));
+            return responseService.getCommentResponseByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
             logger.warn("[getCommentResponseByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -141,8 +133,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
     @GetMapping("/getVideoCommentResponseByRelativeText")
     @ApiOperation("获得相似视频评论回复by relativeText")
@@ -152,7 +142,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getVideoCommentResponseByRelativeText(@RequestParam("relativeText") String relativeText) {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getVideoCommentResponseByRelativeText(relativeText));
+            return responseService.getVideoCommentResponseByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoCommentResponseByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -166,8 +156,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getCommentResponseByPublisherId")
@@ -178,7 +166,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getCommentResponseByPublisherId(@RequestParam("publisherId") long publisherId) {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getCommentResponseByPublisherId(publisherId));
+            return responseService.getCommentResponseByPublisherId(publisherId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getCommentResponseByPublisherId Illegal Argument], commentId: {}", publisherId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -192,9 +180,8 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
+
     @GetMapping("/getVideoCommentResponseByPublisherId")
     @ApiOperation("获得视频评论回复 by PublisherId")
     @ApiImplicitParams({
@@ -203,7 +190,7 @@ public class CommentResponseController {
     public Response<List<CommentResponse>> getVideoCommentResponseByPublisherId(@RequestParam("publisherId") long publisherId) {
         Response<List<CommentResponse>> response = new Response<>();
         try {
-            response.setSuc(responseService.getVideoCommentResponseByPublisherId(publisherId));
+            return responseService.getVideoCommentResponseByPublisherId(publisherId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoCommentResponseByPublisherId Illegal Argument], commentId: {}", publisherId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -217,8 +204,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/addCommentResponse")
@@ -226,7 +211,7 @@ public class CommentResponseController {
     public Response<Boolean> addComment(@RequestBody CommentResponseRequest commentResponseRequest) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(responseService.addCommentResponse(commentResponseRequest));
+            return responseService.addCommentResponse(commentResponseRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[addCommentResponse( Illegal Argument], commentResponseRequest: {}", commentResponseRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -240,8 +225,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateResponseLikeNumber")
@@ -252,7 +235,7 @@ public class CommentResponseController {
     public Response<Boolean>updateResponseLikeNumber(@RequestParam("responseLikeNumber")long responseLikeNumber,@RequestParam("responseId") long responseId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(responseService.updateResponseLikeNumber(responseLikeNumber,responseId));
+            return responseService.updateResponseLikeNumber(responseLikeNumber,responseId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateResponseLikeNumberr Illegal Argument], : responseId {}", responseId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -266,8 +249,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateResponseText")
@@ -278,7 +259,7 @@ public class CommentResponseController {
     public Response<Boolean> updateCommentText(@RequestParam("responseText")String responseText,@RequestParam("responseId") long responseId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(responseService.updateResponseText(responseText, responseId));
+            return responseService.updateResponseText(responseText, responseId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateResponseText Illegal Argument], : responseId {}", responseId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -292,8 +273,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -306,7 +285,7 @@ public class CommentResponseController {
     public Response<Boolean> deleteActivityNewsByNewsId(@RequestParam("responseId") long responseId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(responseService.deleteCommentResponseById(responseId));
+            return responseService.deleteCommentResponseById(responseId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteCommentResponseById Illegal Argument], responseId: {}", responseId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -320,8 +299,6 @@ public class CommentResponseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getResponseLikeByResponseId")

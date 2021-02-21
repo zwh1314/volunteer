@@ -4,6 +4,7 @@ import com.example.volunteer.Dao.ActivityNewsDao;
 import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.ActivityNewsRequest;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityNewsService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.SerialUtil;
@@ -22,93 +23,132 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
     private ActivityNewsDao activityNewsDao;
 
     @Override
-    public boolean addActivityNews(ActivityNewsRequest activityNewsRequest){
-        boolean result;
+    public Response<Boolean> addActivityNews(ActivityNewsRequest activityNewsRequest){
+        Response<Boolean> response=new Response<>();
 
         for(ActivityNews activityNews:activityNewsRequest.getActivityNewsList()) {
-            result = activityNewsDao.addActivityNews(activityNews) > 0;
+            Boolean result = activityNewsDao.addActivityNews(activityNews) > 0;
             if (!result) {
                 logger.error("[addActivityNews Fail], request: {}", SerialUtil.toJsonStr(activityNewsRequest));
-                return false;
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
             }
         }
-        return true;
+        response.setSuc(true);
+        return response;
     }
 
     @Override
-    public boolean updateActivityNewsContent(String activityNewsContent, long newsId){
-        boolean result;
-        result = activityNewsDao.updateActivityNewsContent(activityNewsContent,newsId) > 0;
+    public Response<Boolean> updateActivityNewsContent(String activityNewsContent, long newsId){
+        Response<Boolean> response=new Response<>();
+        boolean result = activityNewsDao.updateActivityNewsContent(activityNewsContent,newsId) > 0;
         if (!result) {
             logger.error("[updateActivityNewsContent Fail], newsId: {}", SerialUtil.toJsonStr(newsId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else
+        {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateActivityNewsPicture(String activityNewsPicture, long newsId){
-        boolean result;
-        result = activityNewsDao.updateActivityNewsPicture(activityNewsPicture,newsId) > 0;
+    public Response<Boolean> updateActivityNewsPicture(String activityNewsPicture, long newsId){
+        Response<Boolean> response=new Response<>();
+        boolean result = activityNewsDao.updateActivityNewsPicture(activityNewsPicture,newsId) > 0;
         if (!result) {
             logger.error("[updateActivityNewsPicture Fail], newsId: {}", SerialUtil.toJsonStr(newsId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateActivityNewsTitle(String activityNewsTitle, long newsId){
-        boolean result;
-        result = activityNewsDao.updateActivityNewsTitle(activityNewsTitle,newsId) > 0;
+    public Response<Boolean> updateActivityNewsTitle(String activityNewsTitle, long newsId){
+        Response<Boolean> response=new Response<>();
+        boolean result = activityNewsDao.updateActivityNewsTitle(activityNewsTitle,newsId) > 0;
         if (!result) {
             logger.error("[updateActivityNewsTitle Fail], newsId: {}", SerialUtil.toJsonStr(newsId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public List<ActivityNews> getActivityNewsByActivityId(long activityId){
+    public Response<List<ActivityNews>> getActivityNewsByActivityId(long activityId){
+        Response<List<ActivityNews>> response=new Response<>();
+
         List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsById(activityId);
-        if (activityNewsList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.ACTIVITY_NEWS_ACTIVITY_NOT_FOUND);
+        if (activityNewsList.size() == 0) {
+            response.setFail(ResponseEnum.ACTIVITY_NEWS_ACTIVITY_NOT_FOUND);
         }
-        return activityNewsList;
+        else{
+            response.setSuc(activityNewsList);
+        }
+        return response;
     }
 
     @Override
-    public List<ActivityNews> getActivityNewsByPublisherId(long publisherId){
+    public Response<List<ActivityNews>> getActivityNewsByPublisherId(long publisherId){
+        Response<List<ActivityNews>> response=new Response<>();
+
         List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsByPublisher(publisherId);
-        if (activityNewsList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        if (activityNewsList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
         }
-        return activityNewsList;
+        else{
+            response.setSuc(activityNewsList);
+        }
+        return response;
     }
 
     @Override
-    public List<ActivityNews> getActivityNewsInOneWeek(){
+    public Response<List<ActivityNews>> getActivityNewsInOneWeek(){
+        Response<List<ActivityNews>> response=new Response<>();
+
         List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsInOneWeek();
-        if (activityNewsList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        if (activityNewsList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
-        return activityNewsList;
+        else{
+            response.setSuc(activityNewsList);
+        }
+        return response;
     }
 
     @Override
-    public List<ActivityNews> getActivityNewsByRelativeText(String relativeText){
+    public Response<List<ActivityNews>> getActivityNewsByRelativeText(String relativeText){
+        Response<List<ActivityNews>> response=new Response<>();
+
         List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsByContent(relativeText);
-        if (activityNewsList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        if (activityNewsList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
         }
-        return activityNewsList;
+        else {
+            response.setSuc(activityNewsList);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteActivityNewsById(long activityNewsId){
-        boolean result;
+    public Response<Boolean> deleteActivityNewsById(long activityNewsId){
+        Response<Boolean> response=new Response<>();
 
-        result=activityNewsDao.deleteActivityNewsById(activityNewsId) > 0;
+        boolean result=activityNewsDao.deleteActivityNewsById(activityNewsId) > 0;
         if(!result){
             logger.error("[deleteActivityNewsById Fail], activityNewsId: {}", SerialUtil.toJsonStr(activityNewsId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 }

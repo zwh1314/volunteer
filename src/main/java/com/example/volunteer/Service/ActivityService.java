@@ -2,6 +2,7 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
+import com.example.volunteer.Response.Response;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,13 +14,13 @@ public interface ActivityService {
      * @param activity
      * @return成功返回true，失败返回false
      */
-    boolean addActivity(Activity activity);
+    Response<Boolean> addActivity(Activity activity);
 
     /**更新活动
      * @param activity
      * @return成功返回true，失败返回false
      */
-    boolean updateActivity(Activity activity);
+    Response<Boolean> updateActivity(Activity activity);
 
 
     /**
@@ -27,12 +28,12 @@ public interface ActivityService {
      * @param activityId
      * @return
      */
-    public ActivityDTO getActivityByActivityId(long activityId);
+    public Response<ActivityDTO> getActivityByActivityId(long activityId);
 
 
     /**删除活动
      * @param activityId
      * @return成功返回true，失败返回false
      */
-    boolean deleteActivityByActivityId(long activityId);
+    Response<Boolean> deleteActivityByActivityId(long activityId);
 }

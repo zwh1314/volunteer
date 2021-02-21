@@ -16,8 +16,8 @@ public  interface UserDao {
     UserDTO getUserByUserId(@Param("userId") long userId);
 
     @ResultType(UserDTO.class)
-    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE user_name = #{userName} and password = #{password}")
-    UserDTO getUserByUserNameAndPassword(@Param("userName") String userName,@Param("password") String password);
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE tel = #{tel} and password = #{password}")
+    UserDTO getUserByTelAndPassword(@Param("tel") String tel,@Param("password") String password);
 
     @ResultType(UserDTO.class)
     @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE tel = #{tel}")

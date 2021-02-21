@@ -35,7 +35,7 @@ public class ActivityController extends BaseController{
     public Response<ActivityDTO> getActivityByActivityId(@RequestParam("activityId") long activityId) {
         Response<ActivityDTO> response = new Response<>();
         try {
-            response.setSuc(activityService.getActivityByActivityId(activityId));
+            return activityService.getActivityByActivityId(activityId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getActivityByActivityId Illegal Argument], activityId: {}", activityId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -49,8 +49,6 @@ public class ActivityController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -59,7 +57,7 @@ public class ActivityController extends BaseController{
     public Response<Boolean> addActivityNews(@RequestParam("activity")Activity activity) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityService.addActivity(activity));
+            return activityService.addActivity(activity);
         } catch (IllegalArgumentException e) {
             logger.warn("[addActivity Illegal Argument], activity: {}", activity, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -73,8 +71,6 @@ public class ActivityController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateActivity")
@@ -82,7 +78,7 @@ public class ActivityController extends BaseController{
     public Response<Boolean> updateActivity(@RequestParam("activity") Activity activity) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityService.updateActivity(activity));
+            return activityService.updateActivity(activity);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateActivity Illegal Argument], : activity {}", activity, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -96,8 +92,6 @@ public class ActivityController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -109,7 +103,7 @@ public class ActivityController extends BaseController{
     public Response<Boolean> deleteActivityByActivityId(@RequestParam("activityId") long activityId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityService.deleteActivityByActivityId(activityId));
+            return activityService.deleteActivityByActivityId(activityId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteActivityByActivityId Illegal Argument], activityId: {}", activityId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -123,8 +117,6 @@ public class ActivityController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 

@@ -35,7 +35,7 @@ public class ActivityNewsController extends BaseController{
     public Response<List<ActivityNews>> getActivityNewsById(@RequestParam("activityId") long activityId) {
         Response<List<ActivityNews>> response = new Response<>();
         try {
-            response.setSuc(activityNewsService.getActivityNewsByActivityId(activityId));
+            return activityNewsService.getActivityNewsByActivityId(activityId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getActivityNewsByActivityId Illegal Argument], activityId: {}", activityId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -49,8 +49,6 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -59,7 +57,7 @@ public class ActivityNewsController extends BaseController{
     public Response<Boolean> addActivityNews(@RequestBody ActivityNewsRequest activityNewsRequest) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityNewsService.addActivityNews(activityNewsRequest));
+            return activityNewsService.addActivityNews(activityNewsRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[addActivityNews Illegal Argument], activityNewsRequest: {}", activityNewsRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -73,8 +71,6 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateActivityNewsContentByNewsId")
@@ -85,7 +81,7 @@ public class ActivityNewsController extends BaseController{
     public Response<Boolean> updateActivityNewsContentByNewsId(@RequestParam("activityNewsContent")String activityNewsContent,@RequestParam("newsId") long newsId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityNewsService.updateActivityNewsContent(activityNewsContent,newsId));
+            return activityNewsService.updateActivityNewsContent(activityNewsContent,newsId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateActivityNewsContentByNewsId Illegal Argument], : newsId {}", newsId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -99,8 +95,6 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateActivityNewsTitleByNewsId")
@@ -111,7 +105,7 @@ public class ActivityNewsController extends BaseController{
     public Response<Boolean> updateActivityTitleContentByNewsId(@RequestParam("activityTitleContent")String activityNewsTitle,@RequestParam("newsId") long newsId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityNewsService.updateActivityNewsTitle(activityNewsTitle,newsId));
+            return activityNewsService.updateActivityNewsTitle(activityNewsTitle,newsId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateActivityNewsTitleByNewsId Illegal Argument], : newsId {}", newsId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -125,8 +119,6 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateActivityNewsPictureByNewsId")
@@ -137,7 +129,7 @@ public class ActivityNewsController extends BaseController{
     public Response<Boolean> updateActivityPictureContentByNewsId(@RequestParam("activityNewsPicture")String activityNewsPicture,@RequestParam("newsId") long newsId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityNewsService.updateActivityNewsPicture(activityNewsPicture,newsId));
+            return activityNewsService.updateActivityNewsPicture(activityNewsPicture,newsId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateActivityNewsPictureByNewsId Illegal Argument], : newsId {}", newsId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -151,8 +143,6 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/deleteActivityNewsByNewsId")
@@ -163,7 +153,7 @@ public class ActivityNewsController extends BaseController{
     public Response<Boolean> deleteActivityNewsByNewsId(@RequestParam("newsId") long newsId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(activityNewsService.deleteActivityNewsById(newsId));
+            return activityNewsService.deleteActivityNewsById(newsId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteActivityNewsByNewsId Illegal Argument], newsId: {}", newsId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -177,9 +167,5 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
-
-
 }

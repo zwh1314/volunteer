@@ -1,7 +1,6 @@
 package com.example.volunteer.Controller;
 
 import com.example.volunteer.DTO.UserDTO;
-import com.example.volunteer.Entity.User;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Response.Response;
@@ -11,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Api(tags = "用户Controller")
@@ -31,7 +33,7 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
-    public Response<Boolean> signIn(@RequestParam("tel") String tel,
+    public Response<Boolean> signUp(@RequestParam("tel") String tel,
                                     @RequestParam("userName") String userName,
                                     @RequestParam("password") String password,
                                     @RequestParam("verifyCode") String verifyCode) {
@@ -39,12 +41,7 @@ public class UserController extends BaseController {
         try {
             validateUserInfoAndVerifyCode(tel, password, verifyCode);
 
-            User user=new User();
-            user.setUserName(userName);
-            user.setPassword(password);
-            user.setTel(tel);
-            user.setPriority("普通用户");
-            return userService.signUp(user,verifyCode);
+            return userService.signUp(tel,userName,password,verifyCode);
         } catch (IllegalArgumentException e) {
             logger.warn("[signIn Illegal Argument], tel: {}, password: {}", tel, password, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -66,14 +63,12 @@ public class UserController extends BaseController {
             @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
     })
-    public Response<UserDTO> login(@RequestParam("tel") String tel, @RequestParam("password") String password) {
+    public Response<UserDTO> login(@RequestParam("tel") String tel, @RequestParam("password") String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         Response<UserDTO> response = new Response<>();
         try {
             validateBaseUserInfo(tel, password);
 
-            UserDTO user = userService.signIn(tel, password);
-
-            response.setSuc(user);
+            return userService.signIn(tel, password,servletRequest,servletResponse);
         } catch (IllegalArgumentException e) {
             logger.warn("[login Illegal Argument], tel: {}, password: {}", tel, password, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -87,8 +82,6 @@ public class UserController extends BaseController {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updatePassword")
@@ -160,7 +153,7 @@ public class UserController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
     })
-    public Response<Boolean> verifyCode(@RequestParam("tel") String tel) {
+    public Response<Boolean> getVerifyCode(@RequestParam("tel") String tel) {
         Response<Boolean> response = new Response<>();
 
         try {

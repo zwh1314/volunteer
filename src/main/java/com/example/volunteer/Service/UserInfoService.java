@@ -2,18 +2,17 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.DTO.UserInfoDTO;
 import com.example.volunteer.Request.UserInfoRequest;
+import com.example.volunteer.Response.Response;
 
 public interface UserInfoService {
-    UserInfoDTO getUserInfoByUserId(long userId);
+    Response<UserInfoDTO> getUserInfoByUserId(long userId);
 
-    boolean addUserInfo(UserInfoRequest userInfoRequest);
+    Response<Boolean> addUserInfo(UserInfoRequest userInfoRequest);
 
-    boolean updateUserInfo(UserInfoRequest userInfoRequest);
+    Response<Boolean> updateUserInfo(UserInfoRequest userInfoRequest);
 
-    boolean deleteUserInfoByUserId(long userId);
+    Response<Boolean> deleteUserInfoByUserId(long userId);
 
-    int getCreditsByUserId(long userId);
-
-
+    Response<Integer> getCreditsByUserId(long userId);
 
 }

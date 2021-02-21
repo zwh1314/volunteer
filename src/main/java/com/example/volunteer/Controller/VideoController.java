@@ -37,7 +37,7 @@ public class VideoController extends BaseController{
     public Response<List<Video>> getVideoByPublisherId(@RequestParam("publisherId") long publisherId) {
         Response<List<Video>> response = new Response<>();
         try {
-            response.setSuc(videoService.getVideoByPublisherId(publisherId));
+            return videoService.getVideoByPublisherId(publisherId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoByPublisherId Illegal Argument], publisherId: {}", publisherId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -51,8 +51,6 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @GetMapping("/getVideoByRelativeText")
@@ -61,7 +59,7 @@ public class VideoController extends BaseController{
     public Response<List<Video>> getVideoByRelativeText(@RequestParam("relativeText") String relativeText) {
         Response<List<Video>> response = new Response<>();
         try {
-            response.setSuc(videoService.getVideoByRelativeText(relativeText));
+            return videoService.getVideoByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
             logger.warn("[getVideoByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -75,8 +73,6 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -85,7 +81,7 @@ public class VideoController extends BaseController{
     public Response<List<Video>> getVideoInOneWeek() {
         Response<List<Video>> response = new Response<>();
         try {
-            response.setSuc(videoService.getVideoInOneWeek());
+            return videoService.getVideoInOneWeek();
         } catch (VolunteerRuntimeException e) {
             logger.error("[getVideoInOneWeek Runtime Exception]",  e);
             response.setFail(e.getExceptionCode(), e.getMessage());
@@ -95,8 +91,6 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -105,7 +99,7 @@ public class VideoController extends BaseController{
     public Response<Boolean> addVideo(@RequestBody VideoRequest videoRequest) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoService.addVideo(videoRequest));
+            return videoService.addVideo(videoRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[addVideo Illegal Argument], videoRequest: {}", videoRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -119,8 +113,6 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateVideoLikeNumber")
@@ -131,7 +123,7 @@ public class VideoController extends BaseController{
     public Response<Boolean> updateVideoLikeNumber(@RequestParam("likeNumber")long likeNumber,@RequestParam("videoId") long videoId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoService.updateVideoLikeNumber(likeNumber, videoId));
+            return videoService.updateVideoLikeNumber(likeNumber, videoId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateVideoLikeNumber Illegal Argument], : videoId {}", videoId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -145,8 +137,6 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -158,7 +148,7 @@ public class VideoController extends BaseController{
     public Response<Boolean> updateCommentText(@RequestParam("textContent")String textContent,@RequestParam("videoId") long videoId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoService.updateVideoTextContent(textContent, videoId));
+            return videoService.updateVideoTextContent(textContent, videoId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateVideoTextContent Illegal Argument], : videoId {}", videoId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -172,8 +162,6 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -186,7 +174,7 @@ public class VideoController extends BaseController{
     public Response<Boolean> deleteVideoById(@RequestParam("videoId") long videoId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoService.deleteVideoById(videoId));
+            return videoService.deleteVideoById(videoId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteVideoById Illegal Argument], videoId: {}", videoId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -200,54 +188,5 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
-
-    @GetMapping("/getVideoLikeByVideoId")
-    @ApiOperation("通过videoId查询点赞")
-    public Response<Long> getVideoLikeByVideoId(@RequestParam("videoId") long videoId) {
-        Response<Long> response = new Response<>();
-        try {
-            response.setSuc(videoService.getVideoLikeByVideoId(videoId));
-        } catch (IllegalArgumentException e) {
-            logger.warn("[getVideoLikeByVideoId Illegal Argument], videoId: {}", videoId, e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[getVideoLikeByVideoId Runtime Exception],videoId: {}",videoId, e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
-            logger.error("getVideoLikeByVideoId Exception], videoId: {}",videoId, e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-
-        return response;
-    }
-
-    @PostMapping("likesVideo")
-    @ApiOperation("点赞视频")
-    public Response<Boolean> likesVideo(@RequestParam("videoId") long videoId){
-        Response<Boolean> response = new Response<>();
-        try {
-            response.setSuc(videoService.likesVideo(videoId));
-        } catch (IllegalArgumentException e) {
-            logger.warn("[likesVideo Illegal Argument], : videoId {}", videoId, e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[likesVideo Runtime Exception], : videoId {}", videoId, e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        } catch (Exception e) {
-            logger.error("[likesVideo Exception], :videoId {}", videoId, e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-
-        return response;
-    }
-
 }

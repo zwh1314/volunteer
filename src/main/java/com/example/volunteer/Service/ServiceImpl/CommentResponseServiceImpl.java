@@ -4,10 +4,12 @@ import com.example.volunteer.Dao.CommentResponseDao;
 import com.example.volunteer.Entity.CommentResponse;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.CommentResponseRequest;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentResponseService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
+import org.checkerframework.checker.units.qual.C;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,120 +29,175 @@ public class CommentResponseServiceImpl implements CommentResponseService {
     private RedisUtil redisUtil;
 
     @Override
-    public boolean addCommentResponse(CommentResponseRequest commentResponseRequest){
-        boolean result;
+    public Response<Boolean> addCommentResponse(CommentResponseRequest commentResponseRequest){
+        Response<Boolean> response=new Response<>();
 
         for(CommentResponse commentResponse:commentResponseRequest.getCommentResponseList()) {
-            result = commentResponseDao.addCommentResponse(commentResponse) > 0;
+            boolean result = commentResponseDao.addCommentResponse(commentResponse) > 0;
             if (!result) {
                 logger.error("[addCommentResponse Fail], request: {}", SerialUtil.toJsonStr(commentResponseRequest));
-                return false;
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
             }
         }
-        return true;
+        response.setSuc(true);
+        return response;
     }
 
     @Override
-    public boolean updateResponseLikeNumber(long responseLikeNumber, long responseId){
-        boolean result;
-        result = commentResponseDao.updateResponseLike(responseLikeNumber,responseId) > 0;
+    public Response<Boolean> updateResponseLikeNumber(long responseLikeNumber, long responseId){
+        Response<Boolean> response=new Response<>();
+        boolean result = commentResponseDao.updateResponseLike(responseLikeNumber,responseId) > 0;
         if (!result) {
             logger.error("[updateResponseLike Fail], responseId: {}", SerialUtil.toJsonStr(responseId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateResponseText(String responseText, long responseId){
-        boolean result;
-        result = commentResponseDao.updateResponseText(responseText,responseId) > 0;
+    public Response<Boolean> updateResponseText(String responseText, long responseId){
+        Response<Boolean>  response=new Response<>();
+
+        boolean result = commentResponseDao.updateResponseText(responseText,responseId) > 0;
         if (!result) {
             logger.error("[updateResponseText Fail], responseId: {}", SerialUtil.toJsonStr(responseId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getCommentResponseByCommentId(long commentId){
+    public Response<List<CommentResponse>> getCommentResponseByCommentId(long commentId){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByComment(commentId, 0L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.COMMENT_RESPONSE_COMMENT_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.COMMENT_RESPONSE_COMMENT_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getVideoCommentResponseByCommentId(long commentId){
+    public Response<List<CommentResponse>> getVideoCommentResponseByCommentId(long commentId){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByComment(commentId, 1L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.COMMENT_RESPONSE_VIDEO_COMMENT_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.COMMENT_RESPONSE_VIDEO_COMMENT_NOT_FOUND);
         }
-        return commentResponseList;
+        else {
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getCommentResponseInOneWeek(){
+    public Response<List<CommentResponse>> getCommentResponseInOneWeek(){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseInOneWeek(1L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getVideoCommentResponseInOneWeek(){
+    public Response<List<CommentResponse>> getVideoCommentResponseInOneWeek(){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseInOneWeek(0L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getCommentResponseByRelativeText(String relativeText){
+    public Response<List<CommentResponse>> getCommentResponseByRelativeText(String relativeText){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByText(relativeText, 0L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getVideoCommentResponseByRelativeText(String relativeText){
+    public Response<List<CommentResponse>> getVideoCommentResponseByRelativeText(String relativeText){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByText(relativeText, 1L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getCommentResponseByPublisherId(long publisherId){
+    public Response<List<CommentResponse>> getCommentResponseByPublisherId(long publisherId){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByPublisher(publisherId, 0L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public List<CommentResponse> getVideoCommentResponseByPublisherId(long publisherId){
+    public Response<List<CommentResponse>> getVideoCommentResponseByPublisherId(long publisherId){
+        Response<List<CommentResponse>> response=new Response<>();
+
         List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByPublisher(publisherId,1L);
-        if (commentResponseList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
         }
-        return commentResponseList;
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteCommentResponseById(long responseId){
-        boolean result;
+    public Response<Boolean> deleteCommentResponseById(long responseId){
+        Response<Boolean> response=new Response<>();
 
-        result= commentResponseDao.deleteCommentResponseById(responseId) > 0;
+        boolean result= commentResponseDao.deleteCommentResponseById(responseId) > 0;
         if(!result){
             logger.error("[deleteCommentResponseById Fail], responseId: {}", SerialUtil.toJsonStr(responseId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     public static String RESPONSE_LIKE_KEY(long responseId){

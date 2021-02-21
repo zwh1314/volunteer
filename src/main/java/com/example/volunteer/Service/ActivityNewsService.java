@@ -2,25 +2,26 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Request.ActivityNewsRequest;
+import com.example.volunteer.Response.Response;
 
 import java.util.List;
 
 public interface ActivityNewsService {
-    boolean addActivityNews(ActivityNewsRequest activityNewsRequest);
+    Response<Boolean> addActivityNews(ActivityNewsRequest activityNewsRequest);
 
-    boolean updateActivityNewsContent(String activityNewsContent, long newsId);
+    Response<Boolean> updateActivityNewsContent(String activityNewsContent, long newsId);
 
-    boolean updateActivityNewsPicture(String activityNewsPicture, long newsId);
+    Response<Boolean> updateActivityNewsPicture(String activityNewsPicture, long newsId);
 
-    boolean updateActivityNewsTitle(String activityNewsTitle, long newsId);
+    Response<Boolean> updateActivityNewsTitle(String activityNewsTitle, long newsId);
 
-    List<ActivityNews> getActivityNewsByActivityId(long activityId);
+    Response<List<ActivityNews>> getActivityNewsByActivityId(long activityId);
 
-    List<ActivityNews> getActivityNewsByPublisherId(long publisherId);
+    Response<List<ActivityNews>> getActivityNewsByPublisherId(long publisherId);
 
-    List<ActivityNews> getActivityNewsInOneWeek();
+    Response<List<ActivityNews>> getActivityNewsInOneWeek();
 
-    List<ActivityNews> getActivityNewsByRelativeText(String relativeText);
+    Response<List<ActivityNews>> getActivityNewsByRelativeText(String relativeText);
 
-    boolean deleteActivityNewsById(long activityNewsId);
+    Response<Boolean> deleteActivityNewsById(long activityNewsId);
 }

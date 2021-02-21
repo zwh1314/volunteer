@@ -2,25 +2,22 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Request.VideoRequest;
+import com.example.volunteer.Response.Response;
 
 import java.util.List;
 
 public interface VideoService {
-  boolean addVideo(VideoRequest videoRequest);
+  Response<Boolean> addVideo(VideoRequest videoRequest);
 
-  boolean updateVideoTextContent(String textContent, long videoId);
+  Response<Boolean> updateVideoTextContent(String textContent, long videoId);
 
-  boolean updateVideoLikeNumber(long likeNumber, long videoId);
+  Response<Boolean> updateVideoLikeNumber(long likeNumber, long videoId);
 
-  List<Video> getVideoByPublisherId(long publisherId);
+  Response<List<Video>> getVideoByPublisherId(long publisherId);
 
-  List<Video> getVideoByRelativeText(String relativeText);
+  Response<List<Video>> getVideoByRelativeText(String relativeText);
 
-  List<Video> getVideoInOneWeek();
+  Response<List<Video>> getVideoInOneWeek();
 
-  boolean deleteVideoById(long videoId);
-
-  long getVideoLikeByVideoId(long videoId);
-
-  boolean likesVideo(long videoId);
+  Response<Boolean> deleteVideoById(long videoId);
 }

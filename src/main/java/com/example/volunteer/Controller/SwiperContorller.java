@@ -1,9 +1,7 @@
 package com.example.volunteer.Controller;
 
-import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Entity.Swiper;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
-import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.SwiperService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -36,7 +34,7 @@ public class SwiperContorller extends BaseController{
     public Response<List<Swiper>> getSwiperByNewsId(@RequestParam("newsId") long newsId) {
         Response<List<Swiper>> response = new Response<>();
         try {
-            response.setSuc(swiperService.getSwiperByNewsId(newsId));
+            return swiperService.getSwiperByNewsId(newsId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getSwiperByNewsId Illegal Argument], newsId: {}", newsId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -50,8 +48,6 @@ public class SwiperContorller extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
     @GetMapping("/getSwiperByPriority")
     @ApiOperation("获得轮播图by priority")
@@ -61,7 +57,7 @@ public class SwiperContorller extends BaseController{
     public Response<List<Swiper>> getSwiperByPriority(@RequestParam("priority") String priority) {
         Response<List<Swiper>> response = new Response<>();
         try {
-            response.setSuc(swiperService.getSwiperByPriority(priority));
+            return swiperService.getSwiperByPriority(priority);
         } catch (IllegalArgumentException e) {
             logger.warn("[getSwiperByPriority Illegal Argument], priority: {}", priority, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -75,8 +71,6 @@ public class SwiperContorller extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -85,7 +79,7 @@ public class SwiperContorller extends BaseController{
     public Response<Boolean> addSwiper(@RequestBody Swiper swiper) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(swiperService.addSwiper(swiper));
+            return swiperService.addSwiper(swiper);
         } catch (IllegalArgumentException e) {
             logger.warn("[addSwiper Illegal Argument], swiper: {}", swiper, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -99,8 +93,6 @@ public class SwiperContorller extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateSwiperPriority")
@@ -112,7 +104,7 @@ public class SwiperContorller extends BaseController{
     public Response<Boolean> updateCommentLikeNumber(@RequestParam("newSwiperPriority")String newSwiperPriority,@RequestParam("swiperId") long swiperId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(swiperService.updateSwiperPriority(newSwiperPriority,swiperId));
+            return swiperService.updateSwiperPriority(newSwiperPriority,swiperId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateSwiperPriority Illegal Argument], : swiperId {}", swiperId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -126,8 +118,6 @@ public class SwiperContorller extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateSwiperText")
@@ -139,7 +129,7 @@ public class SwiperContorller extends BaseController{
     public Response<Boolean> updateSwiperText(@RequestParam("newSwiperText")String newSwiperText,@RequestParam("swiperId") long swiperId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(swiperService.updateSwiperText(newSwiperText,swiperId));
+            return swiperService.updateSwiperText(newSwiperText,swiperId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateSwiperText Illegal Argument], : swiperId {}", swiperId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -153,8 +143,6 @@ public class SwiperContorller extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -167,7 +155,7 @@ public class SwiperContorller extends BaseController{
     public Response<Boolean> deleteSwiperById(@RequestParam("swiperId") long swiperId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(swiperService.deleteSwiperById(swiperId));
+            return swiperService.deleteSwiperById(swiperId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteSwiperById Illegal Argument], swiperId: {}", swiperId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -181,7 +169,5 @@ public class SwiperContorller extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 }

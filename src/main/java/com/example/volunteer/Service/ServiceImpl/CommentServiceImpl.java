@@ -4,6 +4,7 @@ import com.example.volunteer.Dao.CommentDao;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.CommentRequest;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.RedisUtil;
@@ -26,75 +27,107 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     RedisUtil redisUtil;
     @Override
-    public boolean addComment(CommentRequest commentRequest){
-        boolean result;
+    public Response<Boolean> addComment(CommentRequest commentRequest){
+        Response<Boolean> response=new Response<>();
 
         for(Comment comment:commentRequest.getCommentList()) {
-            result = commentDao.addComment(comment) > 0;
+            boolean result = commentDao.addComment(comment) > 0;
             if (!result) {
                 logger.error("[addComment Fail], request: {}", SerialUtil.toJsonStr(commentRequest));
-                return false;
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
             }
         }
-        return true;
+        response.setSuc(true);
+        return response;
     }
 
     @Override
-    public boolean updateCommentLikeNumber(long commentLikeNumber, long commentId){
-        boolean result;
-        result = commentDao.updateCommentLike(commentLikeNumber, commentId) > 0;
+    public Response<Boolean> updateCommentLikeNumber(long commentLikeNumber, long commentId){
+        Response<Boolean> response=new Response<>();
+        boolean result = commentDao.updateCommentLike(commentLikeNumber, commentId) > 0;
         if (!result) {
             logger.error("[updateCommentLike Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateCommentText(String commentText, long commentId){
-        boolean result;
-        result = commentDao.updateCommentText(commentText,commentId) > 0;
+    public Response<Boolean> updateCommentText(String commentText, long commentId){
+        Response<Boolean> response=new Response<>();
+        boolean result = commentDao.updateCommentText(commentText,commentId) > 0;
         if (!result) {
             logger.error("[updateCommentText Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else
+        {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public List<Comment> getCommentByPublisher(long publisherId){
+    public Response<List<Comment>> getCommentByPublisher(long publisherId){
+        Response<List<Comment>> response=new Response<>();
+
         List<Comment> commentList = commentDao.findCommentById(publisherId);
-        if (commentList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        if (commentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
         }
-        return commentList;
+        else
+        {
+            response.setSuc(commentList);
+        }
+        return response;
     }
 
     @Override
-    public List<Comment> getCommentInOneWeek(){
+    public Response<List<Comment>> getCommentInOneWeek(){
+        Response<List<Comment>> response=new Response<>();
+
         List<Comment> commentList = commentDao.findCommentInOneWeek();
-        if (commentList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        if (commentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
-        return commentList;
+        else{
+            response.setSuc(commentList);
+        }
+        return response;
     }
 
     @Override
-    public List<Comment> getCommentByRelativeText(String relativeText){
+    public Response<List<Comment>> getCommentByRelativeText(String relativeText){
+        Response<List<Comment>> response=new Response<>();
+
         List<Comment> commentList = commentDao.findCommentByText(relativeText);
-        if (commentList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        if (commentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
         }
-        return commentList;
+        else
+        {
+            response.setSuc(commentList);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteCommentById(long commentId){
-        boolean result;
+    public Response<Boolean> deleteCommentById(long commentId){
+        Response<Boolean> response=new Response<>();
 
-        result=commentDao.deleteCommentById(commentId) > 0;
+        boolean result=commentDao.deleteCommentById(commentId) > 0;
         if(!result){
             logger.error("[deleteCommentById Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     /**

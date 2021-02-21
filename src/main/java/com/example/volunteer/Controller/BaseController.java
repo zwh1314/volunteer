@@ -6,11 +6,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.List;
 
-/**
- * @param: none
- * @description: 基础信息基类
- * @author: KingJ
- **/
+
 public class BaseController {
 
     private static final String TEL_FORMAT = "^[1][0-9]{10}$";

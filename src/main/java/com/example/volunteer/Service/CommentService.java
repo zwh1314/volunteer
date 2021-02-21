@@ -2,25 +2,22 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Request.CommentRequest;
+import com.example.volunteer.Response.Response;
 
 import java.util.List;
 
 public interface CommentService {
-    boolean addComment(CommentRequest commentRequest);
+    Response<Boolean> addComment(CommentRequest commentRequest);
 
-    boolean updateCommentLikeNumber(long commentLikeNumber, long commentId);
+    Response<Boolean> updateCommentLikeNumber(long commentLikeNumber, long commentId);
 
-    boolean updateCommentText(String commentText, long commentId);
+    Response<Boolean> updateCommentText(String commentText, long commentId);
 
-    List<Comment> getCommentByPublisher(long publisherId);
+    Response<List<Comment>> getCommentByPublisher(long publisherId);
 
-    List<Comment> getCommentInOneWeek();
+    Response<List<Comment>> getCommentInOneWeek();
 
-    List<Comment> getCommentByRelativeText(String relativeText);
+    Response<List<Comment>> getCommentByRelativeText(String relativeText);
 
-    boolean deleteCommentById(long commentId);
-
-    long getCommentLikeByCommentId(long commentId);
-
-    boolean LikesComment(long commentId);
+    Response<Boolean> deleteCommentById(long commentId);
 }

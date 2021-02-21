@@ -39,7 +39,7 @@ public class CommentController extends BaseController{
     public Response<List<Comment>> getCommentByPublisher(@RequestParam("publisherId") long publisherId) {
             Response<List<Comment>> response = new Response<>();
             try {
-                response.setSuc(commentService.getCommentByPublisher(publisherId));
+                return commentService.getCommentByPublisher(publisherId);
             } catch (IllegalArgumentException e) {
                 logger.warn("[getCommentByPublisherId Illegal Argument], publisherId: {}", publisherId, e);
                 response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -53,8 +53,6 @@ public class CommentController extends BaseController{
                 response.setFail(ResponseEnum.SERVER_ERROR);
                 return response;
             }
-
-            return response;
     }
 
     @GetMapping("/getCommentByRelativeText")
@@ -65,7 +63,7 @@ public class CommentController extends BaseController{
     public Response<List<Comment>> getCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
         Response<List<Comment>> response = new Response<>();
         try {
-            response.setSuc(commentService.getCommentByRelativeText(relativeText));
+            return commentService.getCommentByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
             logger.warn("[getCommentByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -79,8 +77,6 @@ public class CommentController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -89,7 +85,7 @@ public class CommentController extends BaseController{
     public Response<List<Comment>> getCommentInOneWeek() {
         Response<List<Comment>> response = new Response<>();
         try {
-            response.setSuc(commentService.getCommentInOneWeek());
+            return commentService.getCommentInOneWeek();
         } catch (VolunteerRuntimeException e) {
             logger.error("[getCommentInOneWeek Runtime Exception]",  e);
             response.setFail(e.getExceptionCode(), e.getMessage());
@@ -99,8 +95,6 @@ public class CommentController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -109,7 +103,7 @@ public class CommentController extends BaseController{
         public Response<Boolean> addComment(@RequestBody CommentRequest commentRequest) {
             Response<Boolean> response = new Response<>();
             try {
-                response.setSuc(commentService.addComment(commentRequest));
+                return commentService.addComment(commentRequest);
             } catch (IllegalArgumentException e) {
                 logger.warn("[addComment Illegal Argument], commentRequest: {}", commentRequest, e);
                 response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -123,8 +117,6 @@ public class CommentController extends BaseController{
                 response.setFail(ResponseEnum.SERVER_ERROR);
                 return response;
             }
-
-            return response;
         }
 
         @PostMapping("/updateCommentLikeNumber")
@@ -135,7 +127,7 @@ public class CommentController extends BaseController{
         public Response<Boolean> updateCommentLikeNumber(@RequestParam("commentLikeNumber")long commentLikeNumber,@RequestParam("commentId") long commentId) {
             Response<Boolean> response = new Response<>();
             try {
-                response.setSuc(commentService.updateCommentLikeNumber(commentLikeNumber,commentId));
+                return commentService.updateCommentLikeNumber(commentLikeNumber,commentId);
             } catch (IllegalArgumentException e) {
                 logger.warn("[updateCommentLikeNumber Illegal Argument], : commentId {}", commentId, e);
                 response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -149,8 +141,6 @@ public class CommentController extends BaseController{
                 response.setFail(ResponseEnum.SERVER_ERROR);
                 return response;
             }
-
-            return response;
         }
 
     @PostMapping("/updateCommentText")
@@ -161,7 +151,7 @@ public class CommentController extends BaseController{
     public Response<Boolean> updateCommentText(@RequestParam("commentText")String commentText,@RequestParam("commentId") long commentId) {
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(commentService.updateCommentText(commentText, commentId));
+            return commentService.updateCommentText(commentText, commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateCommentText Illegal Argument], : commentId {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -175,8 +165,6 @@ public class CommentController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
 
@@ -189,7 +177,7 @@ public class CommentController extends BaseController{
         public Response<Boolean> deleteActivityNewsByNewsId(@RequestParam("commentId") long commentId) {
             Response<Boolean> response = new Response<>();
             try {
-                response.setSuc(commentService.deleteCommentById(commentId));
+                return commentService.deleteCommentById(commentId);
             } catch (IllegalArgumentException e) {
                 logger.warn("[deleteCommentById Illegal Argument], commentId: {}", commentId, e);
                 response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -203,54 +191,5 @@ public class CommentController extends BaseController{
                 response.setFail(ResponseEnum.SERVER_ERROR);
                 return response;
             }
-
-            return response;
         }
-
-    @GetMapping("/getCommentLikeByCommentId")
-    @ApiOperation("通过commentId查询点赞")
-    public Response<Long> getCommentLikeByCommentId(@RequestParam("commentId") long commentId) {
-        Response<Long> response = new Response<>();
-        try {
-            response.setSuc(commentService.getCommentLikeByCommentId(commentId));
-        } catch (IllegalArgumentException e) {
-            logger.warn("[getCommentLikeByCommentId Illegal Argument], commentId: {}", commentId, e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[getCommentLikeByCommentId Runtime Exception],commentId: {}",commentId, e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
-            logger.error("[getCommentLikeByCommentId Exception], commentId: {}", commentId, e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-
-        return response;
     }
-
-    @PostMapping("likesComment")
-    @ApiOperation("点赞评论")
-    public Response<Boolean> likesComment(@RequestParam("commentId") long commentId){
-        Response<Boolean> response = new Response<>();
-        try {
-            response.setSuc(commentService.LikesComment(commentId));
-        } catch (IllegalArgumentException e) {
-            logger.warn("[likesComment Illegal Argument], : commentId {}", commentId, e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[likesComment Runtime Exception], : commentId {}", commentId, e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        } catch (Exception e) {
-            logger.error("[likesComment Exception], :commentId {}", commentId, e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-
-        return response;
-    }
-
-}

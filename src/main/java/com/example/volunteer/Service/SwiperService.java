@@ -1,19 +1,20 @@
 package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.Swiper;
+import com.example.volunteer.Response.Response;
 
 import java.util.List;
 
 public interface SwiperService {
-    boolean addSwiper(Swiper swiper);
+    Response<Boolean> addSwiper(Swiper swiper);
 
-    boolean updateSwiperPriority(String newSwiperPriority, long swiperId);
+    Response<Boolean> updateSwiperPriority(String newSwiperPriority, long swiperId);
 
-    boolean updateSwiperText(String newSwiperText, long swiperId);
+    Response<Boolean> updateSwiperText(String newSwiperText, long swiperId);
 
-    List<Swiper> getSwiperByNewsId(long newsId);
+    Response<List<Swiper>> getSwiperByNewsId(long newsId);
 
-    List<Swiper> getSwiperByPriority(String priority);
+    Response<List<Swiper>> getSwiperByPriority(String priority);
 
-    boolean deleteSwiperById(long swiperId);
+    Response<Boolean> deleteSwiperById(long swiperId);
 }

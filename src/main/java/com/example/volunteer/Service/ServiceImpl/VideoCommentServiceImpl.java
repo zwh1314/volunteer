@@ -4,6 +4,7 @@ import com.example.volunteer.Dao.VideoCommentDao;
 import com.example.volunteer.Entity.VideoComment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.VideoCommentRequest;
+import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoCommentService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.RedisUtil;
@@ -27,75 +28,106 @@ public class VideoCommentServiceImpl implements VideoCommentService {
     private RedisUtil redisUtil;
 
     @Override
-    public boolean addVideoComment(VideoCommentRequest videoCommentRequest){
-        boolean result;
+    public Response<Boolean> addVideoComment(VideoCommentRequest videoCommentRequest){
+        Response<Boolean> response=new Response<>();
 
         for(VideoComment videoComment:videoCommentRequest.getVideoCommentList()) {
-            result = videoCommentDao.addComment(videoComment) > 0;
+            boolean result = videoCommentDao.addComment(videoComment) > 0;
             if (!result) {
                 logger.error("[addComment Fail], request: {}", SerialUtil.toJsonStr(videoCommentRequest));
-                return false;
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
             }
         }
-        return true;
+        response.setSuc(true);
+        return response;
     }
 
     @Override
-    public boolean updateVideoCommentLikeNumber(long commentLikeNumber, long commentId){
-        boolean result;
-        result = videoCommentDao.updateCommentLike(commentLikeNumber, commentId) > 0;
+    public Response<Boolean> updateVideoCommentLikeNumber(long commentLikeNumber, long commentId){
+        Response<Boolean> response=new Response<>();
+
+        boolean result = videoCommentDao.updateCommentLike(commentLikeNumber, commentId) > 0;
         if (!result) {
             logger.error("[updateCommentLike Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else{
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public boolean updateVideoCommentText(String commentText, long commentId){
-        boolean result;
-        result = videoCommentDao.updateCommentText(commentText,commentId) > 0;
+    public Response<Boolean> updateVideoCommentText(String commentText, long commentId){
+        Response<Boolean> response=new Response<>();
+
+        boolean result = videoCommentDao.updateCommentText(commentText,commentId) > 0;
         if (!result) {
             logger.error("[updateCommentText Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     @Override
-    public List<VideoComment> getVideoCommentByPublisher(long publisherId){
+    public Response<List<VideoComment>> getVideoCommentByPublisher(long publisherId){
+        Response<List<VideoComment>> response=new Response<>();
+
         List<VideoComment> videoCommentList = videoCommentDao.findCommentById(publisherId);
-        if (videoCommentList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        if (videoCommentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
         }
-        return videoCommentList;
+        else {
+            response.setSuc(videoCommentList);
+        }
+        return response;
     }
 
     @Override
-    public List<VideoComment> getVideoCommentInOneWeek(){
+    public Response<List<VideoComment>> getVideoCommentInOneWeek(){
+        Response<List<VideoComment>> response=new Response<>();
+
         List<VideoComment> videoCommentList = videoCommentDao.findCommentInOneWeek();
-        if (videoCommentList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        if (videoCommentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
-        return videoCommentList;
+        else{
+            response.setSuc(videoCommentList);
+        }
+        return response;
     }
 
     @Override
-    public List<VideoComment> getVideoCommentByRelativeText(String relativeText){
+    public Response<List<VideoComment>> getVideoCommentByRelativeText(String relativeText){
+        Response<List<VideoComment>> response=new Response<>();
+
         List<VideoComment> videoCommentList = videoCommentDao.findCommentByText(relativeText);
-        if (videoCommentList == null) {
-            throw new VolunteerRuntimeException(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        if (videoCommentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
         }
-        return videoCommentList;
+        else{
+            response.setSuc(videoCommentList);
+        }
+        return response;
     }
 
     @Override
-    public boolean deleteVideoCommentById(long commentId){
-        boolean result;
+    public Response<Boolean> deleteVideoCommentById(long commentId){
+        Response<Boolean> response=new Response<>();
 
-        result=videoCommentDao.deleteCommentById(commentId) > 0;
+        boolean result=videoCommentDao.deleteCommentById(commentId) > 0;
         if(!result){
             logger.error("[deleteCommentById Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
-        return result;
+        else {
+            response.setSuc(true);
+        }
+        return response;
     }
 
     public static String VIDEO_COMMENT_LIKE_KEY(long commentId){

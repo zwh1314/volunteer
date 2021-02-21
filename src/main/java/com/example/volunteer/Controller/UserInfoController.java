@@ -35,7 +35,7 @@ public class UserInfoController extends BaseController{
         Response<UserInfoDTO> response = new Response<>();
         try {
             validateUserId(userId);
-            response.setSuc(userInfoService.getUserInfoByUserId(userId));
+            return userInfoService.getUserInfoByUserId(userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getUserInfoByUserId Illegal Argument], userId: {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -49,8 +49,6 @@ public class UserInfoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/addUserInfo")
@@ -59,7 +57,7 @@ public class UserInfoController extends BaseController{
         Response<Boolean> response = new Response<>();
         try {
             validateUserInfoRequest(userInfoRequest);
-            response.setSuc(userInfoService.addUserInfo(userInfoRequest));
+            return userInfoService.addUserInfo(userInfoRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[addUserInfo Illegal Argument], userInfoRequest: {}", userInfoRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -73,8 +71,6 @@ public class UserInfoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/updateUserInfoByUserId")
@@ -84,7 +80,7 @@ public class UserInfoController extends BaseController{
         try {
             validateUserInfoRequest(userInfoRequest);
 
-            response.setSuc(userInfoService.updateUserInfo(userInfoRequest));
+            return userInfoService.updateUserInfo(userInfoRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateUserInfoByUserId Illegal Argument], userInfoRequest: {}", userInfoRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -98,8 +94,6 @@ public class UserInfoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     @PostMapping("/deleteUserInfoByUserId")
@@ -111,7 +105,7 @@ public class UserInfoController extends BaseController{
         Response<Boolean> response = new Response<>();
         try {
             validateUserId(userId);
-            response.setSuc(userInfoService.deleteUserInfoByUserId(userId));
+            return userInfoService.deleteUserInfoByUserId(userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteUserInfoByUserId Illegal Argument], userId: {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -125,8 +119,6 @@ public class UserInfoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-
-        return response;
     }
 
     private void validateUserInfoRequest(UserInfoRequest request) {
@@ -140,7 +132,7 @@ public class UserInfoController extends BaseController{
         Response<Integer> response = new Response<>();
         try{
             validateUserId(userId);
-            response.setSuc(userInfoService.getCreditsByUserId(userId));
+            return userInfoService.getCreditsByUserId(userId);
         }catch (IllegalArgumentException e) {
             logger.warn("[getCreditsByUserId Illegal Argument], userId: {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -154,6 +146,5 @@ public class UserInfoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
-        return response;
     }
 }
