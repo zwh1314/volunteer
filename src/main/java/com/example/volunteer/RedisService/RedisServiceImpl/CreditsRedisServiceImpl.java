@@ -4,20 +4,10 @@ import com.example.volunteer.Dao.UserInfoDao;
 import com.example.volunteer.RedisService.CreditsRedisService;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.utils.RedisUtil;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class CreditsRedisServiceImpl implements CreditsRedisService {
-
-    private Cache<String, String> cache = Caffeine.newBuilder()
-            .expireAfterWrite(60, TimeUnit.SECONDS)
-            .initialCapacity(5)
-            .maximumSize(25)
-            .build();
-
     @Autowired
     private RedisUtil redisUtil;
 
@@ -29,7 +19,7 @@ public class CreditsRedisServiceImpl implements CreditsRedisService {
         Response<Boolean> response=new Response<>();
         Integer credits = getCreditsFromRedis(userId);
 
-        boolean result = false;
+        boolean result;
 
         if (credits != null) {
             result = redisUtil.hset("credit",userId, credits + change);
