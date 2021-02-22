@@ -3,6 +3,7 @@ package com.example.volunteer.Controller;
 
 import com.example.volunteer.Entity.CommentResponse;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.RedisService.ResponseRedisService;
 import com.example.volunteer.Request.CommentResponseRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentResponseService;
@@ -26,6 +27,9 @@ public class CommentResponseController {
 
     @Autowired
     private CommentResponseService responseService;
+
+    @Autowired
+    private ResponseRedisService responseRedisService;
 
     @GetMapping("/getCommentResponseByCommentId")
     @ApiOperation("获得评论Id")
@@ -306,7 +310,7 @@ public class CommentResponseController {
     public Response<Long> getResponseLikeByResponseId(@RequestParam("responseId") long responseId) {
         Response<Long> response = new Response<>();
         try {
-            response.setSuc(responseService.getResponseLikeByResponseId(responseId));
+          return responseRedisService.getResponseLikeByResponseId(responseId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getResponseLikeByResponseId Illegal Argument], responseId: {}", responseId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -321,7 +325,6 @@ public class CommentResponseController {
             return response;
         }
 
-        return response;
     }
 
     @PostMapping("likesResponse")
@@ -329,7 +332,7 @@ public class CommentResponseController {
     public Response<Boolean> likesResponse(@RequestParam("responseId") long responseId){
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(responseService.likesResponse(responseId));
+         return  responseRedisService.likesResponse(responseId);
         } catch (IllegalArgumentException e) {
             logger.warn("[likesResponse Illegal Argument], : commentId {}", responseId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -344,7 +347,6 @@ public class CommentResponseController {
             return response;
         }
 
-        return response;
     }
 
 }

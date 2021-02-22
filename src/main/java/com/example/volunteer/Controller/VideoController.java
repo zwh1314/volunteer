@@ -4,6 +4,7 @@ package com.example.volunteer.Controller;
 import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
+import com.example.volunteer.RedisService.VideoRedisService;
 import com.example.volunteer.Request.VideoRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoService;
@@ -28,6 +29,8 @@ public class VideoController extends BaseController{
     @Autowired
     private VideoService videoService;
 
+    @Autowired
+    private VideoRedisService videoRedisService;
 
     @GetMapping("/getVideoByPublisherId")
     @ApiOperation("获得视频by发布者Id")
@@ -188,5 +191,49 @@ public class VideoController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
+    }
+
+    @GetMapping("/getVideoLikeByVideoId")
+    @ApiOperation("通过videoId查询点赞")
+    public Response<Long> getVideoLikeByVideoId(@RequestParam("videoId") long videoId) {
+        Response<Long> response = new Response<>();
+        try {
+           return  videoRedisService.getVideoLikeByVideoId(videoId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getVideoLikeByVideoId Illegal Argument], videoId: {}", videoId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getVideoLikeByVideoId Runtime Exception],videoId: {}",videoId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("getVideoLikeByVideoId Exception], videoId: {}",videoId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+    }
+
+    @PostMapping("likesVideo")
+    @ApiOperation("点赞视频")
+    public Response<Boolean> likesVideo(@RequestParam("videoId") long videoId){
+        Response<Boolean> response = new Response<>();
+        try {
+          return  videoRedisService.likesVideo(videoId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[likesVideo Illegal Argument], : videoId {}", videoId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[likesVideo Runtime Exception], : videoId {}", videoId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[likesVideo Exception], :videoId {}", videoId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
     }
 }

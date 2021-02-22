@@ -4,6 +4,7 @@ package com.example.volunteer.Controller;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
+import com.example.volunteer.RedisService.CommentRedisService;
 import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 
@@ -29,7 +30,8 @@ public class CommentController extends BaseController{
     @Autowired
     private CommentService commentService;
 
-
+    @Autowired
+    private CommentRedisService commentRedisService;
 
     @GetMapping("/getCommentByPublisherId")
     @ApiOperation("获得评论by发布者Id")
@@ -192,4 +194,48 @@ public class CommentController extends BaseController{
                 return response;
             }
         }
+
+    @GetMapping("/getCommentLikeByCommentId")
+    @ApiOperation("通过commentId查询点赞")
+    public Response<Long> getCommentLikeByCommentId(@RequestParam("commentId") long commentId) {
+        Response<Long> response = new Response<>();
+        try {
+             return commentRedisService.getCommentLikeByCommentId(commentId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getCommentLikeByCommentId Illegal Argument], commentId: {}", commentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getCommentLikeByCommentId Runtime Exception],commentId: {}",commentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getCommentLikeByCommentId Exception], commentId: {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
     }
+
+    @PostMapping("likesComment")
+    @ApiOperation("点赞评论")
+    public Response<Boolean> likesComment(@RequestParam("commentId") long commentId){
+        Response<Boolean> response = new Response<>();
+        try {
+          return commentRedisService.likesComment(commentId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[likesComment Illegal Argument], : commentId {}", commentId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[likesComment Runtime Exception], : commentId {}", commentId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[likesComment Exception], :commentId {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+}

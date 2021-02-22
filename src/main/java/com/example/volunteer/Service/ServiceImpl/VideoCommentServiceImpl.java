@@ -129,49 +129,4 @@ public class VideoCommentServiceImpl implements VideoCommentService {
         return response;
     }
 
-    public static String VIDEO_COMMENT_LIKE_KEY(long commentId){
-        return "redis:videoCommentLike:" + commentId;
-    }
-
-
-    private Long getCommentLikeFromRedis(long commentId){
-
-        Long commentLike;
-        try{
-            Object o = redisUtil.get(VIDEO_COMMENT_LIKE_KEY(commentId));
-            if (o == null)
-                return null;
-            else commentLike = Long.valueOf(String.valueOf(o));
-        }catch (Exception e){
-            logger.error("[getCommentLikeFromRedis Fail], commentId:{}",SerialUtil.toJsonStr(commentId));
-            e.printStackTrace();
-            return null;
-        }
-        return commentLike;
-    }
-
-
-    @Override
-    public long getCommentLikeByCommentId(long commentId) {
-        Long like = getCommentLikeFromRedis(commentId);
-        if (like != null) {
-            return like;
-        }
-        like  = Optional.ofNullable(videoCommentDao.getCommentLikeByCommentId(commentId)).orElse(0L);
-        redisUtil.set(VIDEO_COMMENT_LIKE_KEY(commentId),like);
-        return like;
-    }
-
-    @Override
-    public boolean LikesComment(long commentId) {
-        boolean result;
-        Long like = getCommentLikeFromRedis(commentId);
-        if(like != null){
-            result = redisUtil.set(VIDEO_COMMENT_LIKE_KEY(commentId),like+1);
-        }else{
-            like = Optional.ofNullable(videoCommentDao.getCommentLikeByCommentId(commentId)).orElse(0L);
-            result =  redisUtil.set(VIDEO_COMMENT_LIKE_KEY(commentId),like+1);
-        }
-        return result;
-    }
 }
