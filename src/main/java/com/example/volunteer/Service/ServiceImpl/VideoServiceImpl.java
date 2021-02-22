@@ -6,7 +6,6 @@ import com.example.volunteer.Request.VideoRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoService;
 import com.example.volunteer.enums.ResponseEnum;
-import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -23,8 +21,6 @@ public class VideoServiceImpl implements VideoService {
     @Autowired
     private VideoDao videoDao;
 
-    @Autowired
-   private RedisUtil redisUtil;
     @Override
     public Response<Boolean> addVideo(VideoRequest videoRequest){
         Response<Boolean> response=new Response<>();

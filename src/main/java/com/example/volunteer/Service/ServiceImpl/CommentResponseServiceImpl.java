@@ -6,7 +6,6 @@ import com.example.volunteer.Request.CommentResponseRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentResponseService;
 import com.example.volunteer.enums.ResponseEnum;
-import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CommentResponseServiceImpl implements CommentResponseService {
@@ -22,9 +20,6 @@ public class CommentResponseServiceImpl implements CommentResponseService {
 
     @Autowired
     private CommentResponseDao commentResponseDao;
-
-    @Autowired
-    private RedisUtil redisUtil;
 
     @Override
     public Response<Boolean> addCommentResponse(CommentResponseRequest commentResponseRequest){
