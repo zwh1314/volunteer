@@ -198,46 +198,4 @@ public class CommentResponseServiceImpl implements CommentResponseService {
         return response;
     }
 
-    public static String RESPONSE_LIKE_KEY(long responseId){
-        return "redis:responseLike:" + responseId;
-    }
-
-    private Long getResponseLikeFromRedis(long responseId){
-        Long responseLike;
-        try{
-            Object o = redisUtil.get(RESPONSE_LIKE_KEY(responseId));
-            if (o == null)
-                return null;
-            else responseLike = Long.valueOf(String.valueOf(o));
-        }catch (Exception e){
-            logger.error("[getResponseLikeFromRedis Fail], responseId：{}",SerialUtil.toJsonStr(responseId));
-            e.printStackTrace();
-            return  null;
-        }
-        return responseLike;
-    }
-
-    @Override
-    public long getResponseLikeByResponseId(long responseId){
-        Long like = getResponseLikeFromRedis(responseId);
-        if(like != null){
-            return like;
-        }
-        like  = Optional.ofNullable(commentResponseDao.getResponseLikeByResponseId(responseId)).orElse(0L);
-        redisUtil.set(RESPONSE_LIKE_KEY(responseId),like);
-        return like;
-    }
-
-    @Override
-    public boolean likesResponse(long responseId) {
-        boolean result;
-        Long like = getResponseLikeFromRedis(responseId);
-        if (like != null){
-            result = redisUtil.set(RESPONSE_LIKE_KEY(responseId),like+1);
-        }else{
-            like = Optional.ofNullable(commentResponseDao.getResponseLikeByResponseId(responseId)).orElse(0L);
-            result =  redisUtil.set(RESPONSE_LIKE_KEY(responseId),like+1);
-        }
-        return result;
-    }
 }

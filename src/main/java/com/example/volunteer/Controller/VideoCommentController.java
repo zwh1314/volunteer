@@ -2,6 +2,7 @@ package com.example.volunteer.Controller;
 
 import com.example.volunteer.Entity.VideoComment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.RedisService.VideoCommentRedisService;
 import com.example.volunteer.Request.VideoCommentRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoCommentService;
@@ -26,6 +27,8 @@ public class VideoCommentController {
     @Autowired
     private VideoCommentService videoCommentService;
 
+    @Autowired
+    private VideoCommentRedisService videoCommentRedisService;
 
 
     @GetMapping("/getVideoCommentByPublisher")
@@ -195,7 +198,7 @@ public class VideoCommentController {
     public Response<Long> getCommentLikeByCommentId(@RequestParam("commentId") long commentId) {
         Response<Long> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.getCommentLikeByCommentId(commentId));
+            return videoCommentRedisService.getCommentLikeByCommentId(commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getCommentLikeByCommentId Illegal Argument], commentId: {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -210,7 +213,6 @@ public class VideoCommentController {
             return response;
         }
 
-        return response;
     }
 
     @PostMapping("likesComment")
@@ -218,7 +220,7 @@ public class VideoCommentController {
     public Response<Boolean> likesComment(@RequestParam("commentId") long commentId){
         Response<Boolean> response = new Response<>();
         try {
-            response.setSuc(videoCommentService.LikesComment(commentId));
+            return   videoCommentRedisService. likesVideoComment(commentId);
         } catch (IllegalArgumentException e) {
             logger.warn("[likesComment Illegal Argument], : commentId {}", commentId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -233,6 +235,5 @@ public class VideoCommentController {
             return response;
         }
 
-        return response;
     }
 }

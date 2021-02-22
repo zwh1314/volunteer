@@ -20,4 +20,5 @@ public interface CommentService {
     Response<List<Comment>> getCommentByRelativeText(String relativeText);
 
     Response<Boolean> deleteCommentById(long commentId);
+
 }
