@@ -3,68 +3,73 @@ package com.example.volunteer.utils;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.example.volunteer.constants.CommonConstant;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 
 @Component
 public class TokenUtil {
 
-    private static Cache<String, byte[]> tokenCache = Caffeine.newBuilder()
-            .expireAfterWrite(3, TimeUnit.DAYS)
-            .initialCapacity(50)
-            .maximumSize(500)
-            .build();
+    private static final Logger logger = LoggerFactory.getLogger(TokenUtil.class);
+
+    private final String VOLUNTEER = "volunteer";
+    private final int expireDate = 3;
 
     private static byte[] key = SecureUtil.generateKey(SymmetricAlgorithm.AES.getValue()).getEncoded();
+    private static SymmetricCrypto aes = SecureUtil.aes(key);
 
     public String generateUserToken(long userId, HttpServletRequest request, HttpServletResponse response) {
-        String remoteAddr = request.getRemoteAddr();
         long timeStamp = System.currentTimeMillis();
 
-        byte[] encrypt = encrypt(userId + "_" + remoteAddr + "_" + timeStamp);
-        String token = UUID.nameUUIDFromBytes(encrypt).toString().replace("-","");
+        String token = encrypt(userId + "_" + timeStamp + "_" + VOLUNTEER);
 
         response.setHeader(CommonConstant.TOKEN, token);
-        tokenCache.put(token, encrypt);
 
         return token;
     }
 
-    public String getToken(HttpServletRequest request) {
+    public String getToken(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader(CommonConstant.TOKEN);
         if (StringUtils.isBlank(token)) {
             return null;
         }
 
-        // TODO jwt expire time
-        byte[] encryptContent = tokenCache.getIfPresent(token);
-        if (encryptContent == null) {
+        String decryptContent = null;
+        String userId = null;
+        try {
+            decryptContent = decrypt(token);
+            if (StringUtils.isBlank(decryptContent)) {
+                return null;
+            }
+            String[] strs = decryptContent.split("_");
+            userId = strs[0];
+            String timestamp = strs[1];
+            Date expireTime = DateUtils.addDays(new Date(Long.parseLong(timestamp)), expireDate);
+            String sign = strs[2];
+            if (StringUtils.isBlank(userId) || expireTime.before(new Date()) || !VOLUNTEER.equals(sign)) {
+                return null;
+            }
+        } catch (Exception e) {
+            logger.error("[getToken Exception], token: {}, decryptContent: {}", token, decryptContent, e);
             return null;
         }
-        String decryptContent = decrypt(encryptContent);
-        String userId = decryptContent.split("_")[0];
 
         return userId;
     }
 
-    private byte[] encrypt(String encryptContent) {
-        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-
-        return aes.encrypt(encryptContent);
+    private String encrypt(String encryptContent) {
+        return aes.encryptHex(encryptContent);
     }
 
-    private String decrypt(byte[] token) {
-        SymmetricCrypto aes = new SymmetricCrypto(SymmetricAlgorithm.AES, key);
-
+    private String decrypt(String token) {
         return aes.decryptStr(token);
     }
 }
