@@ -1,15 +1,26 @@
 package com.example.volunteer.Controller;
 
+import com.example.volunteer.aspect.TokenAspect;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 
 public class BaseController {
 
+    @Autowired
+    private TokenAspect tokenAspect;
+
     private static final String TEL_FORMAT = "^[1][0-9]{10}$";
+
+    protected Long getUserId() {
+        Long userId = tokenAspect.getVerifyToken();
+        validateUserId(userId);
+        return userId;
+    }
 
     /**
      * 验证用户手机号格式

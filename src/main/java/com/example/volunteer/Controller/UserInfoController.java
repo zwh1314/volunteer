@@ -29,10 +29,10 @@ public class UserInfoController extends BaseController{
     @GetMapping("/getUserInfoByUserId")
     @ApiOperation("获得用户信息By userId")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "账户id", paramType = "query", dataType = "long"),
     })
-    public Response<UserInfoDTO> getUserInfoByUserId(@RequestParam("userId") long userId) {
+    public Response<UserInfoDTO> getUserInfoByUserId() {
         Response<UserInfoDTO> response = new Response<>();
+        long userId = getUserId();
         try {
             validateUserId(userId);
             return userInfoService.getUserInfoByUserId(userId);
@@ -128,8 +128,9 @@ public class UserInfoController extends BaseController{
 
     @GetMapping("/getCreditsByUserId")
     @ApiOperation("查询用户积分By UserId")
-    public Response<Integer> selectCreditsByUserId(@RequestParam("userId") long userId){
+    public Response<Integer> selectCreditsByUserId(){
         Response<Integer> response = new Response<>();
+        long userId = getUserId();
         try{
             validateUserId(userId);
             return userInfoService.getCreditsByUserId(userId);
