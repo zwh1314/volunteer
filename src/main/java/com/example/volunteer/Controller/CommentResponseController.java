@@ -328,7 +328,7 @@ public class CommentResponseController {
     }
 
     @PostMapping("likesResponse")
-    @ApiOperation("点赞评论")
+    @ApiOperation("点赞评论回复")
     public Response<Boolean> likesResponse(@RequestParam("responseId") long responseId){
         Response<Boolean> response = new Response<>();
         try {
