@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 @Api(tags = "活动Controller")
@@ -54,9 +57,20 @@ public class ActivityController extends BaseController{
 
     @PostMapping("/addActivity")
     @ApiOperation("添加活动")
-    public Response<Boolean> addActivityNews(@RequestParam("activity")Activity activity) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "activityName", value = "活动名称", paramType = "query", dataType = "String"),
+    })
+    public Response<Boolean> addActivity(@RequestParam("activityName")String activityName,
+                                         @RequestParam("activityContent")String activityContent,
+                                         @RequestParam("activityOrganizer")String activityOrganizer,
+                                         @RequestParam("activityDate") String activityDate) {
         Response<Boolean> response = new Response<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        ParsePosition pos = new ParsePosition(0);
+        Date NewActivityDate = formatter.parse(activityDate, pos);
+        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate);
         try {
+
             return activityService.addActivity(activity);
         } catch (IllegalArgumentException e) {
             logger.warn("[addActivity Illegal Argument], activity: {}", activity, e);
@@ -75,8 +89,20 @@ public class ActivityController extends BaseController{
 
     @PostMapping("/updateActivity")
     @ApiOperation("更新活动")
-    public Response<Boolean> updateActivity(@RequestParam("activity") Activity activity) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
+    })
+    public Response<Boolean> updateActivity(@RequestParam("activityId")long activityId,
+                                            @RequestParam("activityName")String activityName,
+                                            @RequestParam("activityContent")String activityContent,
+                                            @RequestParam("activityOrganizer")String activityOrganizer,
+                                            @RequestParam("activityDate") String activityDate) {
         Response<Boolean> response = new Response<>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        ParsePosition pos = new ParsePosition(0);
+        Date NewActivityDate = formatter.parse(activityDate, pos);
+        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate);
+        activity.setActivityId(activityId);
         try {
             return activityService.updateActivity(activity);
         } catch (IllegalArgumentException e) {

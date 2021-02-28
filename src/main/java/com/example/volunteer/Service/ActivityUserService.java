@@ -1,6 +1,7 @@
 package com.example.volunteer.Service;
 
 import com.example.volunteer.Entity.ActivityUser;
+import com.example.volunteer.Request.ActivityUserRequest;
 import com.example.volunteer.Response.Response;
 
 import java.util.Date;
@@ -8,10 +9,10 @@ import java.util.List;
 
 public interface  ActivityUserService {
     /**增加活动
-     * @param activityUser
+     * @param activityUserRequest
      * @return成功返回true，失败返回false
      */
-    Response<Boolean> addActivityUser(ActivityUser activityUser);
+    Response<Boolean> addActivityUser(ActivityUserRequest activityUserRequest);
 
     /**更新报名表状态
      * @param userId，formStatus

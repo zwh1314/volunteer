@@ -2,6 +2,7 @@ package com.example.volunteer.Entity;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 import javax.persistence.*;
@@ -39,6 +40,7 @@ public class ActivityNews implements Serializable {
 
     @Column(name = "news_date")
     @ApiModelProperty(value = "活动新闻发布时间")
+    @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date newsDate;
 
 }

@@ -12,8 +12,8 @@ public interface ActivityUserDao {
     int addActivityUser(ActivityUser activityUser);
 
 
-    @Update("UPDATE activity_user SET user_status = #{user_status} WHERE user_id = #{userId}")
-    int updateFormStatusByUserId(@Param("userStatus")String userStatus, @Param("userId")long userId);
+    @Update("UPDATE activity_user SET form_status = #{formStatus} WHERE user_id = #{userId}")
+    int updateFormStatusByUserId(@Param("formStatus")String formStatus, @Param("userId")long userId);
 
     @Update("UPDATE activity_user SET form_date = #{formDate} WHERE user_id = #{userId}")
     int updateFormDateByUserId(@Param("formDate") Date formDate, @Param("userId")long userId);

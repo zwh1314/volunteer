@@ -1,4 +1,5 @@
 package com.example.volunteer.Entity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,7 +32,7 @@ public class ActivityUser implements Serializable {
 
     @Column(name = "form_date")
     @ApiModelProperty(value = "报名表提交时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date formDate;
 
 }

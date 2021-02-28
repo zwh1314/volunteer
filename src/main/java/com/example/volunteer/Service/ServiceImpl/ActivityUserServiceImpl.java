@@ -2,6 +2,7 @@ package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.ActivityUserDao;
 import com.example.volunteer.Entity.ActivityUser;
+import com.example.volunteer.Request.ActivityUserRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityUserService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -22,15 +23,18 @@ public class ActivityUserServiceImpl implements ActivityUserService {
     private ActivityUserDao activityUserDao;
 
     @Override
-    public Response<Boolean> addActivityUser(ActivityUser activityUser) {
+    public Response<Boolean> addActivityUser(ActivityUserRequest activityUserRequest) {
         Response<Boolean> response=new Response<>();
-        boolean result = activityUserDao.addActivityUser(activityUser) > 0;
-        if(!result){
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        for(ActivityUser activityUser:activityUserRequest.getActivityUserList()) {
+            Boolean result = activityUserDao.addActivityUser(activityUser) > 0;
+            if (!result) {
+                logger.error("[addActivityUser Fail], request: {}", SerialUtil.toJsonStr(activityUserRequest));
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
+            }
         }
-        else{
-            response.setSuc(true);
-        }
+
+        response.setSuc(true);
         return response;
     }
 

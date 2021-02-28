@@ -305,7 +305,7 @@ public class CommentResponseController {
         }
     }
 
-    @GetMapping("/getResponseLikeByResponseId")
+   /* @GetMapping("/getResponseLikeByResponseId")
     @ApiOperation("通过responseId查询点赞")
     public Response<Long> getResponseLikeByResponseId(@RequestParam("responseId") long responseId) {
         Response<Long> response = new Response<>();
@@ -326,6 +326,7 @@ public class CommentResponseController {
         }
 
     }
+
 
     @PostMapping("likesResponse")
     @ApiOperation("点赞评论")
@@ -348,5 +349,7 @@ public class CommentResponseController {
         }
 
     }
+
+    */
 
 }

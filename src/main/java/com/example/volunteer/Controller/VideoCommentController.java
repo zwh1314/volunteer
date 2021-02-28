@@ -191,8 +191,7 @@ public class VideoCommentController {
             return response;
         }
     }
-
-
+    /*
     @GetMapping("/getCommentLikeByCommentId")
     @ApiOperation("通过commentId查询视频点赞")
     public Response<Long> getCommentLikeByCommentId(@RequestParam("commentId") long commentId) {
@@ -236,4 +235,5 @@ public class VideoCommentController {
         }
 
     }
+     */
 }

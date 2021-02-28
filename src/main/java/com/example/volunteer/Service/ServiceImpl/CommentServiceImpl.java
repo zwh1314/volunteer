@@ -42,9 +42,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Response<Boolean> updateCommentLikeNumber(long commentLikeNumber, long commentId){
+    public Response<Boolean> updateCommentLikeNumber(long commentLike, long commentId){
         Response<Boolean> response=new Response<>();
-        boolean result = commentDao.updateCommentLike(commentLikeNumber, commentId) > 0;
+        boolean result = commentDao.updateCommentLike(commentLike, commentId) > 0;
         if (!result) {
             logger.error("[updateCommentLike Fail], commentId: {}", SerialUtil.toJsonStr(commentId));
             response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);

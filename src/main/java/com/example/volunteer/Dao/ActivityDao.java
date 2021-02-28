@@ -24,7 +24,7 @@ public  interface ActivityDao {
     @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent,activity_organizer as activityOrganizer,activity_date as activityDate FROM activity WHERE activity_organizer = #{activityOrganizer}")
     ActivityDTO getActivityByOrganizer(@Param("activityOrganizer") String activityOrganizer);
 
-    @Update("UPDATE activity SET activityName = #{activityName},activityOrganizer = #{activityOrganizer}, activityContent = #{activityContent},activityDate = #{activityDate} WHERE activityId = #{activityId}")
+    @Update("UPDATE activity SET activity_name = #{activityName},activity_organizer = #{activityOrganizer}, activity_content = #{activityContent},activity_date = #{activityDate} WHERE activity_id = #{activityId}")
     int updateActivity(Activity activity);
 
     @Delete("Delete From activity WHERE activity_id=#{activityId}")

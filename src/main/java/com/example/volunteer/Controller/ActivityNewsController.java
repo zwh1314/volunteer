@@ -102,7 +102,7 @@ public class ActivityNewsController extends BaseController{
     @ApiImplicitParams({
             @ApiImplicitParam(name = "newsId", value = "活动新闻id", paramType = "query", dataType = "long"),
     })
-    public Response<Boolean> updateActivityTitleContentByNewsId(@RequestParam("activityTitleContent")String activityNewsTitle,@RequestParam("newsId") long newsId) {
+    public Response<Boolean> updateActivityTitleContentByNewsId(@RequestParam("activityNewsTitle")String activityNewsTitle,@RequestParam("newsId") long newsId) {
         Response<Boolean> response = new Response<>();
         try {
             return activityNewsService.updateActivityNewsTitle(activityNewsTitle,newsId);

@@ -58,9 +58,9 @@ public class CommentController extends BaseController{
     }
 
     @GetMapping("/getCommentByRelativeText")
-    @ApiOperation("获得相似文本by commentId")
+    @ApiOperation("获得相似文本by relativeText")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "relativeText", value = "相似文本", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "relativeText", value = "相似文本", paramType = "query", dataType = "String"),
     })
     public Response<List<Comment>> getCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
         Response<List<Comment>> response = new Response<>();
@@ -196,7 +196,7 @@ public class CommentController extends BaseController{
         }
 
     @GetMapping("/getCommentLikeByCommentId")
-    @ApiOperation("通过commentId查询点赞")
+    @ApiOperation("查询点赞by commentId")
     public Response<Long> getCommentLikeByCommentId(@RequestParam("commentId") long commentId) {
         Response<Long> response = new Response<>();
         try {
@@ -217,7 +217,7 @@ public class CommentController extends BaseController{
 
     }
 
-    @PostMapping("likesComment")
+    @PostMapping("/likesComment")
     @ApiOperation("点赞评论")
     public Response<Boolean> likesComment(@RequestParam("commentId") long commentId){
         Response<Boolean> response = new Response<>();

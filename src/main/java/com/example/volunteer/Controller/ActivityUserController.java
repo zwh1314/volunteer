@@ -2,6 +2,7 @@ package com.example.volunteer.Controller;
 
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.Request.ActivityUserRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityUserService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -14,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -78,20 +81,20 @@ public class ActivityUserController extends BaseController{
 
     @PostMapping("/addActivityUser")
     @ApiOperation("添加活动用户")
-    public Response<Boolean> addActivityUser(@RequestParam("ActivityUser")ActivityUser activityUser) {
+    public Response<Boolean> addActivityUser(@RequestBody ActivityUserRequest activityUserRequest) {
         Response<Boolean> response = new Response<>();
         try {
-            return activityUserService.addActivityUser(activityUser);
+            return activityUserService.addActivityUser(activityUserRequest);
         } catch (IllegalArgumentException e) {
-            logger.warn("[addActivityUser Illegal Argument], activityUser: {}", activityUser, e);
+            logger.warn("[addActivityUser Illegal Argument], activityUser: {}", activityUserRequest, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivityUser Runtime Exception], activityUser: {}", activityUser, e);
+            logger.error("[addActivityUser Runtime Exception], activityUser: {}", activityUserRequest, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addActivityUser Exception], activityUser: {}", activityUser, e);
+            logger.error("[addActivityUser Exception], activityUser: {}", activityUserRequest, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
@@ -125,11 +128,15 @@ public class ActivityUserController extends BaseController{
     @ApiOperation("更新交表日期")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "formDate", value = "交表日期", paramType = "query", dataType = "String"),
     })
-    public Response<Boolean> updateFormDateByUserId(@RequestParam("userId") long userId,@RequestParam("formDate") Date formDate) {
+    public Response<Boolean> updateFormDateByUserId(@RequestParam("userId") long userId,@RequestParam("formDate") String formDate) {
         Response<Boolean> response = new Response<>();
         try {
-            return activityUserService.updateFormDateByUserId(formDate,userId);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ParsePosition pos = new ParsePosition(0);
+            Date NewFormDate = formatter.parse(formDate, pos);
+            return activityUserService.updateFormDateByUserId(NewFormDate,userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateFormDateByUserId Illegal Argument], : userId {}", userId, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -149,7 +156,7 @@ public class ActivityUserController extends BaseController{
     @PostMapping("/deleteActivityUserByUserId")
     @ApiOperation("删除活动用户userId")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "activityUserId", value = "活动用户id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "userId", value = "活动用户id", paramType = "query", dataType = "long"),
     })
     public Response<Boolean> deleteActivityUserByUserId(@RequestParam("userId") long userId) {
         Response<Boolean> response = new Response<>();
