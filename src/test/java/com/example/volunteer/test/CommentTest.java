@@ -1,6 +1,8 @@
 package com.example.volunteer.test;
 
 import com.example.volunteer.Entity.Comment;
+import com.example.volunteer.RedisService.CommentRedisService;
+import com.example.volunteer.RedisService.RedisServiceImpl.CommentRedisServiceImpl;
 import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Service.CommentService;
 import org.junit.Test;
@@ -21,7 +23,10 @@ public class CommentTest {
 
     @Test
     public void commentTest(){
-        CommentRequest commentRequest=new CommentRequest();
+        CommentRedisService commentRedisService = new CommentRedisServiceImpl();
+        commentRedisService.getCommentLikeByCommentId(1L);
+
+  /*      CommentRequest commentRequest=new CommentRequest();
         List<Comment> commentList=new ArrayList<>();
         Comment comment=new Comment();
         comment.setCommentText("张文瀚测试");
@@ -43,6 +48,6 @@ public class CommentTest {
         commentService.updateCommentText("猪猪侠",1L);
         commentService.updateCommentLikeNumber(10000,1L);
 
-        commentService.deleteCommentById(2L);
+        commentService.deleteCommentById(2L);*/
     }
 }
