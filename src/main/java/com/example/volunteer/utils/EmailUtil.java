@@ -1,5 +1,8 @@
 package com.example.volunteer.utils;
 
+import cn.hutool.core.util.RandomUtil;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -12,7 +15,7 @@ import java.util.Random;
 public class EmailUtil {
 
     public String sendMail(String recipient) {
-        StringBuilder code = new StringBuilder();
+        String code = new String();
 
         Properties props = new Properties();
         props.setProperty("mail.host", "smtp.163.com");
@@ -44,15 +47,10 @@ public class EmailUtil {
 
 
             //生成6位验证码
-
-            Random random = new Random();
-            for (int i = 0; i < 6; i++) {
-                int r = random.nextInt(10); //每次随机出一个数字（0-9）
-                code.append(r);  //把每次随机出的数字拼在一起
-            }
+            code = RandomStringUtils.randomAlphanumeric(6);
 
             //  正文
-            String str = "志愿帮 Your verify code is：" + code + ".This verify code is valid in 5 minutes!";
+            String str = "【志愿帮】 Your verify code is：" + code + ".This verify code is valid in 5 minutes!";
             //设置编码，防止发送的内容中文乱码。
             message.setContent(str, "text/html;charset=UTF-8");
             //3 发送消息
