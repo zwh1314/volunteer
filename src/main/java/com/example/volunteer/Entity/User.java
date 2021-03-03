@@ -31,4 +31,8 @@ public class User implements Serializable {
     @Column(name = "tel",nullable = false)
     @ApiModelProperty(value = "手机")
     private String tel;
+
+    @Column(name = "mail_address",nullable = false)
+    @ApiModelProperty(value = "邮箱地址")
+    private String mailAddress;
 }

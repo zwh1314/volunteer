@@ -22,7 +22,7 @@ public class SwiperTest {
         swiper.setSwiperPicture("http:\\127.0.0.1:8080\\test");
         swiper.setSwiperText("拨开云雾见太阳");
         swiper.setSwiperPriority("第一优先级");
-        swiperService.addSwiper(swiper);
+        //swiperService.addSwiper(swiper);
 
         System.out.println(swiperService.getSwiperByNewsId(1));
         System.out.println(swiperService.getSwiperByPriority("第一优先级"));

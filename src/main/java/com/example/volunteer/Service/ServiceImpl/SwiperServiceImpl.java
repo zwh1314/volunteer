@@ -1,15 +1,19 @@
 package com.example.volunteer.Service.ServiceImpl;
 
+import com.aliyun.oss.model.CannedAccessControlList;
 import com.example.volunteer.Dao.SwiperDao;
 import com.example.volunteer.Entity.Swiper;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.SwiperService;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.OSSUtil;
 import com.example.volunteer.utils.SerialUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,9 +24,22 @@ public class SwiperServiceImpl implements SwiperService {
     @Autowired
     private SwiperDao swiperDao;
 
+    @Autowired
+    private OSSUtil ossUtil;
+
     @Override
-    public Response<Boolean> addSwiper(Swiper swiper){
+    public Response<Boolean> addSwiper(Swiper swiper, MultipartFile uploadFile){
         Response<Boolean> response=new Response<>();
+        String bucketName = "swiper";
+        ossUtil.createBucket(bucketName, CannedAccessControlList.PublicRead);
+        String url = ossUtil.uploadFile(bucketName,uploadFile);
+        if(StringUtils.isNotBlank(url)){
+            logger.error("[uploadSwiper Fail], uploadFile: {}", SerialUtil.toJsonStr(uploadFile.getName()));
+            response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+            return response;
+        }
+        swiper.setSwiperPicture(url);
+
         boolean result = swiperDao.addSwiper(swiper) > 0;
         if (!result) {
             logger.error("[addSwiper Fail], swiper: {}", SerialUtil.toJsonStr(swiper));

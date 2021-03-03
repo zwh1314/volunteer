@@ -27,6 +27,7 @@ public enum ResponseEnum {
     TEL_HAS_BEEN_USED(116,"该手机号已注册"),
     VERIFY_MSG_CODE_ERROR(117,"验证码错误"),
     USER_ERROR_FREQUENCY_LIMIT(118,"用户尝试次数已达上限，请5分钟后再试"),
+    UPLOAD_OSS_FAILURE(119,"文件上传OSS失败"),
 
 
 

@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -76,10 +77,10 @@ public class SwiperContorller extends BaseController{
 
     @PostMapping("/addSwiper")
     @ApiOperation("添加轮播图")
-    public Response<Boolean> addSwiper(@RequestBody Swiper swiper) {
+    public Response<Boolean> addSwiper(@RequestBody Swiper swiper,@RequestParam("file") MultipartFile uploadFile) {
         Response<Boolean> response = new Response<>();
         try {
-            return swiperService.addSwiper(swiper);
+            return swiperService.addSwiper(swiper,uploadFile);
         } catch (IllegalArgumentException e) {
             logger.warn("[addSwiper Illegal Argument], swiper: {}", swiper, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);

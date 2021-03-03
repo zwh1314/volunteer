@@ -16,6 +16,8 @@ public class BaseController {
 
     private static final String TEL_FORMAT = "^[1][0-9]{10}$";
 
+    private static final String MAIL_FORMAT = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+
     protected Long getUserId() {
         Long userId = tokenAspect.getVerifyToken();
         validateUserId(userId);
@@ -30,6 +32,15 @@ public class BaseController {
         Validate.isTrue(tel.length() == 11 && NumberUtils.isDigits(tel));
         Validate.isTrue(tel.matches(TEL_FORMAT));
     }
+
+    /**
+     * 验证用户邮箱格式
+     */
+    protected void validateUserMail(String mail) {
+        Validate.isTrue(StringUtils.isNotBlank(mail));
+        Validate.isTrue(mail.matches(MAIL_FORMAT));
+    }
+
 
     /**
      * 验证用户手机号格式

@@ -37,6 +37,11 @@ public interface UserService {
     Response<Boolean> getVerifyMsgCode(String tel);
 
     /**
+     * 验证登录邮箱验证码
+     */
+    public Response<Boolean> getMailVerifyMsgCode(String mail);
+
+    /**
      * 删除用户信息
      */
     Response<Boolean> deleteUserByUserId(long userId);
