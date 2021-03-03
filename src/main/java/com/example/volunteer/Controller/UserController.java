@@ -157,7 +157,7 @@ public class UserController extends BaseController {
         Response<Boolean> response = new Response<>();
 
         try {
-            validateBaseUserInfo(tel);
+            validateBaseTel(tel);
 
             return userService.getVerifyMsgCode(tel);
         } catch (IllegalArgumentException e) {
@@ -175,13 +175,44 @@ public class UserController extends BaseController {
         }
     }
 
+    @GetMapping("/getMailVerifyCode")
+    @ApiOperation("获取邮件验证码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "E-Mail", value = "邮箱地址", paramType = "query", dataType = "String"),
+    })
+    public Response<Boolean> getMailVerifyCode(@RequestParam("mail_address") String mail_address) {
+        Response<Boolean> response = new Response<>();
+
+        try {
+            validateBaseMail(mail_address);
+
+            return userService.getMailVerifyMsgCode(mail_address);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getMailVerifyCode Illegal Argument], mail_address: {}", mail_address, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getMailVerifyCode Runtime Exception], mail_address: {}", mail_address, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[getMailVerifyCode Exception], mail_address: {}", mail_address, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
     private void validateBaseUserInfo(String tel, String password) {
         validateUserTel(tel);
         validateUserPassword(password);
     }
 
-    private void validateBaseUserInfo(String tel) {
+    private void validateBaseTel(String tel) {
         validateUserTel(tel);
+    }
+
+    private void validateBaseMail(String mail) {
+        validateUserMail(mail);
     }
 
     private void validateUserPasswordAndMsgCode(String tel, String newPassword, String verifyCode) {

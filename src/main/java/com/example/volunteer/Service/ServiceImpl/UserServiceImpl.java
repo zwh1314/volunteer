@@ -31,6 +31,12 @@ public class UserServiceImpl implements UserService {
             .maximumSize(25)
             .build();
 
+    private Cache<String, String> mailVerifyCodeCache = Caffeine.newBuilder()
+            .expireAfterWrite(60, TimeUnit.SECONDS)
+            .initialCapacity(5)
+            .maximumSize(25)
+            .build();
+
     private Cache<String, User> userCache = Caffeine.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
             .initialCapacity(10)
@@ -190,6 +196,20 @@ public class UserServiceImpl implements UserService {
         String msgCode = msgUtil.sendSignUpMsgCode(tel);
         verifyCodeCache.put(tel, msgCode);
         response.setSuc(true);
+
+        return response;
+    }
+
+    @Override
+    public Response<Boolean> getMailVerifyMsgCode(String mail) {
+        Response<Boolean> response = new Response<>();
+//        if (StringUtils.isNotBlank(mailVerifyCodeCache.getIfPresent(mail))) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
+//            return response;
+//        }
+//        String mailCode = mailUtil.sendSignUpMsgCode(mail);
+//        mailVerifyCodeCache.put(mail, mailCode);
+//        response.setSuc(true);
 
         return response;
     }
