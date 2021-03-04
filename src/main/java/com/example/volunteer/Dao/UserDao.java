@@ -8,19 +8,19 @@ import java.util.List;
 
 @Mapper
 public  interface UserDao {
-    @Insert("INSERT INTO user(user_name,password,tel,priority) VALUES (#{userName},#{password},#{tel},#{priority});")
+    @Insert("INSERT INTO user(user_name,password,tel,priority,mail_address) VALUES (#{userName},#{password},#{tel},#{priority},#{mailAddress});")
     int insertUser(User user);
 
     @ResultType(UserDTO.class)
-    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE user_id = #{userId}")
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority,mail_address as mailAddress FROM user WHERE user_id = #{userId}")
     UserDTO getUserByUserId(@Param("userId") long userId);
 
     @ResultType(UserDTO.class)
-    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE tel = #{tel} and password = #{password}")
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority,mail_address as mailAddress FROM user WHERE tel = #{tel} and password = #{password}")
     UserDTO getUserByTelAndPassword(@Param("tel") String tel,@Param("password") String password);
 
     @ResultType(UserDTO.class)
-    @Select("SELECT user_id as userId,user_name as userName,tel,priority FROM user WHERE tel = #{tel}")
+    @Select("SELECT user_id as userId,user_name as userName,tel,priority,mail_address as mailAddress FROM user WHERE tel = #{tel}")
     UserDTO getUserByTel(@Param("tel") String tel);
 
     @Update("UPDATE user SET password = #{newPassword} WHERE tel = #{tel}")
