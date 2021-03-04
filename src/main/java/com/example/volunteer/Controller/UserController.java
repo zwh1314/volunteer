@@ -178,25 +178,25 @@ public class UserController extends BaseController {
     @GetMapping("/getMailVerifyCode")
     @ApiOperation("获取邮件验证码")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "E-Mail", value = "邮箱地址", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "mail", value = "邮箱地址", paramType = "query", dataType = "String"),
     })
-    public Response<Boolean> getMailVerifyCode(@RequestParam("mail_address") String mail_address) {
+    public Response<Boolean> getMailVerifyCode(@RequestParam("mail") String mail) {
         Response<Boolean> response = new Response<>();
 
         try {
-            validateBaseMail(mail_address);
+            validateBaseMail(mail);
 
-            return userService.getMailVerifyMsgCode(mail_address);
+            return userService.getMailVerifyMsgCode(mail);
         } catch (IllegalArgumentException e) {
-            logger.warn("[getMailVerifyCode Illegal Argument], mail_address: {}", mail_address, e);
+            logger.warn("[getMailVerifyCode Illegal Argument], mail: {}", mail, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[getMailVerifyCode Runtime Exception], mail_address: {}", mail_address, e);
+            logger.error("[getMailVerifyCode Runtime Exception], mail: {}", mail, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         } catch (Exception e) {
-            logger.error("[getMailVerifyCode Exception], mail_address: {}", mail_address, e);
+            logger.error("[getMailVerifyCode Exception], mail: {}", mail, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

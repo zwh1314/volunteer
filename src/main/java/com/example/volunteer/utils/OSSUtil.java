@@ -6,20 +6,21 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
 
-
+@Component
 public class OSSUtil {
     private static final Logger logger = LoggerFactory.getLogger(OSSUtil.class);
 
     //填写自己的帐号信息
-    private static final String endpoint = "xxxx";
-    private static final String accessKeyId = "xxxxxx";
-    private static final String accessKeySecret = "xxxxxx";
+    private static final String endpoint = "oss-cn-shanghai-internal.aliyuncs.com";
+    private static final String accessKeyId = "LTAI4G1bxMXZJfUcEzGcBzeC";
+    private static final String accessKeySecret = "BANCWn07sQDUqpYatmuKCzIleEcslM";
 
     public void createBucket(String bucketName, CannedAccessControlList acl) {
 
@@ -29,6 +30,8 @@ public class OSSUtil {
         if(ossClient.doesBucketExist(bucketName)){
             // 关闭OSSClient。
             ossClient.shutdown();
+            System.out.println("exists");
+            return;
         }
 
         /* 通过一个Bucket对象来创建 */

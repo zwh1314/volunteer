@@ -3,6 +3,7 @@ package com.example.volunteer.Service.ServiceImpl;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.EmailUtil;
 import com.example.volunteer.utils.MsgUtil;
 import com.example.volunteer.utils.TokenUtil;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -51,6 +52,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MsgUtil msgUtil;
+
+    @Autowired
+    private EmailUtil emailUtil;
 
     @Autowired
     private TokenUtil tokenUtil;
@@ -203,13 +207,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Response<Boolean> getMailVerifyMsgCode(String mail) {
         Response<Boolean> response = new Response<>();
-//        if (StringUtils.isNotBlank(mailVerifyCodeCache.getIfPresent(mail))) {
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
-//            return response;
-//        }
-//        String mailCode = mailUtil.sendSignUpMsgCode(mail);
-//        mailVerifyCodeCache.put(mail, mailCode);
-//        response.setSuc(true);
+        if (StringUtils.isNotBlank(mailVerifyCodeCache.getIfPresent(mail))) {
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
+            return response;
+        }
+        String mailCode = emailUtil.sendMail(mail);
+        mailVerifyCodeCache.put(mail, mailCode);
+        response.setSuc(true);
 
         return response;
     }
