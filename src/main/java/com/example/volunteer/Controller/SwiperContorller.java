@@ -1,17 +1,14 @@
 package com.example.volunteer.Controller;
 
-import com.aliyun.oss.model.CannedAccessControlList;
 import com.example.volunteer.Entity.Swiper;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.SwiperService;
 import com.example.volunteer.enums.ResponseEnum;
-import com.example.volunteer.utils.OSSUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +25,6 @@ public class SwiperContorller extends BaseController{
 
     @Autowired
     private SwiperService swiperService;
-
-    @Autowired
-    private OSSUtil ossUtil;
 
     @GetMapping("/getSwiperByNewsId")
     @ApiOperation("获得轮播图by newsId")
@@ -96,26 +90,6 @@ public class SwiperContorller extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[addSwiper Exception], swiper: {}", swiper, e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-    }
-
-    @PostMapping("/addSwiperTest")
-    @ApiOperation("添加轮播图")
-    public Response<Boolean> addSwiperTest(@RequestParam("file") MultipartFile uploadFile) {
-        Response<Boolean> response = new Response<>();
-        try {
-            String url = ossUtil.uploadFile("our-volunteer",uploadFile);
-            response.setSuc(StringUtils.isBlank(url));
-            return response;
-        } catch (IllegalArgumentException e) {
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
