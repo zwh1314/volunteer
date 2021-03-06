@@ -158,6 +158,76 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Response<Boolean> updatePasswordByMail(String mail, String oldPassword, String newPassword, String verifyCode) {
+        Response<Boolean> response = new Response<>();
+
+        validateErrorFrequency(mail);
+        UserDTO userDTO = verifyUserByMailAndPassword(mail, oldPassword);
+        if (userDTO == null) {
+            int errorFreq = userErrorFrequencyCache.getIfPresent(mail) == null ? 0 : userErrorFrequencyCache.getIfPresent(mail);
+            userErrorFrequencyCache.put(mail, errorFreq + 1);
+            logger.warn("[updatePasswordByMail User Not Found], mail: {}, password: {}", mail, oldPassword);
+            response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);//MAIL_OR_PWD_ERROR(201,"邮箱或密码错误");
+            return response;
+        }
+
+        String mail_verifycode=mailVerifyCodeCache.getIfPresent(mail);
+        if (StringUtils.isBlank(mail_verifycode)) {
+            System.out.println("mail_verifycode:" + mail_verifycode);
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+            return response;
+        }
+        else if(!verifyCode.equals(mail_verifycode)){
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+            return response;
+        }
+
+        boolean result = userDao.updatePasswordByMail(mail, newPassword) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
+    }
+
+    @Override
+    public Response<Boolean> forgetPasswordByMail(String mail, String newPassword, String verifyCode) {
+
+        Response<Boolean> response = new Response<>();
+        validateErrorFrequency(mail);
+        UserDTO userDTO = getUserByMail(mail);
+        if (userDTO == null) {
+            int errorFreq = userErrorFrequencyCache.getIfPresent(mail) == null ? 0 : userErrorFrequencyCache.getIfPresent(mail);
+            userErrorFrequencyCache.put(mail, errorFreq + 1);
+            logger.warn("[forgetPasswordByMail User Not Found], mail: {}", mail);
+            response.setFail(ResponseEnum.USER_NOT_FOUND);
+            return response;
+        }
+
+        String mail_verifycode=mailVerifyCodeCache.getIfPresent(mail);
+        if (StringUtils.isBlank(mail_verifycode)) {
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+            return response;
+        }
+        else if(!verifyCode.equals(mail_verifycode)){
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+            return response;
+        }
+
+        boolean result = userDao.updatePasswordByMail(mail, newPassword) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
+    }
+
+
+    @Override
     public Response<Boolean> forgetPassword(String tel, String newPassword, String verifyCode) {
         Response<Boolean> response = new Response<>();
         validateErrorFrequency(tel);
@@ -235,11 +305,21 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+
     public UserDTO getUserByTel(String tel) {
         User user = userCache.getIfPresent(tel);
         // 缓存中不存在则去db取
         if (user == null) {
             return userDao.getUserByTel(tel);
+        }
+        return transformUser2UserDTO(user);
+    }
+
+    public UserDTO getUserByMail(String mail) {
+        User user = userCache.getIfPresent(mail);
+        // 缓存中不存在则去db取
+        if (user == null) {
+            return userDao.getUserByMail(mail);
         }
         return transformUser2UserDTO(user);
     }
@@ -261,6 +341,23 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    public UserDTO verifyUserByMailAndPassword(String mail, String password) {
+        User user = userCache.getIfPresent(mail);
+        // 缓存中不存在则去db取
+        if (user == null) {
+            UserDTO userDTO = userDao.getUserByMailAndPassword(mail,password);
+            if(userDTO != null) {
+                user=transformUserDTO2User(userDTO);
+                userCache.put(mail,user);
+                return userDTO;
+            }
+        }
+        else if(user.getPassword().equals(password)){
+            return transformUser2UserDTO(user);
+        }
+        return null;
+    }
+
     private void validateErrorFrequency(String tel) {
         Integer errFreq = userErrorFrequencyCache.getIfPresent(tel);
         if (errFreq != null && errFreq >= 5) {
@@ -268,9 +365,12 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+
     public UserDTO transformUser2UserDTO(User user){
         UserDTO userDTO=new UserDTO();
         userDTO.setTel(user.getTel());
+        userDTO.setMailAddress(user.getMailAddress());
         userDTO.setUserId(user.getUserId());
         userDTO.setUserName(user.getUserName());
         userDTO.setPriority(user.getPriority());
@@ -280,6 +380,7 @@ public class UserServiceImpl implements UserService {
     public User transformUserDTO2User(UserDTO userDTO){
         User user=new User();
         user.setTel(userDTO.getTel());
+        user.setMailAddress(userDTO.getMailAddress());
         user.setUserId(userDTO.getUserId());
         user.setUserName(userDTO.getUserName());
         user.setPriority(userDTO.getPriority());

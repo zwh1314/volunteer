@@ -24,4 +24,7 @@ public class UserDTO {
 
     @ApiModelProperty(value = "手机号")
     private String tel;
+
+    @ApiModelProperty(value = "邮箱地址")
+    private  String mailAddress;
 }
