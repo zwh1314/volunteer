@@ -1,15 +1,12 @@
 package com.example.volunteer.utils;
 
-import cn.hutool.core.util.RandomUtil;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
-import java.util.Random;
 
 @Component
 public class EmailUtil {
@@ -47,7 +44,7 @@ public class EmailUtil {
 
 
             //生成6位验证码
-            code = RandomStringUtils.randomAlphanumeric(6);
+            code = RandomStringUtils.randomNumeric(6);
 
             //  正文
             String str = "【志愿帮】 Your verify code is：" + code + ".This verify code is valid in 5 minutes!";

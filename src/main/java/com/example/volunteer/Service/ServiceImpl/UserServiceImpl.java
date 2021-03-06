@@ -97,6 +97,46 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+
+    @Override
+    public Response<Boolean> signUpByMail(String mail, String userName, String tel,String password, String verifyCode) {
+        Response<Boolean> response=new Response<>();
+
+        UserDTO userDTO= getUserByMail(mail);
+        if(userDTO != null){
+            response.setFail(ResponseEnum.TEL_HAS_BEEN_USED);
+            return response;
+        }
+
+
+        String email_verifycode=mailVerifyCodeCache.getIfPresent(mail);
+
+        if (StringUtils.isBlank(email_verifycode)) {
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+            return response;
+        }
+        else if(!verifyCode.equals(email_verifycode)){
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+            return response;
+        }
+
+        User user=new User();
+        user.setMailAddress(mail);
+        user.setPassword(password);
+        user.setUserName(userName);
+        user.setTel(tel);
+        user.setPriority("普通用户");
+        boolean result = userDao.insertUser(user) > 0;
+        if (result) {
+            response.setSuc(true);
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
+    }
+
+
     @Override
     public Response<UserDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         // TODO 密码加密
@@ -113,6 +153,32 @@ public class UserServiceImpl implements UserService {
             int errorFreq = userErrorFrequencyCache.getIfPresent(tel) == null ? 0 : userErrorFrequencyCache.getIfPresent(tel);
             userErrorFrequencyCache.put(tel, errorFreq + 1);
             logger.warn("[login User Not Found], tel: {}, password: {}", tel, password);
+            response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);
+            return response;
+        }
+
+        tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
+
+        response.setSuc(userDTO);
+        return response;
+    }
+
+    @Override
+    public Response<UserDTO> signInByMail(String mail, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        // TODO 密码加密
+        Response<UserDTO> response=new Response<>();
+
+        validateErrorFrequency(mail);
+
+        //md5密码加密
+        // String encryptPassword = SecureUtil.md5(password);
+        // User user = userDao.getUserByUserNameAndPassword(userName, encryptPassword);
+
+        UserDTO userDTO = verifyUserByMailAndPassword(mail,password);
+        if (userDTO == null) {
+            int errorFreq = userErrorFrequencyCache.getIfPresent(mail) == null ? 0 : userErrorFrequencyCache.getIfPresent(mail);
+            userErrorFrequencyCache.put(mail, errorFreq + 1);
+            logger.warn("[login User Not Found], mail: {}, password: {}", mail, password);
             response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);
             return response;
         }
@@ -244,6 +310,15 @@ public class UserServiceImpl implements UserService {
         return transformUser2UserDTO(user);
     }
 
+    public UserDTO getUserByMail(String mail) {
+        User user = userCache.getIfPresent(mail);
+        // 缓存中不存在则去db取
+        if (user == null) {
+            return userDao.getUserByMail(mail);
+        }
+        return transformUser2UserDTO(user);
+    }
+
     public UserDTO verifyUserByTelAndPassword(String tel,String password) {
         User user = userCache.getIfPresent(tel);
         // 缓存中不存在则去db取
@@ -252,6 +327,23 @@ public class UserServiceImpl implements UserService {
             if(userDTO != null) {
                 user=transformUserDTO2User(userDTO);
                 userCache.put(tel,user);
+                return userDTO;
+            }
+        }
+        else if(user.getPassword().equals(password)){
+            return transformUser2UserDTO(user);
+        }
+        return null;
+    }
+
+    public UserDTO verifyUserByMailAndPassword(String mail,String password) {
+        User user = userCache.getIfPresent(mail);
+        // 缓存中不存在则去db取
+        if (user == null) {
+            UserDTO userDTO = userDao.getUserByMailAndPassword(mail,password);
+            if(userDTO != null) {
+                user=transformUserDTO2User(userDTO);
+                userCache.put(mail,user);
                 return userDTO;
             }
         }
@@ -271,6 +363,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO transformUser2UserDTO(User user){
         UserDTO userDTO=new UserDTO();
         userDTO.setTel(user.getTel());
+        userDTO.setMailAddress(user.getMailAddress());
         userDTO.setUserId(user.getUserId());
         userDTO.setUserName(user.getUserName());
         userDTO.setPriority(user.getPriority());
@@ -280,6 +373,7 @@ public class UserServiceImpl implements UserService {
     public User transformUserDTO2User(UserDTO userDTO){
         User user=new User();
         user.setTel(userDTO.getTel());
+        user.setMailAddress(userDTO.getMailAddress());
         user.setUserId(userDTO.getUserId());
         user.setUserName(userDTO.getUserName());
         user.setPriority(userDTO.getPriority());

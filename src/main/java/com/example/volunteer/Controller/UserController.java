@@ -84,6 +84,66 @@ public class UserController extends BaseController {
         }
     }
 
+    @PostMapping("/signUpByMail")
+    @ApiOperation("注册byMail")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mail", value = "邮箱", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
+    })
+    @ApiResponse(code = 200, message = "成功", response = Boolean.class)
+    public Response<Boolean> signUpByMail(@RequestParam("mail") String mail,
+                                    @RequestParam("userName") String userName,
+                                    @RequestParam("password") String password,
+                                          @RequestParam("tel")String tel,
+                                    @RequestParam("verifyCode") String verifyCode) {
+        Response<Boolean> response = new Response<>();
+        try {
+            validateUserPasswordAndMsgCodeByEmail(mail, password, verifyCode);
+
+            return userService.signUpByMail(mail,userName,tel,password,verifyCode);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[signInByMail Illegal Argument], tel: {}, password: {}",mail, password, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[signInByEmail Runtime Exception], tel: {}, password: {}", mail, password, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[signInByEmail Exception], tel: {}, password: {}", mail, password, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+    @PostMapping("/loginByMail")
+    @ApiOperation("登录ByMail")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mail", value = "邮箱", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
+    })
+    public Response<UserDTO> loginByEmail(@RequestParam("mail") String mail, @RequestParam("password") String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        Response<UserDTO> response = new Response<>();
+        try {
+            validateBaseUserInfoByEmail(mail, password);
+
+            return userService.signInByMail(mail, password,servletRequest,servletResponse);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[loginByEmail Illegal Argument], tel: {}, password: {}", mail, password, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[loginByEmail Runtime Exception], tel: {}, password: {}", mail, password, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[loginByEmail Exception], tel: {}, password: {}", mail, password, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
     @PostMapping("/updatePassword")
     @ApiOperation("更新密码")
     @ApiImplicitParams({
@@ -207,6 +267,11 @@ public class UserController extends BaseController {
         validateUserPassword(password);
     }
 
+    private void validateBaseUserInfoByEmail(String mail, String password) {
+        validateUserMail(mail);
+        validateUserPassword(password);
+    }
+
     private void validateBaseTel(String tel) {
         validateUserTel(tel);
     }
@@ -217,6 +282,12 @@ public class UserController extends BaseController {
 
     private void validateUserPasswordAndMsgCode(String tel, String newPassword, String verifyCode) {
         validateUserTel(tel);
+        validateUserPassword(newPassword);
+        validateVerifyMsgCode(verifyCode);
+    }
+
+    private void validateUserPasswordAndMsgCodeByEmail(String mail, String newPassword, String verifyCode) {
+        validateUserMail(mail);
         validateUserPassword(newPassword);
         validateVerifyMsgCode(verifyCode);
     }
