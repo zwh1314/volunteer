@@ -17,10 +17,20 @@ public interface UserService {
     Response<Boolean> signUp(String tel, String userName, String password, String verifyCode);
 
     /**
+     * 注册2
+     */
+    Response<Boolean> signUpByMail(String email, String userName, String tel,String password, String verifyCode);
+
+
+    /**
      * 登录
      */
     Response<UserDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 
+    /**
+     * 登录2
+     */
+    Response<UserDTO> signInByMail(String email, String password,HttpServletRequest servletRequest, HttpServletResponse servletResponse);
     /**
      * 更新密码
      */
