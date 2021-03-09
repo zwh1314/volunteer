@@ -27,17 +27,21 @@ public class SwiperServiceImpl implements SwiperService {
     private OSSUtil ossUtil;
 
     @Override
-    public Response<Boolean> addSwiper(Swiper swiper, MultipartFile uploadFile){
+    public Response<Boolean> addSwiper(long newsId, MultipartFile uploadFile){
         Response<Boolean> response=new Response<>();
 
         String bucketName = "swiper-picture";
-        String filename = uploadFile.getOriginalFilename();
+        String filename = "news"+newsId+"/"+uploadFile.getOriginalFilename();
         String url = ossUtil.uploadFile(bucketName,uploadFile,filename);
         if(StringUtils.isBlank(url)){
             logger.error("[uploadSwiper Fail], uploadFile: {}", SerialUtil.toJsonStr(uploadFile.getName()));
             response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
             return response;
         }
+        Swiper swiper=new Swiper();
+        swiper.setSwiperText("");
+        swiper.setNewsId(newsId);
+        swiper.setSwiperPriority("");
         swiper.setSwiperPicture(url);
 
         boolean result = swiperDao.addSwiper(swiper) > 0;
