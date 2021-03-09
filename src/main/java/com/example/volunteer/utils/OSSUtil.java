@@ -37,7 +37,7 @@ public class OSSUtil {
     }
 
     // 上传文件
-    public String uploadFile(String bucketName, MultipartFile fileupload) throws OSSException, ClientException{
+    public String uploadFile(String bucketName, MultipartFile fileupload, String filename) throws OSSException, ClientException{
 
         // 创建OSSClient实例
         OSSClient ossClient = new OSSClient(ossConfig.getEndpoint(), ossConfig.getAccessKeyId(), ossConfig.getAccessKeySecret());
@@ -47,12 +47,11 @@ public class OSSUtil {
                 createBucket(bucketName,CannedAccessControlList.PublicRead);
             }
 
-            String objectName = fileupload.getName();
-            PutObjectResult result=ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(fileupload.getBytes()));
+            PutObjectResult result=ossClient.putObject(bucketName, filename, new ByteArrayInputStream(fileupload.getBytes()));
             ossClient.setBucketAcl(bucketName,CannedAccessControlList.PublicRead);
             // 设置URL过期时间为10年 3600l* 1000*24*365*10
             Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
-            URL url=ossClient.generatePresignedUrl(bucketName,objectName,expiration);
+            URL url=ossClient.generatePresignedUrl(bucketName,filename,expiration);
 
 
             if(result != null) {

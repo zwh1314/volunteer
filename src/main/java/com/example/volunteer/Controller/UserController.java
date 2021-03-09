@@ -34,14 +34,16 @@ public class UserController extends BaseController {
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
     public Response<Boolean> signUp(@RequestParam("tel") String tel,
+                                    @RequestParam("mail") String mail,
                                     @RequestParam("userName") String userName,
                                     @RequestParam("password") String password,
                                     @RequestParam("verifyCode") String verifyCode) {
         Response<Boolean> response = new Response<>();
         try {
             validateUserInfoAndVerifyCode(tel, password, verifyCode);
+            validateUserMail(mail);
 
-            return userService.signUp(tel,userName,password,verifyCode);
+            return userService.signUp(tel,mail,userName,password,verifyCode);
         } catch (IllegalArgumentException e) {
             logger.warn("[signIn Illegal Argument], tel: {}, password: {}", tel, password, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
@@ -94,10 +96,10 @@ public class UserController extends BaseController {
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
     public Response<Boolean> signUpByMail(@RequestParam("mail") String mail,
-                                    @RequestParam("userName") String userName,
-                                    @RequestParam("password") String password,
+                                          @RequestParam("userName") String userName,
+                                          @RequestParam("password") String password,
                                           @RequestParam("tel")String tel,
-                                    @RequestParam("verifyCode") String verifyCode) {
+                                          @RequestParam("verifyCode") String verifyCode) {
         Response<Boolean> response = new Response<>();
         try {
             validateUserPasswordAndMsgCodeByEmail(mail, password, verifyCode);
