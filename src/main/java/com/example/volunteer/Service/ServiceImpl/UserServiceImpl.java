@@ -1,9 +1,11 @@
 package com.example.volunteer.Service.ServiceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.EmailUtil;
+import com.example.volunteer.utils.HTTPRequestUtil;
 import com.example.volunteer.utils.MsgUtil;
 import com.example.volunteer.utils.TokenUtil;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -50,8 +52,8 @@ public class UserServiceImpl implements UserService {
             .maximumSize(100)
             .build();
 
-    @Autowired
-    private MsgUtil msgUtil;
+//    @Autowired
+//    private MsgUtil msgUtil;
 
     @Autowired
     private EmailUtil emailUtil;
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public Response<Boolean> signUp(String tel, String userName, String password, String verifyCode) {
+    public Response<Boolean> signUp(String tel, String mail, String userName, String password, String verifyCode) {
         Response<Boolean> response=new Response<>();
 
         UserDTO userDTO=getUserByTel(tel);
@@ -72,12 +74,16 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
-        if (StringUtils.isBlank(tel_verifycode)) {
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-            return response;
-        }
-        else if(!verifyCode.equals(tel_verifycode)){
+//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
+//        if (StringUtils.isBlank(tel_verifycode)) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+//            return response;
+//        }
+//        else if(!verifyCode.equals(tel_verifycode)){
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+//            return response;
+//        }
+        if(!validateVerifyCode(tel,verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
         }
@@ -87,6 +93,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(password);
         user.setUserName(userName);
         user.setPriority("普通用户");
+        user.setMailAddress(mail);
         boolean result = userDao.insertUser(user) > 0;
         if (result) {
             response.setSuc(true);
@@ -203,12 +210,16 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
-        if (StringUtils.isBlank(tel_verifycode)) {
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-            return response;
-        }
-        else if(!verifyCode.equals(tel_verifycode)){
+//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
+//        if (StringUtils.isBlank(tel_verifycode)) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+//            return response;
+//        }
+//        else if(!verifyCode.equals(tel_verifycode)){
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+//            return response;
+//        }
+        if(!validateVerifyCode(tel,verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
         }
@@ -236,12 +247,16 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
-        if (StringUtils.isBlank(tel_verifycode)) {
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-            return response;
-        }
-        else if(!verifyCode.equals(tel_verifycode)){
+//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
+//        if (StringUtils.isBlank(tel_verifycode)) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+//            return response;
+//        }
+//        else if(!verifyCode.equals(tel_verifycode)){
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+//            return response;
+//        }
+        if(!validateVerifyCode(tel,verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
         }
@@ -256,16 +271,36 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    //阿里云短信服务验证
+//    @Override
+//    public Response<Boolean> getVerifyMsgCode(String tel) {
+//        Response<Boolean> response = new Response<>();
+//        if (StringUtils.isNotBlank(verifyCodeCache.getIfPresent(tel))) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
+//            return response;
+//        }
+//        String msgCode = msgUtil.sendSignUpMsgCode(tel);
+//        verifyCodeCache.put(tel, msgCode);
+//        response.setSuc(true);
+//
+//        return response;
+//    }
+
     @Override
     public Response<Boolean> getVerifyMsgCode(String tel) {
         Response<Boolean> response = new Response<>();
-        if (StringUtils.isNotBlank(verifyCodeCache.getIfPresent(tel))) {
+        HTTPRequestUtil httpRequestUtil = new HTTPRequestUtil();
+        //设置JSON类型参数
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("mobilePhoneNumber",tel);
+        jsonObject.put("template","志愿帮");
+        String result = httpRequestUtil.sendPost("https://api2.bmob.cn/1/requestSmsCode",jsonObject);
+        jsonObject = JSONObject.parseObject(result);
+        result = jsonObject.getString("smsId");
+        if(StringUtils.isNotBlank(result))
+            response.setSuc(true);
+        else
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
-            return response;
-        }
-        String msgCode = msgUtil.sendSignUpMsgCode(tel);
-        verifyCodeCache.put(tel, msgCode);
-        response.setSuc(true);
 
         return response;
     }
@@ -378,5 +413,19 @@ public class UserServiceImpl implements UserService {
         user.setUserName(userDTO.getUserName());
         user.setPriority(userDTO.getPriority());
         return user;
+    }
+
+    private boolean validateVerifyCode(String tel, String verifyCode){
+        HTTPRequestUtil httpRequestUtil = new HTTPRequestUtil();
+        //设置JSON类型参数
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("mobilePhoneNumber",tel);
+        String result = httpRequestUtil.sendPost("https://api2.bmob.cn/1/verifySmsCode/"+verifyCode,jsonObject);
+        jsonObject = JSONObject.parseObject(result);
+        result = jsonObject.getString("msg");
+        if(StringUtils.isBlank(result))
+            return false;
+        else
+            return true;
     }
 }

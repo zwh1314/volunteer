@@ -1,6 +1,5 @@
 package com.example.volunteer.Service.ServiceImpl;
 
-import com.aliyun.oss.model.CannedAccessControlList;
 import com.example.volunteer.Dao.SwiperDao;
 import com.example.volunteer.Entity.Swiper;
 import com.example.volunteer.Response.Response;
@@ -30,10 +29,11 @@ public class SwiperServiceImpl implements SwiperService {
     @Override
     public Response<Boolean> addSwiper(Swiper swiper, MultipartFile uploadFile){
         Response<Boolean> response=new Response<>();
-        String bucketName = "swiper";
-        ossUtil.createBucket(bucketName, CannedAccessControlList.PublicRead);
-        String url = ossUtil.uploadFile(bucketName,uploadFile);
-        if(StringUtils.isNotBlank(url)){
+
+        String bucketName = "swiper-picture";
+        String filename = uploadFile.getOriginalFilename();
+        String url = ossUtil.uploadFile(bucketName,uploadFile,filename);
+        if(StringUtils.isBlank(url)){
             logger.error("[uploadSwiper Fail], uploadFile: {}", SerialUtil.toJsonStr(uploadFile.getName()));
             response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
             return response;

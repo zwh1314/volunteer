@@ -14,7 +14,7 @@ public interface UserService {
     /**
      * 注册1
      */
-    Response<Boolean> signUp(String tel, String userName, String password, String verifyCode);
+    Response<Boolean> signUp(String tel, String mail,String userName, String password, String verifyCode);
 
     /**
      * 注册2
