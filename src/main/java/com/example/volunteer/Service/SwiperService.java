@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface SwiperService {
-    Response<Boolean> addSwiper(long newsId, MultipartFile uploadFile);
+    Response<Boolean> addSwiper(long newsId, MultipartFile swiper_picture);
 
     Response<Boolean> updateSwiperPriority(String newSwiperPriority, long swiperId);
 

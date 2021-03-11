@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Api(tags = "用户信息Controller")
 @RestController
@@ -68,6 +69,32 @@ public class UserInfoController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[addUserInfo Exception], userInfoRequest: {}", userInfoRequest, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @PostMapping("/updateHeadPicture")
+    @ApiOperation("更新个人头像")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "headPicture", value = "个人头像图片", paramType = "query", dataType = "MultipartFile"),
+    })
+    public Response<String> updateHeadPicture(@RequestParam("headPicture") MultipartFile headPicture) {
+        Response<String> response = new Response<>();
+        long userId = getUserId();
+        try {
+            validateUserId(userId);
+            return userInfoService.updateHeadPicture(userId,headPicture);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[updateHeadPicture Illegal Argument], headPicture: {}", headPicture, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[updateHeadPicture Runtime Exception], headPicture: {}", headPicture, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[updateHeadPicture Exception], headPicture: {}", headPicture, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

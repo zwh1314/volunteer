@@ -5,7 +5,6 @@ import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
 import com.example.volunteer.RedisService.VideoRedisService;
-import com.example.volunteer.Request.VideoRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -17,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -99,20 +99,28 @@ public class VideoController extends BaseController{
 
     @PostMapping("/addVideo")
     @ApiOperation("添加视频")
-    public Response<Boolean> addVideo(@RequestBody VideoRequest videoRequest) {
+    public Response<Boolean> addVideo(@RequestParam("videoTitle")String videoTitle, @RequestParam("videoText")String videoText,
+                                      @RequestParam("video_mp4")MultipartFile video_mp4) {
         Response<Boolean> response = new Response<>();
+        long userId = getUserId();
         try {
-            return videoService.addVideo(videoRequest);
+            Video video = new Video();
+            video.setVideoTitle(videoTitle);
+            video.setVideoText(videoText);
+            video.setVideoPublisher(userId);
+            video.setVideoLike(0);
+            video.setVideoPlayNum(0);
+            return videoService.addVideo(video,video_mp4);
         } catch (IllegalArgumentException e) {
-            logger.warn("[addVideo Illegal Argument], videoRequest: {}", videoRequest, e);
+            logger.warn("[addVideo Illegal Argument], video_mp4: {}", video_mp4, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addVideo Runtime Exception], videoRequest: {}", videoRequest, e);
+            logger.error("[addVideo Runtime Exception], video_mp4: {}", video_mp4, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addVideo Exception], videoRequest: {}", videoRequest, e);
+            logger.error("[addVideo Exception], video_mp4: {}", video_mp4, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

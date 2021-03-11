@@ -76,20 +76,24 @@ public class SwiperContorller extends BaseController{
 
     @PostMapping("/addSwiper")
     @ApiOperation("添加轮播图")
-    public Response<Boolean> addSwiper(@RequestParam("newsId") long newsId, @RequestParam("file") MultipartFile uploadFile) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "newsId", value = "新闻id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "swiper_picture", value = "轮播图图片", paramType = "query", dataType = "MultipartFile"),
+    })
+    public Response<Boolean> addSwiper(@RequestParam("newsId") long newsId, @RequestParam("swiper_picture") MultipartFile swiper_picture) {
         Response<Boolean> response = new Response<>();
         try {
-            return swiperService.addSwiper(newsId,uploadFile);
+            return swiperService.addSwiper(newsId,swiper_picture);
         } catch (IllegalArgumentException e) {
-            logger.warn("[addSwiper Illegal Argument], uploadFile: {}", uploadFile.getOriginalFilename(), e);
+            logger.warn("[addSwiper Illegal Argument], swiper_picture: {}", swiper_picture.getOriginalFilename(), e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addSwiper Runtime Exception], uploadFile: {}", uploadFile.getOriginalFilename(), e);
+            logger.error("[addSwiper Runtime Exception], swiper_picture: {}", swiper_picture.getOriginalFilename(), e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addSwiper Exception], uploadFile: {}", uploadFile.getOriginalFilename(), e);
+            logger.error("[addSwiper Exception], swiper_picture: {}", swiper_picture.getOriginalFilename(), e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

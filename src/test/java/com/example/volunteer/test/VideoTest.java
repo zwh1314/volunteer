@@ -36,7 +36,7 @@ public class VideoTest {
         videoList.add(video);
         videoList.add(video1);
         videoRequest.setVideoList(videoList);
-        videoService.addVideo(videoRequest);
+//        videoService.addVideo(videoRequest);
 
         System.out.println(videoService.getVideoByPublisherId(1));
         System.out.println(videoService.getVideoByRelativeText("太阳"));
