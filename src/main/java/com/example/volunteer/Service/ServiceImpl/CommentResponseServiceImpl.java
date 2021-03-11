@@ -123,6 +123,20 @@ public class CommentResponseServiceImpl implements CommentResponseService {
     }
 
     @Override
+    public Response<List<CommentResponse>> getVideoCommentResponseByNumber(long number){
+        Response<List<CommentResponse>> response=new Response<>();
+
+        List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByNumber(number,1);//假设1对应Video类型
+        if (commentResponseList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
+        }
+        else{
+            response.setSuc(commentResponseList);
+        }
+        return response;
+    }
+
+    @Override
     public Response<List<CommentResponse>> getCommentResponseByRelativeText(String relativeText){
         Response<List<CommentResponse>> response=new Response<>();
 

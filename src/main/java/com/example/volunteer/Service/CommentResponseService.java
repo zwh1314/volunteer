@@ -19,6 +19,8 @@ public interface CommentResponseService {
 
     Response<List<CommentResponse>> getCommentResponseInOneWeek();
 
+    Response<List<CommentResponse>> getVideoCommentResponseByNumber(long number);
+
     Response<List<CommentResponse>> getVideoCommentResponseInOneWeek();
 
     Response<List<CommentResponse>> getCommentResponseByRelativeText(String relativeText);

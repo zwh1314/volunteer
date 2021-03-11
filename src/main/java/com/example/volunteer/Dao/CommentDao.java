@@ -39,6 +39,11 @@ public interface CommentDao {
     @Select("SELECT comment_like as commentLike FROM comment WHERE comment_id =#{commentId}")
     Long getCommentLikeByCommentId(@Param("commentId") long commentId);
 
-    @Select("SELECT comment_id from comment as commentId")
+    @Select("SELECT comment_id as commentId FROM comment")
     List<Long> getCommentIds();
+
+    @ResultType(Comment.class)
+    @Select("SELECT comment_id as commentId,comment_text as commentText,comment_publisher as commentPublisher," +
+            "comment_like as commentLike,comment_date as commentDate FROM comment WHERE comment_id>=(SELECT FLOOR( MAX(comment_id) * RAND()) FROM `comment` ) ORDER BY comment_id LIMIT #{number}")
+    List<Comment>findCommentByNumber(@Param("number")long number);
 }

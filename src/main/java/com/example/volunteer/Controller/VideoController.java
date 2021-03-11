@@ -78,6 +78,28 @@ public class VideoController extends BaseController{
         }
     }
 
+    @GetMapping("/getVideoByNumber")
+    @ApiOperation("获得视频by number")
+
+    public Response<List<Video>> getVideoByNumber(@RequestParam("number") long number) {
+        Response<List<Video>> response = new Response<>();
+        try {
+            return videoService.getVideoByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getVideoByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getVideoByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getVideoByNumber Exception], number: {}", number, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
 
     @GetMapping("/getVideoInOneWeek")
     @ApiOperation("获得一周视频")

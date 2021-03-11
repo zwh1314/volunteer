@@ -96,6 +96,20 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
+    public Response<List<Video>> getVideoByNumber(long number){
+        Response<List<Video>> response=new Response<>();
+
+        List<Video> videoList = videoDao.findVideoByNumber(number);
+        if (videoList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_RELATIVE_TEXT_NOT_FOUND);
+        }
+        else {
+            response.setSuc(videoList);
+        }
+        return response;
+    }
+
+    @Override
     public Response<List<Video>> getVideoInOneWeek(){
         Response<List<Video>> response=new Response<>();
 

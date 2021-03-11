@@ -18,4 +18,6 @@ public interface SwiperService {
     Response<List<Swiper>> getSwiperByPriority(String priority);
 
     Response<Boolean> deleteSwiperById(long swiperId);
+
+    Response<List<Swiper>> getSwiperByNumber(long number);
 }

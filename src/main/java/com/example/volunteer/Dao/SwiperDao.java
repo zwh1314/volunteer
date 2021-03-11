@@ -24,6 +24,13 @@ public interface SwiperDao {
 
     @ResultType(Swiper.class)
     @Select("SELECT swiper_id as swiperId, news_id as newsId, swiper_picture as swiperPicture, " +
+            "swiper_priority as swiperPriority, swiper_text as swiperText FROM swiper " +
+            "WHERE swiper_id >= (SELECT FLOOR( MAX(swiper_id) * RAND()) FROM `swiper` ) ORDER BY swiper_id LIMIT #{number}")
+    List<Swiper> findSwiperByNumber(@Param("number")long number);
+
+
+    @ResultType(Swiper.class)
+    @Select("SELECT swiper_id as swiperId, news_id as newsId, swiper_picture as swiperPicture, " +
             "swiper_priority as swiperPriority, swiper_text as swiperText FROM swiper WHERE " +
             "swiper_priority = #{swiperPriority}")
     List<Swiper> findSwiperByPriority(@Param("swiperPriority")String swiperPriority);

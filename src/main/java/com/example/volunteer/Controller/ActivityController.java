@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 @Api(tags = "活动Controller")
@@ -63,12 +64,12 @@ public class ActivityController extends BaseController{
     public Response<Boolean> addActivity(@RequestParam("activityName")String activityName,
                                          @RequestParam("activityContent")String activityContent,
                                          @RequestParam("activityOrganizer")String activityOrganizer,
-                                         @RequestParam("activityDate") String activityDate) {
+                                         @RequestParam("activityDate") String activityDate, @RequestParam("activityPicture")String activityPicture) {
         Response<Boolean> response = new Response<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ParsePosition pos = new ParsePosition(0);
         Date NewActivityDate = formatter.parse(activityDate, pos);
-        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate);
+        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate,activityPicture);
         try {
 
             return activityService.addActivity(activity);
@@ -96,12 +97,12 @@ public class ActivityController extends BaseController{
                                             @RequestParam("activityName")String activityName,
                                             @RequestParam("activityContent")String activityContent,
                                             @RequestParam("activityOrganizer")String activityOrganizer,
-                                            @RequestParam("activityDate") String activityDate) {
+                                            @RequestParam("activityDate") String activityDate, @RequestParam("activityPicture") String activityPicture) {
         Response<Boolean> response = new Response<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ParsePosition pos = new ParsePosition(0);
         Date NewActivityDate = formatter.parse(activityDate, pos);
-        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate);
+        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate,activityPicture);
         activity.setActivityId(activityId);
         try {
             return activityService.updateActivity(activity);
@@ -140,6 +141,30 @@ public class ActivityController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[deleteActivityByActivityId Exception], activityId: {}", activityId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @GetMapping("/getActivityByNumber")
+    @ApiOperation("获得活动by Number")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "number", value = "需要的活动个数", paramType = "query", dataType = "long"),
+    })
+    public Response<List<Activity>> getActivityByNumber(@RequestParam("number") long number) {
+        Response<List<Activity>> response = new Response<>();
+        try {
+            return activityService.getActivityByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityByNumber Exception], number: {}", number, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

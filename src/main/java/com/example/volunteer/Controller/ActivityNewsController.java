@@ -51,6 +51,28 @@ public class ActivityNewsController extends BaseController{
         }
     }
 
+    @GetMapping("/getActivityNewsByNumber")
+    @ApiOperation("获得活动 byNumber")
+
+    public Response<List<ActivityNews>> getActivityNewsByNumber(@RequestParam("number") long number) {
+        Response<List<ActivityNews>> response = new Response<>();
+        try {
+            return activityNewsService.getActivityNewsByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityNewsByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityNewsByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityNewsByNumber Exception], number: {}", number, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
 
     @PostMapping("/addActivityNews")
     @ApiOperation("添加活动新闻")
