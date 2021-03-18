@@ -31,6 +31,18 @@ public class Activity implements Serializable {
     @ApiModelProperty(value = "活动组织者")
     private String activityOrganizer;
 
+    @Column(name = "enrolled_number" ,nullable = false)
+    @ApiModelProperty("活动已报名人数")
+    private int enrolledNumber;
+
+    @Column(name = "requested_number",nullable = false)
+    @ApiModelProperty("活动需要人数")
+    private int requestedNumber;
+
+    @Column(name = "activity_type",nullable = false)
+    @ApiModelProperty("活动类型")
+    private String activityType;
+
     @Column(name = "activity_date",nullable = false)
     @ApiModelProperty(value = "活动时间")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
