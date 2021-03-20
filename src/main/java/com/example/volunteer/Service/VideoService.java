@@ -19,7 +19,5 @@ public interface VideoService {
 
   Response<List<Video>> getVideoInOneWeek();
 
-  Response<List<Video>> getVideoByNumber(long number);
-
   Response<Boolean> deleteVideoById(long videoId);
 }

@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class ActivityServiceImpl implements ActivityService {
     private static final Logger logger = LoggerFactory.getLogger(ActivityServiceImpl.class);
@@ -79,19 +77,6 @@ public class ActivityServiceImpl implements ActivityService {
             else {
                 response.setSuc(true);
             }
-        }
-        return response;
-    }
-
-    @Override
-    public Response<List<Activity>> getActivityByNumber(long number){
-        Response<List<Activity>> response=new Response<>();
-        List<Activity> activityList = activityDao.findActivityByNumber(number);
-        if (activityList.size() == 0) {
-            response.setFail(ResponseEnum.SWIPER_NEWS_NOT_FOUND);
-        }
-        else {
-            response.setSuc(activityList);
         }
         return response;
     }

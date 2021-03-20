@@ -86,21 +86,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Response<List<Comment>> getCommentByNumber(long number){
-        Response<List<Comment>> response=new Response<>();
-
-        List<Comment> commentList = commentDao.findCommentByNumber(number);
-        if (commentList.size() == 0) {
-            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
-        }
-        else
-        {
-            response.setSuc(commentList);
-        }
-        return response;
-    }
-
-    @Override
     public Response<List<Comment>> getCommentInOneWeek(){
         Response<List<Comment>> response=new Response<>();
 

@@ -17,8 +17,6 @@ public interface CommentService {
 
     Response<List<Comment>> getCommentInOneWeek();
 
-    Response<List<Comment>> getCommentByNumber(long number);
-
     Response<List<Comment>> getCommentByRelativeText(String relativeText);
 
     Response<Boolean> deleteCommentById(long commentId);

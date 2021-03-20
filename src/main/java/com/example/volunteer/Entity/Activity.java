@@ -36,19 +36,13 @@ public class Activity implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date activityDate;
 
-    @Column(name = "activity_picture")
-    @ApiModelProperty(value = "活动图片")
-    private String activityPicture;
-
-
     public Activity(){}
 
-     public Activity(String activityName, String activityContent, String activityOrganizer, Date activityDate, String activityPicture) {
+     public Activity(String activityName, String activityContent, String activityOrganizer, Date activityDate) {
         this.activityName = activityName;
         this.activityDate = activityDate;
         this.activityContent = activityContent;
         this.activityOrganizer = activityOrganizer;
-        this.activityPicture = activityPicture;
     }
 
 

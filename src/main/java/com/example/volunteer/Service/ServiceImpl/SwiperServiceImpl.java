@@ -110,19 +110,6 @@ public class SwiperServiceImpl implements SwiperService {
         }
         return response;
     }
-    @Override
-    public Response<List<Swiper>> getSwiperByNumber(long number){
-        Response<List<Swiper>> response=new Response<>();
-        List<Swiper> swiperList = swiperDao.findSwiperByNumber(number);
-        if (swiperList.size() == 0) {
-            response.setFail(ResponseEnum.SWIPER_NEWS_NOT_FOUND);
-        }
-        else {
-            response.setSuc(swiperList);
-        }
-        return response;
-    }
-
 
     @Override
     public Response<Boolean> deleteSwiperById(long swiperId){

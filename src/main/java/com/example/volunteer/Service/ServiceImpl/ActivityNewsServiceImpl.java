@@ -95,20 +95,6 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
     }
 
     @Override
-    public Response<List<ActivityNews>> getActivityNewsByNumber(long number){
-        Response<List<ActivityNews>> response=new Response<>();
-
-        List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsByNumber(number);
-        if (activityNewsList.size() == 0) {
-            response.setFail(ResponseEnum.ACTIVITY_NEWS_ACTIVITY_NOT_FOUND);
-        }
-        else{
-            response.setSuc(activityNewsList);
-        }
-        return response;
-    }
-
-    @Override
     public Response<List<ActivityNews>> getActivityNewsByPublisherId(long publisherId){
         Response<List<ActivityNews>> response=new Response<>();
 

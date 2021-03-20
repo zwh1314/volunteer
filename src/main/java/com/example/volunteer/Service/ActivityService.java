@@ -36,6 +36,4 @@ public interface ActivityService {
      * @return成功返回true，失败返回false
      */
     Response<Boolean> deleteActivityByActivityId(long activityId);
-
-    Response<List<Activity>> getActivityByNumber(long number);
 }

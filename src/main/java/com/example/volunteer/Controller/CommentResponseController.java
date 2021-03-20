@@ -79,26 +79,6 @@ public class CommentResponseController {
             return response;
         }
     }
-    @GetMapping("/getVideoCommentResponseByNumber")
-    @ApiOperation("获得视频评论回复ByNumber")
-    public Response<List<CommentResponse>> getVideoCommentResponseByNumber(long number) {
-        Response<List<CommentResponse>> response = new Response<>();
-        try {
-            return responseService.getVideoCommentResponseByNumber(number);
-        } catch (IllegalArgumentException e) {
-            logger.warn("[getVideoCommentResponseByNumber Illegal Argument], number: {}", number, e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[getVideoCommentResponseByNumber Runtime Exception], number: {}", number, e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
-            logger.error("[getVideoCommentResponseByNumber Exception], number: {}", number, e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-    }
 
     @GetMapping("/getCommentResponseInOneWeek")
     @ApiOperation("获得一周评论回复")
@@ -324,5 +304,52 @@ public class CommentResponseController {
             return response;
         }
     }
+
+   /* @GetMapping("/getResponseLikeByResponseId")
+    @ApiOperation("通过responseId查询点赞")
+    public Response<Long> getResponseLikeByResponseId(@RequestParam("responseId") long responseId) {
+        Response<Long> response = new Response<>();
+        try {
+          return responseRedisService.getResponseLikeByResponseId(responseId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getResponseLikeByResponseId Illegal Argument], responseId: {}", responseId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getResponseLikeByResponseId Runtime Exception],responseId: {}",responseId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("getResponseLikeByResponseId Exception], responseId: {}",responseId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+    }
+
+
+    @PostMapping("likesResponse")
+    @ApiOperation("点赞评论回复")
+    public Response<Boolean> likesResponse(@RequestParam("responseId") long responseId){
+        Response<Boolean> response = new Response<>();
+        try {
+         return  responseRedisService.likesResponse(responseId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[likesResponse Illegal Argument], : commentId {}", responseId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[likesResponse Runtime Exception], : commentId {}", responseId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[likesResponse Exception], :commentId {}", responseId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+
+    }
+
+    */
 
 }
