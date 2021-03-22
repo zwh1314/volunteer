@@ -55,4 +55,8 @@ public interface UserService {
      * 删除用户信息
      */
     Response<Boolean> deleteUserByUserId(long userId);
+
+    Response<Boolean> updatePasswordByMail(String mail, String oldPassword, String newPassword, String verifyCode);
+
+    Response<Boolean> forgetPasswordByMail(String mail, String newPassword, String verifyCode);
 }
