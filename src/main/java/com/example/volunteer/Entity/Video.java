@@ -20,9 +20,17 @@ public class Video implements Serializable {
     @ApiModelProperty(value = "视频URL")
     private String videoUrl;
 
+    @Column(name = "video_title")
+    @ApiModelProperty(value = "视频标题")
+    private String videoTitle;
+
     @Column(name = "video_text")
     @ApiModelProperty(value = "视频文本")
     private String videoText;
+
+    @Column(name = "video_play_num")
+    @ApiModelProperty(value = "视频播放量")
+    private long videoPlayNum;
 
     @Column(name = "video_like")
     @ApiModelProperty(value = "视频赞数")

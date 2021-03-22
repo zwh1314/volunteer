@@ -7,11 +7,14 @@ import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.Request.UserInfoRequest;
 import com.example.volunteer.Service.UserInfoService;
+import com.example.volunteer.utils.OSSUtil;
 import com.example.volunteer.utils.SerialUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
@@ -19,6 +22,9 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Autowired
     private UserInfoDao userInfoDao;
+
+    @Autowired
+    private OSSUtil ossUtil;
 
     @Override
     public Response<UserInfoDTO> getUserInfoByUserId(long userId){
@@ -48,6 +54,28 @@ public class UserInfoServiceImpl implements UserInfoService {
             }
         }
         response.setSuc(true);
+        return response;
+    }
+
+    @Override
+    public Response<String> updateHeadPicture(long userId, MultipartFile headPicture){
+        Response<String> response = new Response<>();
+
+        String bucketName = "head-picture";
+        String filename = "user_"+userId+"/"+headPicture.getOriginalFilename();
+        String url = ossUtil.uploadFile(bucketName,headPicture,filename);
+        if(StringUtils.isBlank(url)){
+            logger.error("[updateHeadPicture Fail], headPicture: {}", SerialUtil.toJsonStr(headPicture.getOriginalFilename()));
+            response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+            return response;
+        }
+
+        boolean result = userInfoDao.updateHeadPicture(userId, url) > 0;
+        if (!result) {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
+        }
+        response.setSuc(url);
         return response;
     }
 
