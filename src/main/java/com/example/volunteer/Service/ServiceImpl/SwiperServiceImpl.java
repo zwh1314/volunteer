@@ -27,14 +27,14 @@ public class SwiperServiceImpl implements SwiperService {
     private OSSUtil ossUtil;
 
     @Override
-    public Response<Boolean> addSwiper(long newsId, MultipartFile uploadFile){
+    public Response<Boolean> addSwiper(long newsId, MultipartFile swiper_picture){
         Response<Boolean> response=new Response<>();
 
         String bucketName = "swiper-picture";
-        String filename = "news"+newsId+"/"+uploadFile.getOriginalFilename();
-        String url = ossUtil.uploadFile(bucketName,uploadFile,filename);
+        String filename = "news_"+newsId+"/"+swiper_picture.getOriginalFilename();
+        String url = ossUtil.uploadFile(bucketName,swiper_picture,filename);
         if(StringUtils.isBlank(url)){
-            logger.error("[uploadSwiper Fail], uploadFile: {}", SerialUtil.toJsonStr(uploadFile.getName()));
+            logger.error("[uploadSwiper Fail], swiper_picture: {}", SerialUtil.toJsonStr(swiper_picture.getOriginalFilename()));
             response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
             return response;
         }

@@ -32,7 +32,7 @@ public interface UserInfoDao {
     int updatePriority(@Param("userId") String userId, @Param("priority") String priority);
 
     @Update("UPDATE user_info SET head_picture = #{headPicture} WHERE user_id = #{userId}")
-    int updateHeadPicture(@Param("userId") String userId, @Param("headPicture") String headPicture);
+    int updateHeadPicture(@Param("userId") long userId, @Param("headPicture") String headPicture);
 
     @Delete("DELETE FROM user_info WHERE user_id = #{userId}")
     int deleteUserInfoByUserId(@Param("userId")long userId);
