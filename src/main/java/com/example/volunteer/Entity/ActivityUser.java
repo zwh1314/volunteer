@@ -15,13 +15,17 @@ import java.util.Date;
 public class ActivityUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "activity_id")
+    @Column(name = "id",nullable = false)
+    @ApiModelProperty(value = "记录id")
+    private long id;
+
+    @Id
+    @Column(name = "activity_id",nullable = false)
     @ ApiModelProperty(value = "活动id")
     private long activityId;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "user_id",nullable = false)
     @ApiModelProperty(value = "用户id")
     private long userId;
 

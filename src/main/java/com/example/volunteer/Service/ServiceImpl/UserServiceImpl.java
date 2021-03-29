@@ -1,6 +1,8 @@
 package com.example.volunteer.Service.ServiceImpl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.volunteer.Dao.UserInfoDao;
+import com.example.volunteer.Entity.UserInfo;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
@@ -14,6 +16,7 @@ import com.example.volunteer.DTO.UserDTO;
 import com.example.volunteer.Entity.User;
 import com.example.volunteer.Dao.UserDao;
 import com.example.volunteer.Service.UserService;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +67,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private UserInfoDao userInfoDao;
+
     @Override
     public Response<Boolean> signUp(String tel, String mail, String userName, String password, String verifyCode) {
         Response<Boolean> response=new Response<>();
@@ -103,6 +109,58 @@ public class UserServiceImpl implements UserService {
 
         return response;
     }
+    @Override
+    public Response<UserDTO> signUpByTel(String tel,  String verifyCode) {
+        Response<UserDTO> response=new Response<>();
+
+        UserDTO userDTO=getUserByTel(tel);
+        if(userDTO != null){
+            response.setSuc(userDTO);
+            return response;
+        }
+
+//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
+//        if (StringUtils.isBlank(tel_verifycode)) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+//            return response;
+//        }
+//        else if(!verifyCode.equals(tel_verifycode)){
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+//            return response;
+//        }
+        if(!validateVerifyCode(tel,verifyCode)){
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+            return response;
+        }
+
+        String code = RandomStringUtils.randomNumeric(5);
+        String userName = "志愿者" + code;
+        String code2 = RandomStringUtils.randomNumeric(10);
+
+        User user=new User();
+        user.setTel(tel);
+        user.setUserName(userName);
+        user.setPriority("普通用户");
+        user.setPassword(code2);
+        boolean result = userDao.insertUser(user) > 0;
+
+
+        UserInfo userInfo =  new UserInfo();
+        userInfo.setTel(tel);
+        userInfo.setUserName(userName);
+        user.setPriority("普通用户");
+        boolean result2 = userInfoDao.addUserInfo(userInfo) > 0;
+
+        if (result && result2) {
+            userCache.put(tel,user);
+            response.setSuc(transformUser2UserDTO(user));
+        } else {
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+        }
+
+        return response;
+    }
+
 
 
     @Override
@@ -160,6 +218,33 @@ public class UserServiceImpl implements UserService {
             int errorFreq = userErrorFrequencyCache.getIfPresent(tel) == null ? 0 : userErrorFrequencyCache.getIfPresent(tel);
             userErrorFrequencyCache.put(tel, errorFreq + 1);
             logger.warn("[login User Not Found], tel: {}, password: {}", tel, password);
+            response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);
+            return response;
+        }
+
+        tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
+
+        response.setSuc(userDTO);
+        return response;
+    }
+
+    @Override
+    public Response<UserDTO> signInByTel(String tel, String verifyCode, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+
+        Response<UserDTO> response=new Response<>();
+
+        validateErrorFrequency(tel);
+
+        if(!validateVerifyCode(tel,verifyCode)){
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+            return response;
+        }
+
+        UserDTO userDTO=getUserByTel(tel);
+        if (userDTO == null) {
+            int errorFreq = userErrorFrequencyCache.getIfPresent(tel) == null ? 0 : userErrorFrequencyCache.getIfPresent(tel);
+            userErrorFrequencyCache.put(tel, errorFreq + 1);
+            logger.warn("[login User Not Found], tel: {}, verifyCode: {}", tel, verifyCode);
             response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);
             return response;
         }

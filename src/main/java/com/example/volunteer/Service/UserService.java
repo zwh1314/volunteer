@@ -21,6 +21,10 @@ public interface UserService {
      */
     Response<Boolean> signUpByMail(String email, String userName, String tel,String password, String verifyCode);
 
+    /**
+     * 注册3
+     */
+    Response<UserDTO>signUpByTel(String tel,String verifyCod);
 
     /**
      * 登录
@@ -31,6 +35,12 @@ public interface UserService {
      * 登录2
      */
     Response<UserDTO> signInByMail(String email, String password,HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+
+    /**
+     * 登录3
+     */
+    Response<UserDTO> signInByTel(String tel, String verifyCode, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+
     /**
      * 更新密码
      */

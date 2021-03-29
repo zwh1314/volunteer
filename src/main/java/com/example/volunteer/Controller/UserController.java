@@ -24,7 +24,40 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @PostMapping("/signUp")
+    @ApiOperation("注册")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
+    })
+    @ApiResponse(code = 200, message = "成功", response = Boolean.class)
+    public Response<Boolean> signUp(@RequestParam("tel") String tel,
+                                    @RequestParam("mail") String mail,
+                                    @RequestParam("userName") String userName,
+                                    @RequestParam("password") String password,
+                                    @RequestParam("verifyCode") String verifyCode) {
+        Response<Boolean> response = new Response<>();
+        try {
+            validateUserInfoAndVerifyCode(tel, password, verifyCode);
+            validateUserMail(mail);
 
+            return userService.signUp(tel,mail,userName,password,verifyCode);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[signIn Illegal Argument], tel: {}, password: {}", tel, password, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[signIn Runtime Exception], tel: {}, password: {}", tel, password, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[signIn Exception], tel: {}, password: {}", tel, password, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 
     @PostMapping("/login")
     @ApiOperation("登录")
@@ -53,79 +86,129 @@ public class UserController extends BaseController {
         }
     }
 
-
-
-    @PostMapping("/updatePassword")
-    @ApiOperation("修改密码")
+    @PostMapping("/signUpByMail")
+    @ApiOperation("注册byMail")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "newPassword", value = "新密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "mail", value = "邮箱", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
     })
-    public Response<Boolean> updatePassword(@RequestParam("tel") String tel,
-                                            @RequestParam("newPassword") String newPassword) {
+    @ApiResponse(code = 200, message = "成功", response = Boolean.class)
+    public Response<Boolean> signUpByMail(@RequestParam("mail") String mail,
+                                          @RequestParam("userName") String userName,
+                                          @RequestParam("password") String password,
+                                          @RequestParam("tel")String tel,
+                                          @RequestParam("verifyCode") String verifyCode) {
         Response<Boolean> response = new Response<>();
         try {
-            validateUserTelAndPassword(tel,newPassword);
-            return userService.updatePassword(tel, newPassword);
+            validateUserPasswordAndMsgCodeByEmail(mail, password, verifyCode);
+
+            return userService.signUpByMail(mail,userName,tel,password,verifyCode);
         } catch (IllegalArgumentException e) {
-            logger.warn("[updatePassword Illegal Argument], tel: {}, newPassword: {}", tel, newPassword, e);
+            logger.warn("[signInByMail Illegal Argument], tel: {}, password: {}",mail, password, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[updatePassword Runtime Exception], tel: {}, newPassword: {}", tel, newPassword, e);
+            logger.error("[signInByEmail Runtime Exception], tel: {}, password: {}", mail, password, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[signInByEmail Exception], tel: {}, password: {}", mail, password, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+    @PostMapping("/loginByMail")
+    @ApiOperation("登录ByMail")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "mail", value = "邮箱", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
+    })
+    public Response<UserDTO> loginByEmail(@RequestParam("mail") String mail, @RequestParam("password") String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        Response<UserDTO> response = new Response<>();
+        try {
+            validateBaseUserInfoByEmail(mail, password);
+
+            return userService.signInByMail(mail, password,servletRequest,servletResponse);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[loginByEmail Illegal Argument], tel: {}, password: {}", mail, password, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[loginByEmail Runtime Exception], tel: {}, password: {}", mail, password, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         } catch (Exception e) {
-            logger.error("[updatePassword Exception], tel: {}, newPassword: {}", tel, newPassword, e);
+            logger.error("[loginByEmail Exception], tel: {}, password: {}", mail, password, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
     }
 
-    @GetMapping("/verifyVerification")
-    @ApiOperation("验证验证码")
+    @PostMapping("/updatePassword")
+    @ApiOperation("更新密码")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "verifyCode", value = "验证码", paramType = "query", dataType = "String")
-
+            @ApiImplicitParam(name = "oldPassword", value = "旧密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "newPassword", value = "新密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
     })
-    public Response<Boolean> verifyVerification(@RequestParam("tel")String tel,
-                                                @RequestParam("verifyCode")String verifyCode){
+    public Response<Boolean> updatePassword(@RequestParam("tel") String tel,
+                                            @RequestParam("oldPassword") String oldPassword,
+                                            @RequestParam("newPassword") String newPassword,
+                                            @RequestParam("verifyCode") String verifyCode) {
+        Response<Boolean> response = new Response<>();
 
-        return userService.verifyVerification(tel,verifyCode);
+        try {
+            validateUserPasswordAndMsgCode(tel, oldPassword, newPassword, verifyCode);
+
+            return userService.updatePassword(tel, oldPassword, newPassword, verifyCode);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[updatePassword Illegal Argument], tel: {}, oldPassword: {}, newPassword: {}", tel, oldPassword, newPassword, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[updatePassword Runtime Exception], tel: {}, oldPassword: {}, newPassword: {}", tel, oldPassword, newPassword, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[updatePassword Exception], tel: {}, oldPassword: {}, newPassword: {}", tel, oldPassword, newPassword, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
     }
 
+    @PostMapping("/forgetPassword")
+    @ApiOperation("忘记密码")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "newPassword", value = "新密码", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
+    })
+    public Response<Boolean> forgetPassword(@RequestParam("tel") String tel,
+                                   @RequestParam("newPassword") String newPassword,
+                                   @RequestParam("verifyCode") String verifyCode) {
+        Response<Boolean> response = new Response<>();
 
+        try {
+            validateUserPasswordAndMsgCode(tel, newPassword, verifyCode);
 
-//    @PostMapping("/forgetPassword")
-//    @ApiOperation("忘记密码")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
-//            @ApiImplicitParam(name = "newPassword", value = "新密码", paramType = "query", dataType = "String"),
-//            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
-//    })
-//    public Response<Boolean> forgetPassword(@RequestParam("tel") String tel,
-//                                   @RequestParam("newPassword") String newPassword,
-//                                   @RequestParam("verifyCode") String verifyCode) {
-//        Response<Boolean> response = new Response<>();
-//
-//        try {
-//            validateUserPasswordAndMsgCode(tel, newPassword, verifyCode);
-//
-//            return userService.forgetPassword(tel, newPassword, verifyCode);
-//        } catch (IllegalArgumentException e) {
-//            logger.warn("[forgetPassword Illegal Argument], tel: {}, newPassword: {}", tel, newPassword, e);
-//            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-//            return response;
-//        } catch (VolunteerRuntimeException e) {
-//            logger.error("[forgetPassword Runtime Exception], tel: {}, newPassword: {}", tel, newPassword, e);
-//            response.setFail(e.getExceptionCode(), e.getMessage());
-//            return response;
-//        } catch (Exception e) {
-//            logger.error("[forgetPassword Exception], tel: {}, newPassword: {}", tel, newPassword, e);
-//            response.setFail(ResponseEnum.SERVER_ERROR);
-//            return response;
-//        }
-//    }
+            return userService.forgetPassword(tel, newPassword, verifyCode);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[forgetPassword Illegal Argument], tel: {}, newPassword: {}", tel, newPassword, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[forgetPassword Runtime Exception], tel: {}, newPassword: {}", tel, newPassword, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[forgetPassword Exception], tel: {}, newPassword: {}", tel, newPassword, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 
     @GetMapping("/getVerifyCode")
     @ApiOperation("获取短信验证码")
@@ -199,10 +282,12 @@ public class UserController extends BaseController {
         validateUserMail(mail);
     }
 
-    private void validateUserTelAndPassword(String tel, String newPassword) {
+    private void validateUserPasswordAndMsgCode(String tel, String newPassword, String verifyCode) {
         validateUserTel(tel);
         validateUserPassword(newPassword);
+        validateVerifyMsgCode(verifyCode);
     }
+
     private void validateUserPasswordAndMsgCodeByEmail(String mail, String newPassword, String verifyCode) {
         validateUserMail(mail);
         validateUserPassword(newPassword);

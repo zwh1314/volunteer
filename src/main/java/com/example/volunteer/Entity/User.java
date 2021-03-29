@@ -8,7 +8,9 @@ import java.io.Serializable;
 
 
 @Data
-@Entity(name = "user")
+@Entity
+@Table(name = "user",
+        indexes = {@Index(columnList = "tel")})
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +22,7 @@ public class User implements Serializable {
     @ApiModelProperty(value = "用户名")
     private String userName;
 
-    @Column(name = "password",nullable = false)
+    @Column(name = "password")
     @ApiModelProperty(value = "密码")
     private String password;
 
