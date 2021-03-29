@@ -1,11 +1,13 @@
 package com.example.volunteer.Controller;
 
+import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.ActivityUserRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityUserService;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.SerialUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -57,12 +60,13 @@ public class ActivityUserController extends BaseController{
 
     @GetMapping("/getActivityUserByUserId")
     @ApiOperation("获得活动用户by 用户Id")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "long"),
-    })
-    public Response<List<ActivityUser>> getActivityUserByUserId(@RequestParam("userId") long userId) {
+    @ApiImplicitParams({})
+    public Response<List<ActivityUser>> getActivityUserByUserId() {
         Response<List<ActivityUser>> response = new Response<>();
+        long userId = getUserId();
         try {
+            validateUserId(userId);
+
             return activityUserService.getActivityUserByUserId(userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[getActivityUserByUserId Illegal Argument], userId: {}", userId, e);
@@ -102,12 +106,13 @@ public class ActivityUserController extends BaseController{
 
     @PostMapping("/updateFormStatusByUserId")
     @ApiOperation("更新活动报名表状态")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "long"),
-    })
-    public Response<Boolean> updateFormStatusByUserId(@RequestParam("userId") long userId,@RequestParam("formStatus") String formStatus) {
+    @ApiImplicitParams({})
+    public Response<Boolean> updateFormStatusByUserId(@RequestParam("formStatus") String formStatus) {
         Response<Boolean> response = new Response<>();
+        long userId = getUserId();
         try {
+            validateUserId(userId);
+
             return activityUserService.updateFormStatusByUserId(formStatus,userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[updateFormStatusByUserId Illegal Argument], : userId {}", userId, e);
@@ -127,12 +132,14 @@ public class ActivityUserController extends BaseController{
     @PostMapping("/updateFormDateByUserId")
     @ApiOperation("更新交表日期")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "long"),
             @ApiImplicitParam(name = "formDate", value = "交表日期", paramType = "query", dataType = "String"),
     })
-    public Response<Boolean> updateFormDateByUserId(@RequestParam("userId") long userId,@RequestParam("formDate") String formDate) {
+    public Response<Boolean> updateFormDateByUserId(@RequestParam("formDate") String formDate) {
         Response<Boolean> response = new Response<>();
+        long userId = getUserId();
         try {
+            validateUserId(userId);
+
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             ParsePosition pos = new ParsePosition(0);
             Date NewFormDate = formatter.parse(formDate, pos);
@@ -155,12 +162,13 @@ public class ActivityUserController extends BaseController{
 
     @PostMapping("/deleteActivityUserByUserId")
     @ApiOperation("删除活动用户userId")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "活动用户id", paramType = "query", dataType = "long"),
-    })
-    public Response<Boolean> deleteActivityUserByUserId(@RequestParam("userId") long userId) {
+    @ApiImplicitParams({})
+    public Response<Boolean> deleteActivityUserByUserId() {
         Response<Boolean> response = new Response<>();
+        long userId = getUserId();
         try {
+            validateUserId(userId);
+
             return activityUserService.deleteActivityUserByUserId(userId);
         } catch (IllegalArgumentException e) {
             logger.warn("[deleteActivityUserByUserId Illegal Argument], userId: {}", userId, e);
@@ -172,6 +180,59 @@ public class ActivityUserController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[deleteActivityUserByUserId Exception], userId: {}", userId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @GetMapping("/getSignFileByActivityId")
+    @ApiOperation("下载报名表By activityId")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
+    })
+    public Response<List<ActivitySignFile>> getSignFileByActivityId(@RequestParam("activityId") long activityId) {
+        Response<List<ActivitySignFile>> response = new Response<>();
+        try {
+            return activityUserService.getSignFile(activityId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getSignFileByActivityId Illegal Argument], activityId: {}", activityId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getSignFileByActivityId Runtime Exception], activityId: {}", activityId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getSignFileByActivityId Exception], activityId: {}", activityId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @PostMapping("/uploadSignFileByActivityId")
+    @ApiOperation("上传报名表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "signFile", value = "报名表", paramType = "query", dataType = "MultipartFile[]"),
+    })
+    public Response<Boolean> uploadSignFileByActivityId(@RequestParam("activityId") long activityId, @RequestParam("signFile") MultipartFile[] signFile) {
+        Response<Boolean> response = new Response<>();
+        long userId;
+        try {
+            userId = getUserId();
+            validateUserId(userId);
+
+            return activityUserService.uploadSignFile(userId,activityId,signFile);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[uploadSignFileByActivityId Illegal Argument], signFile: {}", SerialUtil.toJsonStr(signFile), e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[uploadSignFileByActivityId Runtime Exception], signFile: {}", SerialUtil.toJsonStr(signFile), e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[uploadSignFileByActivityId Exception], signFile: {}", SerialUtil.toJsonStr(signFile), e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

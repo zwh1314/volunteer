@@ -27,14 +27,14 @@ public class ActivityNewsTest {
         activityNews.setActivityId(1);
         activityNews.setNewsContent("张文瀚测试1");
         activityNews.setNewsTitle("张文瀚测试");
-        activityNews.setNewsPicture("http:\\127.0.0.1:8080\\test");
+        //activityNews.setNewsPicture("http:\\127.0.0.1:8080\\test");
         activityNews.setNewsPublisher(1L);
         activityNewsList.add(activityNews);
         ActivityNews activityNews1=new ActivityNews();
         activityNews1.setActivityId(1);
         activityNews1.setNewsContent("张文瀚测试2");
         activityNews1.setNewsTitle("张文瀚测试");
-        activityNews1.setNewsPicture("http:\\127.0.0.1:8080\\test");
+        //activityNews1.setNewsPicture("http:\\127.0.0.1:8080\\test");
         activityNews1.setNewsPublisher(2L);
         activityNewsList.add(activityNews1);
         activityNewsRequest.setActivityNewsList(activityNewsList);
