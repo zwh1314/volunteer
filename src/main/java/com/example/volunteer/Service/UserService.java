@@ -34,12 +34,8 @@ public interface UserService {
     /**
      * 更新密码
      */
-    Response<Boolean> updatePassword(String tel, String oldPassword, String newPassword, String verifyCode);
+    Response<Boolean> updatePassword(String tel, String newPassword);
 
-    /**
-     * 忘记密码
-     */
-    Response<Boolean> forgetPassword(String tel, String newPassword, String verifyCode);
 
     /**
      * 验证登录短信验证码
@@ -50,6 +46,11 @@ public interface UserService {
      * 验证登录邮箱验证码
      */
     public Response<Boolean> getMailVerifyMsgCode(String mail);
+
+    /**
+     *  验证验证码
+     */
+    Response <Boolean> verifyVerification(String tel, String verifyCode);
 
     /**
      * 删除用户信息
