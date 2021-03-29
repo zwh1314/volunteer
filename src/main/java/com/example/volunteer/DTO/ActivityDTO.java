@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.util.Date;
 /**
  * @param: none
@@ -25,6 +26,15 @@ public class ActivityDTO{
 
     @ApiModelProperty(value = "活动组织者")
     private String activityOrganizer;
+
+    @ApiModelProperty("活动已报名人数")
+    private int enrolledNumber;
+
+    @ApiModelProperty("活动需要人数")
+    private int requestedNumber;
+
+    @ApiModelProperty("活动类型")
+    private String activityType;
 
     @ApiModelProperty(value = "活动时间")
     private Date activityDate;
