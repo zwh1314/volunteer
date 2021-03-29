@@ -148,7 +148,7 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo =  new UserInfo();
         userInfo.setTel(tel);
         userInfo.setUserName(userName);
-        user.setPriority("普通用户");
+        userInfo.setPriority("普通用户");
         boolean result2 = userInfoDao.addUserInfo(userInfo) > 0;
 
         if (result && result2) {
