@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@Entity(name = "comment_response")
+@Entity
+@Table(name = "comment_response",
+        indexes = {@Index(columnList = "response_comment")})
 public class CommentResponse implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

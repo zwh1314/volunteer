@@ -1,10 +1,15 @@
 package com.example.volunteer.DTO;
 
+import com.example.volunteer.Entity.ActivityPicture;
+import com.example.volunteer.Entity.ActivitySignFileModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
 import java.util.Date;
+import java.util.List;
+
 /**
  * @param: none
  * @description: 返回给前端的活动信息实体类
@@ -26,6 +31,21 @@ public class ActivityDTO{
     @ApiModelProperty(value = "活动组织者")
     private String activityOrganizer;
 
+    @ApiModelProperty("活动已报名人数")
+    private int enrolledNumber;
+
+    @ApiModelProperty("活动需要人数")
+    private int requestedNumber;
+
+    @ApiModelProperty("活动类型")
+    private String activityType;
+
     @ApiModelProperty(value = "活动时间")
     private Date activityDate;
+
+    @ApiModelProperty(value = "活动图片")
+    private List<ActivityPicture> activityPictureList;
+
+    @ApiModelProperty(value = "活动报名表模板")
+    private List<ActivitySignFileModel> activitySignFileModelList;
 }
