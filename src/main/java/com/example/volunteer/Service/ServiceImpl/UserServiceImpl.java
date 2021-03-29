@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private Cache<String, String> verifyCodeCache = Caffeine.newBuilder()
-            .expireAfterWrite(60, TimeUnit.SECONDS)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
             .initialCapacity(5)
             .maximumSize(25)
             .build();
@@ -282,52 +282,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Response<Boolean> updatePassword(String tel, String oldPassword, String newPassword, String verifyCode) {
-        Response<Boolean> response = new Response<>();
-
-        validateErrorFrequency(tel);
-        UserDTO userDTO = verifyUserByTelAndPassword(tel, oldPassword);
-        if (userDTO == null) {
-            int errorFreq = userErrorFrequencyCache.getIfPresent(tel) == null ? 0 : userErrorFrequencyCache.getIfPresent(tel);
-            userErrorFrequencyCache.put(tel, errorFreq + 1);
-            logger.warn("[updatePassword User Not Found], tel: {}, password: {}", tel, oldPassword);
-            response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);
-            return response;
-        }
-
-//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
-//        if (StringUtils.isBlank(tel_verifycode)) {
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-//            return response;
-//        }
-//        else if(!verifyCode.equals(tel_verifycode)){
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-//            return response;
-//        }
-        if(!validateVerifyCode(tel,verifyCode)){
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-            return response;
-        }
-
-        boolean result = userDao.updatePassword(tel, newPassword) > 0;
-        if (result) {
-            response.setSuc(true);
-        } else {
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-        }
-
-        return response;
-    }
-
-    @Override
-    public Response<Boolean> forgetPassword(String tel, String newPassword, String verifyCode) {
+    public Response<Boolean> updatePassword(String tel,String newPassword) {
         Response<Boolean> response = new Response<>();
         validateErrorFrequency(tel);
         UserDTO userDTO = getUserByTel(tel);
         if (userDTO == null) {
             int errorFreq = userErrorFrequencyCache.getIfPresent(tel) == null ? 0 : userErrorFrequencyCache.getIfPresent(tel);
             userErrorFrequencyCache.put(tel, errorFreq + 1);
-            logger.warn("[forgetPassword User Not Found], tel: {}", tel);
+            logger.warn("[updatePassword User Not Found], tel: {}", tel);
             response.setFail(ResponseEnum.USER_NOT_FOUND);
             return response;
         }
@@ -341,10 +303,11 @@ public class UserServiceImpl implements UserService {
 //            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
 //            return response;
 //        }
-        if(!validateVerifyCode(tel,verifyCode)){
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-            return response;
-        }
+
+//        if(!validateVerifyCode(tel,verifyCode)){
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+//            return response;
+//        }
 
         boolean result = userDao.updatePassword(tel, newPassword) > 0;
         if (result) {
@@ -355,6 +318,7 @@ public class UserServiceImpl implements UserService {
 
         return response;
     }
+
 
     //阿里云短信服务验证
 //    @Override
@@ -386,6 +350,35 @@ public class UserServiceImpl implements UserService {
             response.setSuc(true);
         else
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_VALID);
+
+        return response;
+    }
+
+
+    /**
+     * 验证验证码
+     * @param tel
+     * @param verifyCode
+     * @return
+     */
+    @Override
+    public Response<Boolean> verifyVerification(String tel, String verifyCode) {
+
+        Response <Boolean> response = new Response<>();
+        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
+//        if (StringUtils.isBlank(tel_verifycode)) {
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
+//            return response;
+//        }
+//        else if(!verifyCode.equals(tel_verifycode)){
+//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+//            return response;
+//        }
+        if(!validateVerifyCode(tel,verifyCode)){
+            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
+            return response;
+        }
+        response.setSuc(true);
 
         return response;
     }

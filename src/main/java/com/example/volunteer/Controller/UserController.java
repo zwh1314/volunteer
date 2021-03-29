@@ -24,36 +24,67 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/signUpByTel")
-    @ApiOperation("通过手机号注册或登陆")
+    @PostMapping("/signUp")
+    @ApiOperation("注册")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
-    public Response<UserDTO> signUp(@RequestParam("tel") String tel,
+    public Response<Boolean> signUp(@RequestParam("tel") String tel,
+                                    @RequestParam("mail") String mail,
+                                    @RequestParam("userName") String userName,
+                                    @RequestParam("password") String password,
                                     @RequestParam("verifyCode") String verifyCode) {
-        Response<UserDTO> response = new Response<>();
+        Response<Boolean> response = new Response<>();
         try {
-            validateUserTel(tel);
-            validateVerifyMsgCode(verifyCode);
+            validateUserInfoAndVerifyCode(tel, password, verifyCode);
+            validateUserMail(mail);
 
-            return userService.signUpByTel(tel,verifyCode);
+            return userService.signUp(tel,mail,userName,password,verifyCode);
         } catch (IllegalArgumentException e) {
-            logger.warn("[signIn Illegal Argument], tel: {}, verifyCode: {}", tel, verifyCode, e);
+            logger.warn("[signIn Illegal Argument], tel: {}, password: {}", tel, password, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[signIn Runtime Exception], tel: {}, verifyCode: {}", tel, verifyCode, e);
+            logger.error("[signIn Runtime Exception], tel: {}, password: {}", tel, password, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[signIn Exception], tel: {}, verifyCode: {}", tel, verifyCode, e);
+            logger.error("[signIn Exception], tel: {}, password: {}", tel, password, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
     }
 
+    @PostMapping("/login")
+    @ApiOperation("登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "账户密码", paramType = "query", dataType = "String"),
+    })
+    public Response<UserDTO> login(@RequestParam("tel") String tel, @RequestParam("password") String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        Response<UserDTO> response = new Response<>();
+        try {
+            validateBaseUserInfo(tel, password);
+
+            return userService.signIn(tel, password,servletRequest,servletResponse);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[login Illegal Argument], tel: {}, password: {}", tel, password, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[login Runtime Exception], tel: {}, password: {}", tel, password, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        } catch (Exception e) {
+            logger.error("[login Exception], tel: {}, password: {}", tel, password, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 
     @PostMapping("/signUpByMail")
     @ApiOperation("注册byMail")
