@@ -32,13 +32,14 @@ public class UserController extends BaseController {
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
     public Response<UserDTO> signUp(@RequestParam("tel") String tel,
-                                    @RequestParam("verifyCode") String verifyCode) {
+                                    @RequestParam("verifyCode") String verifyCode,
+                                    HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         Response<UserDTO> response = new Response<>();
         try {
             validateUserTel(tel);
             validateVerifyMsgCode(verifyCode);
 
-            return userService.signUpByTel(tel,verifyCode);
+            return userService.signUpByTel(tel,verifyCode,servletRequest,servletResponse);
         } catch (IllegalArgumentException e) {
             logger.warn("[signIn Illegal Argument], tel: {}, verifyCode: {}", tel, verifyCode, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
