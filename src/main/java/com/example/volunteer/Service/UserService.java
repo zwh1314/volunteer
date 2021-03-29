@@ -24,7 +24,7 @@ public interface UserService {
     /**
      * 注册3
      */
-    Response<UserDTO>signUpByTel(String tel,String verifyCod);
+    Response<UserDTO>signUpByTel(String tel,String verifyCod, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 
     /**
      * 登录

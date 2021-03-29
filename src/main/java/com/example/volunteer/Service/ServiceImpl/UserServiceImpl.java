@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         return response;
     }
     @Override
-    public Response<UserDTO> signUpByTel(String tel,  String verifyCode) {
+    public Response<UserDTO> signUpByTel(String tel,  String verifyCode,HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         Response<UserDTO> response=new Response<>();
 
         UserDTO userDTO=getUserByTel(tel);
@@ -119,15 +119,6 @@ public class UserServiceImpl implements UserService {
             return response;
         }
 
-//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
-//        if (StringUtils.isBlank(tel_verifycode)) {
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-//            return response;
-//        }
-//        else if(!verifyCode.equals(tel_verifycode)){
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-//            return response;
-//        }
         if(!validateVerifyCode(tel,verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
@@ -148,7 +139,7 @@ public class UserServiceImpl implements UserService {
         UserInfo userInfo =  new UserInfo();
         userInfo.setTel(tel);
         userInfo.setUserName(userName);
-        user.setPriority("普通用户");
+        userInfo.setPriority("普通用户");
         boolean result2 = userInfoDao.addUserInfo(userInfo) > 0;
 
         if (result && result2) {
@@ -157,6 +148,8 @@ public class UserServiceImpl implements UserService {
         } else {
             response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
+
+        tokenUtil.generateUserToken(userInfo.getUserId(), servletRequest, servletResponse);
 
         return response;
     }

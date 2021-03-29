@@ -51,7 +51,7 @@ public class UserInfo implements Serializable {
     @ApiModelProperty(value = "QQ")
     private String qq;
 
-    @Column(name = "credits",nullable = false)
+    @Column(name = "credits")
     @ApiModelProperty(value = "credits")
     private int credits;
 }
