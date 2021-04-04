@@ -2,6 +2,7 @@ package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.ActivitySignFileDao;
 import com.example.volunteer.Dao.ActivityUserDao;
+import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Request.ActivityUserRequest;
@@ -181,6 +182,21 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         }
 
         response.setSuc(true);
+        return response;
+    }
+
+    @Override
+    public Response<List<Activity>> getFocusedByUserId(long userId) {
+        Response<List<Activity>> response=new Response<>();
+        List<Activity> activityFocusedList = activityUserDao.getFocusedByUserId(userId);
+
+        if(activityFocusedList.size() == 0){
+            response.setFail(ResponseEnum.NO_ACTIVITY_FOCUS);
+        }else{
+            response.setSuc(activityFocusedList);
+
+        }
+
         return response;
     }
 }

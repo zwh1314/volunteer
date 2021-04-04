@@ -1,5 +1,6 @@
 package com.example.volunteer.Dao;
 
+import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivityUser;
 import org.apache.ibatis.annotations.*;
 
@@ -31,4 +32,11 @@ public interface ActivityUserDao {
 
     @Delete("DELETE FROM activity_user WHERE activity_id = #{activityId}")
     int deleteActivityUserByActivityId(@Param("activityId")long activityId);
+
+    @ResultType(Activity.class)
+    @Select("SELECT activity_id as activityId ,activity_name  as activityName,activity_content as activityContent, " +
+            "activity_organizer as activityOrganizer ,enrolled_number as enrolledNumber, requested_number as requestedNumber," +
+            " activity_type as activityType ,activity_date as activityDate FROM activity" +
+            " WHERE activity_id in (SELECT activity_id FROM activity_user WHERE user_id = #{userId} AND focus_status = 1 )")
+    List<Activity> getFocusedByUserId(long userId);
 }
