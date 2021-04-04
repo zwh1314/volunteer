@@ -40,10 +40,10 @@ public class TokenAspect {
         return Long.valueOf(token);
     }
 
-    @Pointcut("execution(public * com.example.volunteer.Controller.UserController.login())")
-    private void login() {}
+    @Pointcut("execution(public * com.example.volunteer.Controller.UserController.signUp())")
+    private void signUp() {}
 
-    @After("login()")
+    @After("signUp()")
     public void generateToken() {
 
     }
