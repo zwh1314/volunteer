@@ -1,5 +1,6 @@
 package com.example.volunteer.Service.ServiceImpl;
 
+import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Dao.ActivitySignFileDao;
 import com.example.volunteer.Dao.ActivityUserDao;
 import com.example.volunteer.Entity.Activity;
@@ -186,9 +187,9 @@ public class ActivityUserServiceImpl implements ActivityUserService {
     }
 
     @Override
-    public Response<List<Activity>> getFocusedByUserId(long userId) {
-        Response<List<Activity>> response=new Response<>();
-        List<Activity> activityFocusedList = activityUserDao.getFocusedByUserId(userId);
+    public Response<List<ActivityDTO>> getFocusedByUserId(long userId) {
+        Response<List<ActivityDTO>> response=new Response<>();
+        List<ActivityDTO> activityFocusedList = activityUserDao.getFocusedByUserId(userId);
 
         if(activityFocusedList.size() == 0){
             response.setFail(ResponseEnum.NO_ACTIVITY_FOCUS);

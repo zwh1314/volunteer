@@ -1,5 +1,6 @@
 package com.example.volunteer.Service;
 
+import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
@@ -73,5 +74,5 @@ public interface  ActivityUserService {
      * @param userId
      * @return
      */
-    Response<List<Activity>> getFocusedByUserId(long userId);
+    Response<List<ActivityDTO>> getFocusedByUserId(long userId);
 }
