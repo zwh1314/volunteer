@@ -110,6 +110,20 @@ public class ActivityUserServiceImpl implements ActivityUserService {
     }
 
     @Override
+    public Response<List<ActivityDTO>> getSignedUpActivityByUserId(long userId) {
+        Response<List<ActivityDTO>> response=new Response<>();
+
+        List<ActivityDTO> ActivityDTOList = activityUserDao.findSignedUpActivityByUserId(userId);
+        if (ActivityDTOList.size() == 0) {
+            response.setFail(ResponseEnum.SIGNED_ACTIVITY_NOT_FOUND);
+        }
+        else{
+            response.setSuc(ActivityDTOList);
+        }
+        return response;
+    }
+
+    @Override
     public Response<Boolean> deleteActivityUserByActivityId(long activityId) {
         Response<Boolean> response=new Response<>();
 
@@ -198,6 +212,20 @@ public class ActivityUserServiceImpl implements ActivityUserService {
 
         }
 
+        return response;
+    }
+
+    @Override
+    public Response<List<ActivityDTO>> getParticipatedActivityByUserId(long userId) {
+        Response<List<ActivityDTO>> response=new Response<>();
+
+        List<ActivityDTO> ActivityDTOList = activityUserDao.findParticipatedActivityByUserId(userId);
+        if (ActivityDTOList.size() == 0) {
+            response.setFail(ResponseEnum.SIGNED_ACTIVITY_NOT_FOUND);
+        }
+        else{
+            response.setSuc(ActivityDTOList);
+        }
         return response;
     }
 }

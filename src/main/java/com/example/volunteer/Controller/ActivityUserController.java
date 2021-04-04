@@ -1,10 +1,13 @@
 package com.example.volunteer.Controller;
 
+import com.example.volunteer.DTO.ActivityDTO;
+import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.ActivityUserRequest;
 import com.example.volunteer.Response.Response;
+import com.example.volunteer.Service.ActivityService;
 import com.example.volunteer.Service.ActivityUserService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.SerialUtil;
@@ -32,6 +35,9 @@ public class ActivityUserController extends BaseController{
 
     @Autowired
     private ActivityUserService activityUserService;
+
+    @Autowired
+    private ActivityService activityService;
 
 
     @GetMapping("/getActivityUserByActivityId")
@@ -82,6 +88,41 @@ public class ActivityUserController extends BaseController{
             return response;
         }
     }
+
+    @GetMapping("/getActivityStateByNumber")
+    @ApiOperation("获得活动状态by number")
+    @ApiImplicitParams({})
+    public Response<List<ActivityDTO>> getActivityStateByNumber(@RequestParam("number") long number, @RequestParam("userId") long userId) {
+        Response<List<ActivityDTO>> response = new Response<>();
+
+        try {
+            validateUserId(userId);
+            if(number == 0) {// 已关注
+             return activityUserService.getFocusedByUserId(userId);
+            }else if(number == 1) {//已报名
+                 return activityUserService.getSignedUpActivityByUserId(userId);
+            }else if(number == 2){//已发布
+                 return activityService.getActivityByOrganizerId(userId);
+            }else if(number == 3){//已参加
+                 return activityUserService.getParticipatedActivityByUserId(userId);
+           }
+           else response.setFail(ResponseEnum.ILLEGAL_PARAM);
+           return response;
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityUserByUserId Illegal Argument], userId: {}", userId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityUserByUserId Runtime Exception], userId: {}", userId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityUserByUserId Exception], userId: {}", userId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
 
     @PostMapping("/addActivityUser")
     @ApiOperation("添加活动用户")

@@ -29,7 +29,7 @@ public class Activity implements Serializable {
 
     @Column(name = "activity_organizer",nullable = false)
     @ApiModelProperty(value = "活动组织者")
-    private String activityOrganizer;
+    private long activityOrganizer;
 
     @Column(name = "enrolled_number" ,nullable = false)
     @ApiModelProperty("活动已报名人数")
@@ -51,16 +51,6 @@ public class Activity implements Serializable {
     @Column(name = "is_signfile_model",nullable = false)
     @ApiModelProperty(value = "是否已上传报名表")
     private boolean isSignFileModel;
-
-    public Activity(){}
-
-     public Activity(String activityName, String activityContent, String activityOrganizer, Date activityDate) {
-        this.activityName = activityName;
-        this.activityDate = activityDate;
-        this.activityContent = activityContent;
-        this.activityOrganizer = activityOrganizer;
-    }
-
 
 
 }

@@ -5,6 +5,8 @@ import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Dao.ActivitySignFileModelDao;
 import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFileModel;
+import com.example.volunteer.Entity.ActivityUser;
+import com.example.volunteer.Request.ActivityRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
 
@@ -35,17 +37,19 @@ public class ActivityServiceImpl implements ActivityService {
     private OSSUtil ossUtil;
 
     @Override
-    public Response<Boolean> addActivity(Activity activity){
+    public Response<Boolean> addActivity(ActivityRequest activityRequest){
         Response<Boolean> response = new Response<>();
-        boolean result = activityDao.insertActivity(activity) > 0;
-        if(!result){
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-        }
-        else{
-            response.setSuc(true);
-        }
-        return response;
 
+        for(Activity activity:activityRequest.getActivityList()) {
+            boolean result = activityDao.insertActivity(activity) > 0;
+            if (!result) {
+                logger.error("[addActivity Fail], request: {}", SerialUtil.toJsonStr(activityRequest));
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
+            }
+        }
+        response.setSuc(true);
+        return response;
     }
 
     @Override
@@ -72,6 +76,20 @@ public class ActivityServiceImpl implements ActivityService {
         else {
             activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityId));
             response.setSuc(activityDTO);
+        }
+        return response;
+    }
+
+    @Override
+    public Response<List<ActivityDTO>> getActivityByOrganizerId(long organizerId) {
+        Response<List<ActivityDTO>> response=new Response<>();
+
+        List<ActivityDTO> activityDTOList = activityDao.getActivityByOrganizer(organizerId);
+        if (activityDTOList == null) {
+            response.setFail(ResponseEnum.FAIL);
+        }
+        else {
+            response.setSuc(activityDTOList);
         }
         return response;
     }

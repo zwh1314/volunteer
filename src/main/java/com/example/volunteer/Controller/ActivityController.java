@@ -3,6 +3,7 @@ package com.example.volunteer.Controller;
 import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
+import com.example.volunteer.Request.ActivityRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -59,34 +60,20 @@ public class ActivityController extends BaseController{
 
     @PostMapping("/addActivity")
     @ApiOperation("添加活动")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "activityName", value = "活动名称", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "activityContent", value = "活动内容", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "activityOrganizer", value = "活动组织者", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "activityDate", value = "活动日期", paramType = "query", dataType = "String"),
-    })
-    public Response<Boolean> addActivity(@RequestParam("activityName")String activityName,
-                                         @RequestParam("activityContent")String activityContent,
-                                         @RequestParam("activityOrganizer")String activityOrganizer,
-                                         @RequestParam("activityDate") String activityDate) {
+    public Response<Boolean> addActivity(@RequestBody ActivityRequest activityRequest) {
         Response<Boolean> response = new Response<>();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ParsePosition pos = new ParsePosition(0);
-        Date NewActivityDate = formatter.parse(activityDate, pos);
-        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate);
         try {
-
-            return activityService.addActivity(activity);
+            return activityService.addActivity(activityRequest);
         } catch (IllegalArgumentException e) {
-            logger.warn("[addActivity Illegal Argument], activity: {}", activity, e);
+            logger.warn("[addActivity Illegal Argument], activityRequest: {}", SerialUtil.toJsonStr(activityRequest), e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivity Runtime Exception], activity: {}", activity, e);
+            logger.error("[addActivity Runtime Exception], activityRequest: {}", SerialUtil.toJsonStr(activityRequest), e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addActivity Exception], activity: {}", activity, e);
+            logger.error("[addActivity Exception], activityRequest: {}", SerialUtil.toJsonStr(activityRequest), e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
@@ -134,7 +121,8 @@ public class ActivityController extends BaseController{
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         ParsePosition pos = new ParsePosition(0);
         Date NewActivityDate = formatter.parse(activityDate, pos);
-        Activity activity = new Activity(activityName, activityContent,activityOrganizer,NewActivityDate);
+        long ActivityOrganizer = Long.parseLong(activityOrganizer);
+        Activity activity = new Activity();//(activityName, activityContent,ActivityOrganizer,NewActivityDate);
         activity.setActivityId(activityId);
         try {
             return activityService.updateActivity(activity);

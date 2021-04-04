@@ -1,7 +1,6 @@
 package com.example.volunteer.Dao;
 
 import com.example.volunteer.DTO.ActivityDTO;
-import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivityUser;
 import org.apache.ibatis.annotations.*;
 
@@ -35,9 +34,23 @@ public interface ActivityUserDao {
     int deleteActivityUserByActivityId(@Param("activityId")long activityId);
 
     @ResultType(ActivityDTO.class)
+    @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent," +
+            "activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as ActivityType,enrolled_number as enrolledNumber,requested_number as requestedNumber " +
+            "FROM activity WHERE activity_id in (SELECT activity_id as activityId FROM activity_user WHERE user_id = #{userId} AND form_status = 1 )")
+    List<ActivityDTO> findSignedUpActivityByUserId(@Param("userId")long userId);
+
+    @ResultType(ActivityDTO.class)
+    @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent, " +
+            " activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as activityType,enrolled_number as enrolledNumber,requested_number as requestedNumber, " +
+            " picture_id as pictureId, picture_url as pictureUrl" +
+            " FROM activity natural join activity_picture WHERE activity_date < NOW() AND activity_id in (SELECT activity_id  FROM activity_user WHERE form_status = 1 AND user_id = #{userId} " +
+            ")")
+    List<ActivityDTO> findParticipatedActivityByUserId(long userId);
+
+    @ResultType(ActivityDTO.class)
     @Select("SELECT activity_id as activityId ,activity_name  as activityName,activity_content as activityContent, " +
             "activity_organizer as activityOrganizer ,enrolled_number as enrolledNumber, requested_number as requestedNumber," +
             " activity_type as activityType ,activity_date as activityDate FROM activity" +
-            " WHERE activity_id in (SELECT activity_id FROM activity_user WHERE user_id = #{userId} AND focus_status = 1 )")
+            " WHERE activity_id in (SELECT activity_id FROM activity_user WHERE user_id = #{userId} AND is_focus = 1 )")
     List<ActivityDTO> getFocusedByUserId(long userId);
 }

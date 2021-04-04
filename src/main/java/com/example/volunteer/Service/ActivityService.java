@@ -3,6 +3,7 @@ package com.example.volunteer.Service;
 import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFileModel;
+import com.example.volunteer.Request.ActivityRequest;
 import com.example.volunteer.Response.Response;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,10 +14,10 @@ import java.util.List;
 public interface ActivityService {
 
     /**增加活动
-     * @param activity
+     * @param activityRequest
      * @return 成功返回true，失败返回false
      */
-    Response<Boolean> addActivity(Activity activity);
+    Response<Boolean> addActivity(ActivityRequest activityRequest);
 
     /**更新活动
      * @param activity
@@ -31,6 +32,13 @@ public interface ActivityService {
      * @return 查询结果链表
      */
     public Response<ActivityDTO> getActivityByActivityId(long activityId);
+
+    /**
+     * 通过organizerId查询活动
+     * @param organizerId
+     * @return 查询结果链表
+     */
+    public Response<List<ActivityDTO>> getActivityByOrganizerId(long organizerId);
 
 
     /**删除活动
