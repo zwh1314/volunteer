@@ -22,7 +22,7 @@ public class User implements Serializable {
     @ApiModelProperty(value = "用户名")
     private String userName;
 
-    @Column(name = "password")
+    @Column(name = "password",nullable = false)
     @ApiModelProperty(value = "密码")
     private String password;
 
@@ -30,11 +30,11 @@ public class User implements Serializable {
     @ApiModelProperty(value = "优先级")
     private String priority;
 
-    @Column(name = "tel",nullable = false)
+    @Column(name = "tel")
     @ApiModelProperty(value = "手机")
     private String tel;
 
-    @Column(name = "mail_address")
+    @Column(name = "mail_address",nullable = false)
     @ApiModelProperty(value = "邮箱地址")
     private String mailAddress;
 }
