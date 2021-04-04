@@ -28,28 +28,53 @@ public class UserController extends BaseController {
     @ApiOperation("通过手机号注册或登陆")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
-            @ApiImplicitParam(name = "verifyCode", value = "短信验证码", paramType = "query", dataType = "String"),
+
     })
     @ApiResponse(code = 200, message = "成功", response = Boolean.class)
     public Response<UserDTO> signUp(@RequestParam("tel") String tel,
-                                    @RequestParam("verifyCode") String verifyCode,
                                     HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         Response<UserDTO> response = new Response<>();
         try {
             validateUserTel(tel);
-            validateVerifyMsgCode(verifyCode);
-
-            return userService.signUpByTel(tel,verifyCode,servletRequest,servletResponse);
+            return userService.signUpByTel(tel,servletRequest,servletResponse);
         } catch (IllegalArgumentException e) {
-            logger.warn("[signIn Illegal Argument], tel: {}, verifyCode: {}", tel, verifyCode, e);
+            logger.warn("[signIn Illegal Argument], tel: {}, ", tel,  e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[signIn Runtime Exception], tel: {}, verifyCode: {}", tel, verifyCode, e);
+            logger.error("[signIn Runtime Exception], tel: {}", tel, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[signIn Exception], tel: {}, verifyCode: {}", tel, verifyCode, e);
+            logger.error("[signIn Exception], tel: {}", tel, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+    @PostMapping("/signIn")
+    @ApiOperation("通过手机号密码登陆")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tel", value = "手机号", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "密码", paramType = "query", dataType = "String")
+
+    })
+    @ApiResponse(code = 200, message = "成功", response = Boolean.class)
+    public Response<UserDTO> signIn(@RequestParam("tel") String tel,@RequestParam("password") String password,
+                                    HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        Response<UserDTO> response = new Response<>();
+        try {
+            validateUserTel(tel);
+            return userService.signIn(tel,password,servletRequest,servletResponse);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[signIn Illegal Argument], tel: {}, ", tel,  e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[signIn Runtime Exception], tel: {}", tel, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[signIn Exception], tel: {}", tel, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

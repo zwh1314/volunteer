@@ -110,19 +110,20 @@ public class UserServiceImpl implements UserService {
         return response;
     }
     @Override
-    public Response<UserDTO> signUpByTel(String tel,  String verifyCode,HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public Response<UserDTO> signUpByTel(String tel,HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         Response<UserDTO> response=new Response<>();
 
         UserDTO userDTO=getUserByTel(tel);
         if(userDTO != null){
             response.setSuc(userDTO);
+            tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
             return response;
         }
 
-        if(!validateVerifyCode(tel,verifyCode)){
+       /* if(!validateVerifyCode(tel,verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
-        }
+        }*/
 
         String code = RandomStringUtils.randomNumeric(5);
         String userName = "志愿者" + code;
