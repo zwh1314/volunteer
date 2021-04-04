@@ -45,7 +45,7 @@ public class ActivityNewsTest {
         System.out.println(activityNewsService.getActivityNewsInOneWeek());
         System.out.println(activityNewsService.getActivityNewsByRelativeText("张文瀚"));
 
-        activityNewsService.updateActivityNewsContent("猪猪侠",1);
+        //activityNewsService.updateActivityNewsContent("猪猪侠",1);
         //activityNewsService.updateActivityNewsPicture("http:\\127.0.0.1:8080\\test1",1);
         activityNewsService.updateActivityNewsTitle("张文瀚更新测试",1);
 

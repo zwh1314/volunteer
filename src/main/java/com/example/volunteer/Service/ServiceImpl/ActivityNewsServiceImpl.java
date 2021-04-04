@@ -51,17 +51,25 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
     }
 
     @Override
-    public Response<Boolean> updateActivityNewsContent(String activityNewsContent, long newsId){
+    public Response<Boolean> updateActivityNewsContent(MultipartFile activityNewsContent, long newsId){
         Response<Boolean> response=new Response<>();
-        boolean result = activityNewsDao.updateActivityNewsContent(activityNewsContent,newsId) > 0;
+        String bucketName = "newscontent-url";
+        String filename = "newsId_"+newsId+"/";
+        String url = ossUtil.uploadFile(bucketName, activityNewsContent, filename + activityNewsContent.getOriginalFilename());
+        if (StringUtils.isBlank(url)) {
+            logger.error("[addVideo Fail], activityNewsPicture: {}", SerialUtil.toJsonStr(activityNewsContent.getOriginalFilename()));
+            response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+            return response;
+        }
+
+        boolean result = activityNewsDao.updateActivityNewsContent(url,newsId) > 0;
         if (!result) {
             logger.error("[updateActivityNewsContent Fail], newsId: {}", SerialUtil.toJsonStr(newsId));
             response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
         }
-        else
-        {
-            response.setSuc(true);
-        }
+
+        response.setSuc(true);
         return response;
     }
 

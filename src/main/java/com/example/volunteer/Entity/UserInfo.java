@@ -24,11 +24,11 @@ public class UserInfo implements Serializable {
     @ApiModelProperty(value = "优先级")
     private String priority;
 
-    @Column(name = "mail_address",nullable = false)
+    @Column(name = "mail_address")
     @ApiModelProperty(value = "邮箱地址")
     private String mailAddress;
 
-    @Column(name = "head_picture",nullable = false)
+    @Column(name = "head_picture")
     @ApiModelProperty(value = "头像")
     private String headPicture;
 
@@ -52,15 +52,15 @@ public class UserInfo implements Serializable {
     @ApiModelProperty(value = "专业")
     private String major;
 
-    @Column(name = "fax",nullable = false)
+    @Column(name = "fax")
     @ApiModelProperty(value = "传真")
     private String fax;
 
-    @Column(name = "tel")
+    @Column(name = "tel",nullable = false)
     @ApiModelProperty(value = "手机")
     private String tel;
 
-    @Column(name = "qq",nullable = false)
+    @Column(name = "qq")
     @ApiModelProperty(value = "QQ")
     private String qq;
 

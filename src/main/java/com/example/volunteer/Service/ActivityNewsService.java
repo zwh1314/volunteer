@@ -11,7 +11,7 @@ import java.util.List;
 public interface ActivityNewsService {
     Response<Boolean> addActivityNews(ActivityNewsRequest activityNewsRequest);
 
-    Response<Boolean> updateActivityNewsContent(String activityNewsContent, long newsId);
+    Response<Boolean> updateActivityNewsContent(MultipartFile activityNewsContent, long newsId);
 
     Response<Boolean> updateActivityNewsPicture(MultipartFile activityNewsPicture, long newsId);
 
