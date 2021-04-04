@@ -15,9 +15,6 @@ public interface ActivityNewsDao {
     @Update("UPDATE activity_news SET news_content = #{newsContent} WHERE news_id = #{newsId}")
     int updateActivityNewsContent(@Param("newsContent")String newsContent, @Param("newsId")long newsId);
 
-    @Update("UPDATE activity_news SET news_picture = #{newsPicture} WHERE news_id = #{newsId}")
-    int updateActivityNewsPicture(@Param("newsPicture")String newsPicture, @Param("newsId")long newsId);
-
     @Update("UPDATE activity_news SET news_title = #{newsTitle} WHERE news_id = #{newsId}")
     int updateActivityNewsTitle(@Param("newsTitle")String newsTitle, @Param("newsId")long newsId);
 

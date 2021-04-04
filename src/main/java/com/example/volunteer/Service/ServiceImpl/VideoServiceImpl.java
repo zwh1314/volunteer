@@ -30,7 +30,7 @@ public class VideoServiceImpl implements VideoService {
     public Response<Boolean> addVideo(Video video, MultipartFile video_mp4){
         Response<Boolean> response=new Response<>();
 
-        String bucketName = "video-mp4";
+        String bucketName = "videos-url";
         String filename = "videoPublisher_"+video.getVideoPublisher()+"/"+video_mp4.getOriginalFilename();
         String url = ossUtil.uploadFile(bucketName,video_mp4,filename);
         if(StringUtils.isBlank(url)){

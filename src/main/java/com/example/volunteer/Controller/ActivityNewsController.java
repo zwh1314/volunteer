@@ -1,6 +1,6 @@
 package com.example.volunteer.Controller;
 
-import com.example.volunteer.Entity.ActivityNews;
+import com.example.volunteer.DTO.ActivityNewsDTO;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.ActivityNewsRequest;
 import com.example.volunteer.Response.Response;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,12 +29,12 @@ public class ActivityNewsController extends BaseController{
 
 
     @GetMapping("/getActivityNewsByActivityId")
-    @ApiOperation("获得活动 Id")
+    @ApiOperation("获得活动 By Id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
     })
-    public Response<List<ActivityNews>> getActivityNewsById(@RequestParam("activityId") long activityId) {
-        Response<List<ActivityNews>> response = new Response<>();
+    public Response<List<ActivityNewsDTO>> getActivityNewsById(@RequestParam("activityId") long activityId) {
+        Response<List<ActivityNewsDTO>> response = new Response<>();
         try {
             return activityNewsService.getActivityNewsByActivityId(activityId);
         } catch (IllegalArgumentException e) {
@@ -46,6 +47,76 @@ public class ActivityNewsController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[getActivityNewsByActivityId Exception], activityId: {}", activityId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @GetMapping("/getActivityNewsByPublisherId")
+    @ApiOperation("获得活动 By 活动发布者Id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "publisherId", value = "活动发布者id", paramType = "query", dataType = "long"),
+    })
+    public Response<List<ActivityNewsDTO>> getActivityNewsByPublisherId(@RequestParam("publisherId") long publisherId) {
+        Response<List<ActivityNewsDTO>> response = new Response<>();
+        try {
+            return activityNewsService.getActivityNewsByPublisherId(publisherId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityNewsByPublisherId Illegal Argument], publisherId: {}", publisherId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityNewsByPublisherId Runtime Exception], publisherId: {}", publisherId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityNewsByPublisherId Exception], publisherId: {}", publisherId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @GetMapping("/getActivityNewsInOneWeek")
+    @ApiOperation("获得最近一周的活动")
+    @ApiImplicitParams({})
+    public Response<List<ActivityNewsDTO>> getActivityNewsInOneWeek() {
+        Response<List<ActivityNewsDTO>> response = new Response<>();
+        try {
+            return activityNewsService.getActivityNewsInOneWeek();
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityNewsInOneWeek Illegal Argument]", e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityNewsInOneWeek Runtime Exception]", e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityNewsInOneWeek Exception]", e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+    @GetMapping("/getActivityNewsByRelativeText")
+    @ApiOperation("根据相关内容获得活动")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "relativeText", value = "相关内容", paramType = "query", dataType = "long"),
+    })
+    public Response<List<ActivityNewsDTO>> getActivityNewsByRelativeText(@RequestParam("relativeText") String relativeText) {
+        Response<List<ActivityNewsDTO>> response = new Response<>();
+        try {
+            return activityNewsService.getActivityNewsByRelativeText(relativeText);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityNewsByRelativeText Illegal Argument], relativeText: {}", relativeText, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityNewsByRelativeText Runtime Exception], relativeText: {}", relativeText, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityNewsByRelativeText Exception], relativeText: {}", relativeText, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
@@ -126,7 +197,7 @@ public class ActivityNewsController extends BaseController{
     @ApiImplicitParams({
             @ApiImplicitParam(name = "newsId", value = "活动新闻id", paramType = "query", dataType = "long"),
     })
-    public Response<Boolean> updateActivityPictureContentByNewsId(@RequestParam("activityNewsPicture")String activityNewsPicture,@RequestParam("newsId") long newsId) {
+    public Response<Boolean> updateActivityPictureContentByNewsId(@RequestParam("activityNewsPicture") MultipartFile activityNewsPicture, @RequestParam("newsId") long newsId) {
         Response<Boolean> response = new Response<>();
         try {
             return activityNewsService.updateActivityNewsPicture(activityNewsPicture,newsId);
