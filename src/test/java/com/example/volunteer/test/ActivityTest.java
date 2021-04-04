@@ -23,10 +23,13 @@ public class ActivityTest {
     public void firstTest() throws ParseException {
 
         Activity activity1=new Activity();
-        activity1.setActivityId(1);
         activity1.setActivityName("活动1");
         activity1.setActivityContent("喂猫");
-        activity1.setActivityOrganizer("二狗");
+        activity1.setActivityOrganizer(1);
+        activity1.setActivityType("normal");
+        activity1.setEnrolledNumber(0);
+        activity1.setRequestedNumber(50);
+        activity1.setSignFileModel(false);
         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = dateformat.parse("2020-12-25 00:00:00");
         activity1.setActivityDate(date);

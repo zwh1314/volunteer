@@ -28,7 +28,7 @@ public class ActivityUserTest  {
         SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = dateformat.parse("2020-12-25 00:00:00");
         activityUser.setFormDate(date);
-        activityUser.setFormStatus("已交");
+        activityUser.setFormStatus(1);
         activityUserDao.addActivityUser(activityUser);
         List<ActivityUser> list1 = activityUserDao.findActivityUserByActivityId(activityUser.getActivityId());
         List<ActivityUser> list2 = activityUserDao.findActivityUserByUserId(activityUser.getUserId());

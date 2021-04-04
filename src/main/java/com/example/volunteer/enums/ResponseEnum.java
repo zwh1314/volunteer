@@ -28,7 +28,7 @@ public enum ResponseEnum {
     VERIFY_MSG_CODE_ERROR(117,"验证码错误"),
     USER_ERROR_FREQUENCY_LIMIT(118,"用户尝试次数已达上限，请5分钟后再试"),
     UPLOAD_OSS_FAILURE(119,"文件上传OSS失败"),
-
+    SIGNED_ACTIVITY_NOT_FOUND(120,"未找到已报名活动"),
     NO_ACTIVITY_FOCUS(121,"无关注活动"),
 
     PURCHASE_ORDER_NOT_FOUND(301, "未找到对应的采购计划"),
