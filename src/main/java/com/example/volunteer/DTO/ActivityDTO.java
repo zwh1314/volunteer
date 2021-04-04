@@ -43,6 +43,9 @@ public class ActivityDTO{
     @ApiModelProperty(value = "活动时间")
     private Date activityDate;
 
+    @ApiModelProperty(value = "活动地点")
+    private String activityPlace;
+
     @ApiModelProperty(value = "活动图片")
     private List<ActivityPicture> activityPictureList;
 

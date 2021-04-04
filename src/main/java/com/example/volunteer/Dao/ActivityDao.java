@@ -9,24 +9,24 @@ import java.util.List;
 
 @Mapper
 public  interface ActivityDao {
-    @Insert("INSERT INTO activity(activity_name,activity_content,activity_organizer,activity_type,activity_date,is_signfile_model,enrolled_number,requested_number) VALUES (#{activityName},#{activityContent},#{activityOrganizer},#{activityType},NOW(),#{isSignFileModel},#{enrolledNumber},#{requestedNumber});")
+    @Insert("INSERT INTO activity(activity_name,activity_content,activity_organizer,activity_type,activity_date,is_signfile_model,enrolled_number,requested_number,activity_place) VALUES (#{activityName},#{activityContent},#{activityOrganizer},#{activityType},NOW(),#{isSignFileModel},#{enrolledNumber},#{requestedNumber},#{activity_place});")
     int insertActivity(Activity activity);
 
     @ResultType(ActivityDTO.class)
-    @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent," +
+    @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent,activity_place as activityPlace, " +
             "activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as activityType, enrolled_number as enrolledNumber, requested_number as requestedNumber " +
             "FROM activity natural join activity_picture WHERE activity_id = #{activityId}")
     ActivityDTO getActivityByActivityId(@Param("activityId") long activityId);
 
     @ResultType(ActivityDTO.class)
-    @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent," +
+    @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent,activity_place as activityPlace, " +
             "activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as activityType,enrolled_number as enrolledNumber,requested_number as requestedNumber " +
             "FROM activity natural join activity_picture WHERE activity_name = #{activityName}")
     ActivityDTO getActivityByActivityName(@Param("activityName") String activityName);
 
     @ResultType(ActivityDTO.class)
     @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent," +
-            "activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as activityType,enrolled_number as enrolledNumber,requested_number as requestedNumber " +
+            "activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as activityType,enrolled_number as enrolledNumber,requested_number as requestedNumber,activity_place as activityPlace " +
             "FROM activity natural join activity_picture WHERE activity_organizer = #{activityOrganizer}")
     List<ActivityDTO> getActivityByOrganizer(@Param("activityOrganizer") long activityOrganizer);
 

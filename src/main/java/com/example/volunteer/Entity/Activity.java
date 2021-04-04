@@ -48,6 +48,10 @@ public class Activity implements Serializable {
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date activityDate;
 
+    @Column(name = "activity_place",nullable = false)
+    @ApiModelProperty(value = "活动地点")
+    private String activityPlace;
+
     @Column(name = "is_signfile_model",nullable = false)
     @ApiModelProperty(value = "是否已上传报名表")
     private boolean isSignFileModel;
