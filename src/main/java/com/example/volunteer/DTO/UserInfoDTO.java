@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Column;
+import java.util.Date;
+
 @ApiModel("用户信息模型")
 @Data
 public class UserInfoDTO {
@@ -16,6 +19,15 @@ public class UserInfoDTO {
 
     @ApiModelProperty(value = "优先级")
     private String priority;
+
+    @ApiModelProperty(value = "性别")
+    private String gender;
+
+    @ApiModelProperty(value = "生日")
+    private Date birthday;
+
+    @ApiModelProperty(value = "专业")
+    private String major;
 
     @ApiModelProperty(value = "头像")
     private String headPicture;

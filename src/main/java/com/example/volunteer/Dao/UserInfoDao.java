@@ -13,8 +13,8 @@ public interface UserInfoDao {
     UserInfoDTO getUserInfoById(@Param("id")int id);
 
     @ResultType(UserInfoDTO.class)
-    @Select("SELECT user_id as userId, user_name as userName, priority, head_picture as headPicture, " +
-            "address, fax, tel, qq, mail_address as mailAddress, introduction, credits FROM user_info WHERE user_id = #{userId}")
+    @Select("SELECT user_id as userId, user_name as userName, head_picture,birthday,address,major,introduction,credits " +
+            "FROM user_info WHERE user_id = #{userId}")
     UserInfoDTO getUserInfoByUserId(@Param("userId") long userId);
 
     @Insert("INSERT INTO user_info(user_name, priority, head_picture, address, fax, " +
@@ -23,8 +23,9 @@ public interface UserInfoDao {
             "#{fax}, #{tel}, #{qq}, #{mailAddress}, #{introduction}, #{credits})")
     int addUserInfo(UserInfo userInfo);
 
-    @Update("UPDATE user_info SET user_name = #{userName}, address = #{address}, fax = #{fax}, tel = #{tel}, " +
-            "qq = #{qq}, mail_address = #{mailAddress}, introduction = #{introduction}, credits = #{credits} " +
+
+    @Update("UPDATE user_info SET user_name = #{userName}, head_picture = #{headPicture}, gender =#{gender}, " +
+            "address = #{address},major = #{major}, introduction = #{introduction} " +
             "WHERE user_id = #{userId}")
     int updateUserInfo(UserInfo userInfo);
 
