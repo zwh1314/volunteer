@@ -13,8 +13,8 @@ public interface UserInfoDao {
     UserInfoDTO getUserInfoById(@Param("id")int id);
 
     @ResultType(UserInfoDTO.class)
-    @Select("SELECT user_id as userId, user_name as userName, priority, head_picture as headPicture, " +
-            "address, fax, tel, qq, mail_address as mailAddress, introduction, credits FROM user_info WHERE user_id = #{userId}")
+    @Select("SELECT user_id as userId, user_name as userName, head_picture,birthday,address,major,introduction,credits " +
+            "FROM user_info WHERE user_id = #{userId}")
     UserInfoDTO getUserInfoByUserId(@Param("userId") long userId);
 
     @Insert("INSERT INTO user_info(user_name, priority, head_picture, address, fax, " +

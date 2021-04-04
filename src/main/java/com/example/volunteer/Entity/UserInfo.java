@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @Entity(name = "user_info")
@@ -31,13 +32,25 @@ public class UserInfo implements Serializable {
     @ApiModelProperty(value = "头像")
     private String headPicture;
 
-    @Column(name = "introduction",nullable = false)
+    @Column(name = "introduction")
     @ApiModelProperty(value = "个性签名")
     private String introduction;
 
-    @Column(name = "address",nullable = false)
+    @Column(name = "address")
     @ApiModelProperty(value = "地址")
     private String address;
+
+    @Column(name = "gender")
+    @ApiModelProperty(value = "性别")
+    private String gender;
+
+    @Column(name = "birthday")
+    @ApiModelProperty(value = "生日")
+    private Date birthday;
+
+    @Column(name = "major")
+    @ApiModelProperty(value = "专业")
+    private String major;
 
     @Column(name = "fax",nullable = false)
     @ApiModelProperty(value = "传真")
