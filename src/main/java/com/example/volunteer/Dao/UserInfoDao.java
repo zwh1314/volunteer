@@ -23,8 +23,9 @@ public interface UserInfoDao {
             "#{fax}, #{tel}, #{qq}, #{mailAddress}, #{introduction}, #{credits})")
     int addUserInfo(UserInfo userInfo);
 
-    @Update("UPDATE user_info SET user_name = #{userName}, address = #{address}, fax = #{fax}, tel = #{tel}, " +
-            "qq = #{qq}, mail_address = #{mailAddress}, introduction = #{introduction}, credits = #{credits} " +
+
+    @Update("UPDATE user_info SET user_name = #{userName}, head_picture = #{headPicture}, gender =#{gender}, " +
+            "address = #{address},major = #{major}, introduction = #{introduction} " +
             "WHERE user_id = #{userId}")
     int updateUserInfo(UserInfo userInfo);
 
