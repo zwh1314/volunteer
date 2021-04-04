@@ -33,6 +33,10 @@ public class ActivityUser implements Serializable {
     @ApiModelProperty(value = "报名表提交状态")
     private String formStatus;
 
+    @Column(name = "focus_status")
+    @ApiModelProperty(value = "活动关注状态")
+    private int focusStatus;
+
 
     @Column(name = "form_date")
     @ApiModelProperty(value = "报名表提交时间")

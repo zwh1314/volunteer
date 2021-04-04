@@ -1,5 +1,7 @@
 package com.example.volunteer.Service;
 
+import com.example.volunteer.DTO.ActivityDTO;
+import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Request.ActivityUserRequest;
@@ -66,4 +68,11 @@ public interface  ActivityUserService {
      * @return 成功返回true，失败返回false
      */
     Response<Boolean> uploadSignFile(long userId, long activityId, MultipartFile[] signFile);
+
+    /**
+     * 获得用户以关注的活动
+     * @param userId
+     * @return
+     */
+    Response<List<ActivityDTO>> getFocusedByUserId(long userId);
 }
