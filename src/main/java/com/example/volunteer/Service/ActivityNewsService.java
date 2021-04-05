@@ -27,5 +27,5 @@ public interface ActivityNewsService {
 
     Response<Boolean> deleteActivityNewsById(long activityNewsId);
 
-    Response<List<ActivityNews>> getActivityNewsByNumber(long number);
+    Response<List<ActivityNewsDTO>> getActivityNewsByNumber(long number);
 }

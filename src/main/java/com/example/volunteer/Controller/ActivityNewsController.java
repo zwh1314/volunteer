@@ -242,8 +242,8 @@ public class ActivityNewsController extends BaseController{
     }@GetMapping("/getActivityNewsByNumber")
     @ApiOperation("获得活动 byNumber")
 
-    public Response<List<ActivityNews>> getActivityNewsByNumber(@RequestParam("number") long number) {
-        Response<List<ActivityNews>> response = new Response<>();
+    public Response<List<ActivityNewsDTO>> getActivityNewsByNumber(@RequestParam("number") long number) {
+        Response<List<ActivityNewsDTO>> response = new Response<>();
         try {
             return activityNewsService.getActivityNewsByNumber(number);
         } catch (IllegalArgumentException e) {

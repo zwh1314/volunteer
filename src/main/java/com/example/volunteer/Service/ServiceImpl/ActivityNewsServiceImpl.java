@@ -1,5 +1,6 @@
 package com.example.volunteer.Service.ServiceImpl;
 
+import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.DTO.ActivityNewsDTO;
 import com.example.volunteer.Dao.ActivityNewsDao;
 import com.example.volunteer.Dao.NewsPictureDao;
@@ -206,15 +207,22 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
         return response;
     }
     @Override
-    public Response<List<ActivityNews>> getActivityNewsByNumber(long number){
-        Response<List<ActivityNews>> response=new Response<>();
-
+    public Response<List<ActivityNewsDTO>> getActivityNewsByNumber(long number){
+        Response<List<ActivityNewsDTO>> response=new Response<>();
+        List<ActivityNewsDTO> activityNewsDTOList = new ArrayList<>();
         List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsByNumber(number);
         if (activityNewsList.size() == 0) {
             response.setFail(ResponseEnum.ACTIVITY_NEWS_ACTIVITY_NOT_FOUND);
         }
+        for(ActivityNews activityNews: activityNewsList){
+
+            activityNewsDTOList.add(transferActivityNews2DTO2(activityNews));
+        }
+        if (activityNewsDTOList.size() == 0) {
+            response.setFail(ResponseEnum.ACTIVITY_NEWS_ACTIVITY_NOT_FOUND);
+        }
         else{
-            response.setSuc(activityNewsList);
+            response.setSuc(activityNewsDTOList);
         }
         return response;
     }
@@ -228,6 +236,17 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
         activityNewsDTO.setNewsContent(activityNews.getNewsContent());
         activityNewsDTO.setNewsTitle(activityNews.getNewsTitle());
         activityNewsDTO.setNewsPublisher(activityNews.getNewsPublisher());
+        return activityNewsDTO;
+    }
+    private ActivityNewsDTO transferActivityNews2DTO2(ActivityNews activityNews){
+        ActivityNewsDTO activityNewsDTO = new ActivityNewsDTO();
+        activityNewsDTO.setActivityId(activityNews.getActivityId());
+        activityNewsDTO.setNewsId(activityNews.getNewsId());
+        activityNewsDTO.setNewsDate(activityNews.getNewsDate());
+        activityNewsDTO.setNewsContent(activityNews.getNewsContent());
+        activityNewsDTO.setNewsTitle(activityNews.getNewsTitle());
+        activityNewsDTO.setNewsPublisher(activityNews.getNewsPublisher());
+        activityNewsDTO.setNewsPictureList(newsPictureDao.findNewsPictureByNewsId(activityNews.getNewsId()));
         return activityNewsDTO;
     }
 }
