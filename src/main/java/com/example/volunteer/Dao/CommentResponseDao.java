@@ -54,4 +54,12 @@ public interface CommentResponseDao {
 
     @Select("SELECT response_id from comment_response as responseId")
     List<Long> getResponseIds();
+
+
+    @ResultType(CommentResponse.class)
+    @Select("SELECT response_id as responseId, response_comment as commentId, response_text as " +
+            "responseText, response_publisher as responsePublisher, response_type as responseType, " +
+            "response_like as responseLike, response_date as responseDate FROM comment_response " +
+            "WHERE  response_type = #{responseType} AND response_id>=(SELECT FLOOR( MAX(response_id) * RAND()) FROM `comment_response` ) ORDER BY response_id LIMIT #{number}")
+    List<CommentResponse> findCommentResponseByNumber(@Param("number")long number,@Param("responseType")long responseType);
 }

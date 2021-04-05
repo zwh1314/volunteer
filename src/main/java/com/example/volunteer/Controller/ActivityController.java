@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 @Api(tags = "活动Controller")
@@ -188,6 +189,29 @@ public class ActivityController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[addActivityPicture Exception], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+    @GetMapping("/getActivityByNumber")
+    @ApiOperation("获得活动by Number")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "number", value = "需要的活动个数", paramType = "query", dataType = "long"),
+    })
+    public Response<List<ActivityDTO>> getActivityByNumber(@RequestParam("number") long number) {
+        Response<List<ActivityDTO>> response = new Response<>();
+        try {
+            return activityService.getActivityByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityByNumber Exception], number: {}", number, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

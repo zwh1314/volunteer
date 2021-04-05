@@ -46,4 +46,10 @@ public interface VideoDao {
 
     @Select("SELECT video_id from video as videoId")
     List<Long> getVideoIds();
+
+    @ResultType(Video.class)
+    @Select("SELECT video_id as videoId, video_url as videoUrl, video_text as videoText, " +
+            "video_publisher as videoPublisher, video_like as videoLike, video_date as videoDate " +
+            "FROM video WHERE video_id >= (SELECT FLOOR( MAX(video_id) * RAND()) FROM `video` ) ORDER BY video_id LIMIT #{number}")
+    List<Video> findVideoByNumber(long number);
 }

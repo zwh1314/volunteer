@@ -1,6 +1,7 @@
 package com.example.volunteer.Controller;
 
 import com.example.volunteer.DTO.ActivityNewsDTO;
+import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.ActivityNewsRequest;
 import com.example.volunteer.Response.Response;
@@ -238,5 +239,26 @@ public class ActivityNewsController extends BaseController{
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
+    }@GetMapping("/getActivityNewsByNumber")
+    @ApiOperation("获得活动 byNumber")
+
+    public Response<List<ActivityNewsDTO>> getActivityNewsByNumber(@RequestParam("number") long number) {
+        Response<List<ActivityNewsDTO>> response = new Response<>();
+        try {
+            return activityNewsService.getActivityNewsByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityNewsByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityNewsByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityNewsByNumber Exception], number: {}", number, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
     }
+
 }

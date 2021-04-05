@@ -1,6 +1,8 @@
 package com.example.volunteer.Controller;
 
 
+import com.example.volunteer.DTO.ActivityDTO;
+import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
@@ -262,6 +264,26 @@ public class CommentController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[addCommentPicture Exception], commentPicture: {}", SerialUtil.toJsonStr(commentPicture), e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+    @GetMapping("/getCommentByNumber")
+    @ApiOperation("获得评论 ByNumber")
+    public Response<List<CommentDTO>> getCommentByNumber(long number) {
+        Response<List<CommentDTO>> response = new Response<>();
+        try {
+            return commentService.getCommentByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getCommentByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getCommentByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getCommentByNumber Exception], number: {}", number, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

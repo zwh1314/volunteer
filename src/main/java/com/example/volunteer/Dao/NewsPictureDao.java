@@ -13,4 +13,5 @@ public interface NewsPictureDao {
     @ResultType(NewsPicture.class)
     @Select("SELECT picture_id as pictureId, news_id as newsId, picture_url as pictureUrl FROM news_picture WHERE news_id = #{newsId}")
     List<NewsPicture> findNewsPictureByNewsId(@Param("newsId")long newsId);
+
 }

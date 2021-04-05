@@ -304,6 +304,26 @@ public class CommentResponseController {
             return response;
         }
     }
+    @GetMapping("/getVideoCommentResponseByNumber")
+    @ApiOperation("获得视频评论回复ByNumber")
+    public Response<List<CommentResponse>> getVideoCommentResponseByNumber(long number) {
+        Response<List<CommentResponse>> response = new Response<>();
+        try {
+            return responseService.getVideoCommentResponseByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getVideoCommentResponseByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getVideoCommentResponseByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getVideoCommentResponseByNumber Exception], number: {}", number, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 
    /* @GetMapping("/getResponseLikeByResponseId")
     @ApiOperation("通过responseId查询点赞")

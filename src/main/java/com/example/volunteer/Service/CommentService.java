@@ -1,5 +1,6 @@
 package com.example.volunteer.Service;
 
+import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
@@ -23,5 +24,7 @@ public interface CommentService {
     Response<Boolean> deleteCommentById(long commentId);
 
     Response<Boolean> addCommentPicture(long commentId, MultipartFile[] commentPicture);
+
+    Response<List<CommentDTO>> getCommentByNumber(long number);
 
 }

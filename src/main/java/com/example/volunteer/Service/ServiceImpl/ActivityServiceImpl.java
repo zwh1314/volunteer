@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -200,6 +201,41 @@ public class ActivityServiceImpl implements ActivityService {
         }
 
         response.setSuc(true);
+        return response;
+    }
+    @Override
+    public Response<List<ActivityDTO>> getActivityByNumber(long number){
+        Response<List<ActivityDTO>> response=new Response<>();
+        List<Activity> activityList = activityDao.findActivityByNumber(number);
+        List<ActivityDTO> activityDTOList = new ArrayList<>();
+        if (activityList.size() == 0) {
+            response.setFail(ResponseEnum.SWIPER_NEWS_NOT_FOUND);
+            return response;
+        }
+        for(Activity activity:activityList){
+           ActivityDTO activityDTO = new ActivityDTO();
+
+           activityDTO.setActivityContent(activity.getActivityContent());
+           activityDTO.setActivityId(activity.getActivityId());
+           activityDTO.setActivityDate(activity.getActivityDate());
+           activityDTO.setActivityName(activity.getActivityName());
+           activityDTO.setActivityPlace(activity.getActivityPlace());
+           activityDTO.setActivityType(activity.getActivityType());
+           activityDTO.setEnrolledNumber(activity.getEnrolledNumber());
+           activityDTO.setRequestedNumber(activity.getRequestedNumber());
+           activityDTO.setActivityOrganizer(String.valueOf(activity.getActivityOrganizer()));
+
+           activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activity.getActivityId()));
+
+
+           activityDTOList.add(activityDTO);
+        }
+        if (activityDTOList.size() == 0) {
+            response.setFail(ResponseEnum.SWIPER_NEWS_NOT_FOUND);
+        }
+        else {
+            response.setSuc(activityDTOList);
+        }
         return response;
     }
 }

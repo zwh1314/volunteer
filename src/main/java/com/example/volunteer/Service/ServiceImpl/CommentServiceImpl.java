@@ -1,7 +1,9 @@
 package com.example.volunteer.Service.ServiceImpl;
 
+import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Dao.CommentDao;
 import com.example.volunteer.Dao.CommentPictureDao;
+import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFileModel;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Entity.CommentPicture;
@@ -19,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -176,6 +179,33 @@ public class CommentServiceImpl implements CommentService {
             response.setSuc(true);
             return response;
         }
+    @Override
+    public Response<List<CommentDTO>> getCommentByNumber(long number){
+        Response<List<CommentDTO>> response=new Response<>();
+        List<Comment> commentList = commentDao.findCommentByNumber(number);
+        List <CommentDTO> commentDTOList = new ArrayList<>();
+        for(Comment comment : commentList){
+            CommentDTO commentDTO = new CommentDTO();
+
+            commentDTO.setCommentId(comment.getCommentId());
+            commentDTO.setCommentDate(comment.getCommentDate());
+            commentDTO.setCommentLike(comment.getCommentLike());
+            commentDTO.setCommentText(comment.getCommentText());
+            commentDTO.setCommentPublisher(comment.getCommentPublisher());
+
+            commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
+
+            commentDTOList.add(commentDTO);
+        }
+        if (commentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        }
+        else
+        {
+            response.setSuc(commentDTOList);
+        }
+        return response;
+    }
 
 
 }

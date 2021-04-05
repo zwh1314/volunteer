@@ -44,4 +44,12 @@ public interface ActivityNewsDao {
 
     @Delete("DELETE FROM activity_news WHERE news_id = #{newsId}")
     int deleteActivityNewsById(@Param("newsId")long newsId);
+
+    @ResultType(ActivityNews.class)
+    @Select("SELECT news_id as newsId, activity_id as activityId, news_content as newsContent, " +
+            " news_title as newsTitle, news_publisher as newsPublisher, " +
+            "news_date as newsDate FROM activity_news " +
+            "WHERE news_id >= (SELECT FLOOR( MAX(news_id) * RAND()) FROM `activity_news` ) ORDER BY news_id LIMIT #{number}")
+    List<ActivityNews> findActivityNewsByNumber(@Param("number")long number);
+
 }
