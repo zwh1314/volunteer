@@ -2,10 +2,9 @@ package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.ActivityDao;
 import com.example.volunteer.DTO.ActivityDTO;
+import com.example.volunteer.Dao.ActivityPictureDao;
 import com.example.volunteer.Dao.ActivitySignFileModelDao;
-import com.example.volunteer.Entity.Activity;
-import com.example.volunteer.Entity.ActivitySignFileModel;
-import com.example.volunteer.Entity.ActivityUser;
+import com.example.volunteer.Entity.*;
 import com.example.volunteer.Request.ActivityRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
@@ -29,6 +28,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private ActivityDao activityDao;
+
+    @Autowired
+    private ActivityPictureDao activityPictureDao;
 
     @Autowired
     private ActivitySignFileModelDao activitySignFileModelDao;
@@ -162,6 +164,41 @@ public class ActivityServiceImpl implements ActivityService {
             response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
             return response;
         }
+        response.setSuc(true);
+        return response;
+    }
+    @Override
+    public Response<Boolean> addActivityPicture(long activityId, MultipartFile[] activityPicture) {
+        Response<Boolean> response=new Response<>();
+
+        boolean result;
+        String bucketName = "activity-picture-file-model";
+        String filename = "activity_picture"+activityId+"/";
+        for(MultipartFile file : activityPicture) {
+            String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
+            if (StringUtils.isBlank(url)) {
+                logger.error("[addActivitySignFileModel Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
+                response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+                return response;
+            }
+            ActivityPicture Pic = new ActivityPicture();
+            Pic.setActivityId(activityId);
+            //Pic.setf(file.getOriginalFilename());
+            Pic.setPictureUrl(url);
+            result= activityPictureDao.addActivityPicture(Pic) > 0;
+            if(!result){
+                logger.error("[addCommentPicture Fail], Pic: {}", SerialUtil.toJsonStr(Pic));
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
+            }
+        }
+        result = activityDao.updateIsActivityPictureByActivityId(activityId,true) > 0;
+        if(!result){
+            logger.error("[updateIsActivityPictureByActivityId Fail], activityId: {}", activityId);
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
+        }
+
         response.setSuc(true);
         return response;
     }

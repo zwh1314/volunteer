@@ -38,4 +38,7 @@ public  interface ActivityDao {
 
     @Delete("Delete From activity WHERE activity_id=#{activityId}")
     int deleteActivityByActivityId(@Param("activityId")long activityId);
+
+    @Update("UPDATE activity SET is_activity_picture = #{isActivityPicture} WHERE activity_id = #{activityId}")
+    int updateIsActivityPictureByActivityId(long activityId, boolean isActivityPicture);
 }

@@ -22,5 +22,5 @@ public class ActivityPicture implements Serializable {
 
     @Column(name = "picture_url")
     @ApiModelProperty(value = "活动图片url")
-    private long pictureUrl;
+    private String pictureUrl;
 }

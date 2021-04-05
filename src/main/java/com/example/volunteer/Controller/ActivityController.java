@@ -165,4 +165,31 @@ public class ActivityController extends BaseController{
             return response;
         }
     }
+    @PostMapping("/addActivityPicture")
+    @ApiOperation("添加活动图片")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "activityPicture", value = "活动图片", paramType = "query", dataType = "MultipartFile[]"),
+    })
+    public Response<Boolean> addActivityPicture(@RequestParam("activityId")long activityId,
+                                                @RequestParam("activityPicture") MultipartFile[] activityPicture) {
+        Response<Boolean> response = new Response<>();
+
+        try {
+
+            return activityService.addActivityPicture(activityId,activityPicture);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[addActivityPicture Illegal Argument], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[addActivityPicture Runtime Exception], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[addActivityPicture Exception], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 }

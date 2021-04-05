@@ -56,5 +56,9 @@ public class Activity implements Serializable {
     @ApiModelProperty(value = "是否已上传报名表")
     private boolean isSignFileModel;
 
+    @Column(name = "is_activity_picture",nullable = false)
+    @ApiModelProperty(value = "是否已上传活动图片")
+    private boolean isActivityPicture;
+
 
 }

@@ -59,4 +59,6 @@ public interface ActivityService {
      * @return 成功返回true，失败返回false
      */
     Response<Boolean> addActivitySignFileModel(long activityId, MultipartFile[] signFileModel);
+
+    Response<Boolean> addActivityPicture(long activityId, MultipartFile[] activityPicture);
 }
