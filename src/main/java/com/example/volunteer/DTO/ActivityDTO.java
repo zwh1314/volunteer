@@ -29,7 +29,7 @@ public class ActivityDTO{
     private String activityContent;
 
     @ApiModelProperty(value = "活动组织者")
-    private String activityOrganizer;
+    private long activityOrganizer;
 
     @ApiModelProperty("活动已报名人数")
     private int enrolledNumber;

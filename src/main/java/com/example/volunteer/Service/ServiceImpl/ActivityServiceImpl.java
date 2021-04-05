@@ -223,7 +223,7 @@ public class ActivityServiceImpl implements ActivityService {
            activityDTO.setActivityType(activity.getActivityType());
            activityDTO.setEnrolledNumber(activity.getEnrolledNumber());
            activityDTO.setRequestedNumber(activity.getRequestedNumber());
-           activityDTO.setActivityOrganizer(String.valueOf(activity.getActivityOrganizer()));
+           activityDTO.setActivityOrganizer(activity.getActivityOrganizer());
 
            activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activity.getActivityId()));
 

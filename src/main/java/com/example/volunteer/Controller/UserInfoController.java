@@ -51,6 +51,29 @@ public class UserInfoController extends BaseController{
             return response;
         }
     }
+    @GetMapping("/getUserNameByUserId")
+    @ApiOperation("获得用户名By userId")
+    @ApiImplicitParams({
+    })
+    public Response<String> getUserNameByUserId(@RequestParam long userId) {
+        Response<String> response = new Response<>();
+        try {
+            validateUserId(userId);
+            return userInfoService.getUserNameByUserId(userId);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getUserNameByUserId Illegal Argument], userId: {}", userId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getUserNameByUserId Runtime Exception], userId: {}", userId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getUserNameByUserId Exception], userId: {}", userId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 
     @PostMapping("/addUserInfo")
     @ApiOperation("添加用户信息")

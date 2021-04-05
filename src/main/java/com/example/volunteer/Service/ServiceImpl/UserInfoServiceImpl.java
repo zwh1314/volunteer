@@ -122,4 +122,18 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
         return response;
     }
+    @Override
+    public Response<String> getUserNameByUserId(long userId) {
+        Response<String> response=new Response<>();
+
+        String userName = userInfoDao.getUserNameByUserId(userId);
+        if(null == userName){
+            logger.error("[getUserNameByUserId Fail], request:{}",SerialUtil.toJsonStr(userId));
+            response.setFail(ResponseEnum.USERINFO_NOT_FOUND);
+        }
+        else {
+            response.setSuc(userName);
+        }
+        return response;
+    }
 }
