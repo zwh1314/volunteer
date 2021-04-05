@@ -25,7 +25,7 @@ import java.util.List;
 
 @Api(tags = "普通评论Controller")
 @RestController
-@RequestMapping("comment")
+@RequestMapping("/comment")
 public class CommentController extends BaseController{
     private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 

@@ -158,7 +158,7 @@ public class CommentServiceImpl implements CommentService {
                 CommentPicture commentPic = new CommentPicture();
                 commentPic.setCommentId(commentId);
                 commentPic.setFileName(file.getOriginalFilename());
-                commentPic.setFileUrl(url);
+                commentPic.setPictureUrl(url);
                 result= commentPictureDao.addCommentPicture(commentPic) > 0;
                 if(!result){
                     logger.error("[addCommentPicture Fail], commentPic: {}", SerialUtil.toJsonStr(commentPic));

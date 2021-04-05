@@ -25,7 +25,7 @@ public class CommentPicture implements Serializable {
     @ApiModelProperty(value = "图片所属评论名字")
     private String fileName;
 
-    @Column(name = "file_url")
+    @Column(name = "picture_url")
     @ApiModelProperty(value = "评论图片url")
-    private String fileUrl;
+    private String pictureUrl;
 }
