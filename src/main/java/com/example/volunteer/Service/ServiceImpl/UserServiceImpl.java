@@ -433,6 +433,7 @@ public class UserServiceImpl implements UserService {
             UserDTO userDTO = userDao.getUserByTelAndPassword(tel,password);
             if(userDTO != null) {
                 user=transformUserDTO2User(userDTO);
+                user.setPassword(password);
                 userCache.put(tel,user);
                 return userDTO;
             }
@@ -450,6 +451,7 @@ public class UserServiceImpl implements UserService {
             UserDTO userDTO = userDao.getUserByMailAndPassword(mail,password);
             if(userDTO != null) {
                 user=transformUserDTO2User(userDTO);
+                user.setPassword(password);
                 userCache.put(mail,user);
                 return userDTO;
             }
