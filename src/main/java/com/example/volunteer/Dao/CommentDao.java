@@ -7,8 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface CommentDao {
-    @Insert("INSERT INTO comment(comment_text, comment_publisher, comment_like, comment_date, comment_picture, time_up_2_now) " +
-            "VALUES (#{commentText}, #{commentPublisher}, #{commentLike}, NOW(), #{commentPicture},#{timeUp2Now})")
+    @Insert("INSERT INTO comment(comment_text, comment_publisher, comment_like, comment_date, time_up_2_now) " +
+            "VALUES (#{commentText}, #{commentPublisher}, #{commentLike}, NOW(),#{timeUp2Now})")
     int addComment(Comment comment);
 
     @Update("UPDATE comment SET comment_like = #{commentLike} WHERE comment_id = #{commentId}")
@@ -19,17 +19,17 @@ public interface CommentDao {
 
     @ResultType(Comment.class)
     @Select("SELECT comment_id as commentId, comment_text as commentText, comment_publisher as commentPublisher, " +
-            "comment_like as commentLike, comment_date as commentDate ,comment_picture as commentPicture, time_up_2_now as timeUp2Now FROM comment WHERE comment_publisher " +
+            "comment_like as commentLike, comment_date as commentDate, time_up_2_now as timeUp2Now FROM comment WHERE comment_publisher " +
             "= #{commentPublisher}")
     List<Comment> findCommentById(@Param("commentPublisher")long commentPublisher);
 
     @Select("SELECT comment_id as commentId, comment_text as commentText, comment_publisher as commentPublisher, " +
-            "comment_like as commentLike, comment_date as commentDate, comment_picture as commentPicture, time_up_2_now FROM comment WHERE TO_DAYS(NOW()) - " +
+            "comment_like as commentLike, comment_date as commentDate, time_up_2_now FROM comment WHERE TO_DAYS(NOW()) - " +
             "TO_DAYS(comment_date) <= 7")
     List<Comment> findCommentInOneWeek();
 
     @Select("SELECT comment_id as commentId, comment_text as commentText, comment_publisher as commentPublisher, " +
-            "comment_like as commentLike, comment_date as commentDate, comment_picture as commentPicture, time_up_2_now FROM comment WHERE comment_text LIKE " +
+            "comment_like as commentLike, comment_date as commentDate, time_up_2_now FROM comment WHERE comment_text LIKE " +
             "CONCAT('%', #{textInclude}, '%')")
     List<Comment> findCommentByText(@Param("textInclude")String textInclude);
 
@@ -41,4 +41,9 @@ public interface CommentDao {
 
     @Select("SELECT comment_id from comment as commentId")
     List<Long> getCommentIds();
+
+
+    @Update("UPDATE comment SET is_comment_picture = #{isCommentPicture} WHERE comment_id = #{commentId}")
+    int updateIsCommentPictureByCommentId(@Param("commentId") long commentId,@Param("isCommentPicture") boolean isCommentPicture);
+
 }

@@ -10,6 +10,7 @@ import com.example.volunteer.Response.Response;
 
 import com.example.volunteer.Service.CommentService;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.SerialUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -233,6 +235,33 @@ public class CommentController extends BaseController{
             return response;
         } catch (Exception e) {
             logger.error("[likesComment Exception], :commentId {}", commentId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+    @PostMapping("/addCommentPicture")
+    @ApiOperation("添加动态图片")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentId", value = "动态id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "commentPicture", value = "动态图片", paramType = "query", dataType = "MultipartFile[]"),
+    })
+    public Response<Boolean> addCommentPicture(@RequestParam("commentId")long commentId,
+                                               @RequestParam("commentPicture") MultipartFile[] commentPicture) {
+        Response<Boolean> response = new Response<>();
+
+        try {
+
+            return commentService.addCommentPicture(commentId,commentPicture);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[addCommentPicture Illegal Argument],commentPicture: {}", SerialUtil.toJsonStr(commentPicture), e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[addCommentPicture Runtime Exception], commentPicture: {}", SerialUtil.toJsonStr(commentPicture), e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[addCommentPicture Exception], commentPicture: {}", SerialUtil.toJsonStr(commentPicture), e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

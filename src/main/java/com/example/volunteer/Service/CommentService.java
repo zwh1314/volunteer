@@ -3,6 +3,7 @@ package com.example.volunteer.Service;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,5 +21,7 @@ public interface CommentService {
     Response<List<Comment>> getCommentByRelativeText(String relativeText);
 
     Response<Boolean> deleteCommentById(long commentId);
+
+    Response<Boolean> addCommentPicture(long commentId, MultipartFile[] commentPicture);
 
 }

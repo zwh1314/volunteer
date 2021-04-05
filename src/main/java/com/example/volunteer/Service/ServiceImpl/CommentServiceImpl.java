@@ -1,17 +1,23 @@
 package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.Dao.CommentDao;
+import com.example.volunteer.Dao.CommentPictureDao;
+import com.example.volunteer.Entity.ActivitySignFileModel;
 import com.example.volunteer.Entity.Comment;
+import com.example.volunteer.Entity.CommentPicture;
 import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentService;
 import com.example.volunteer.enums.ResponseEnum;
+import com.example.volunteer.utils.OSSUtil;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,7 +29,13 @@ public class CommentServiceImpl implements CommentService {
     private CommentDao commentDao;
 
     @Autowired
+    private CommentPictureDao commentPictureDao;
+
+    @Autowired
     RedisUtil redisUtil;
+
+    @Autowired
+    private OSSUtil ossUtil;
 
     @Override
     public Response<Boolean> addComment(CommentRequest commentRequest){
@@ -128,5 +140,42 @@ public class CommentServiceImpl implements CommentService {
         }
         return response;
     }
+
+    @Override
+    public Response<Boolean> addCommentPicture(long commentId, MultipartFile[] commentPicture) {
+            Response<Boolean> response=new Response<>();
+
+            boolean result;
+            String bucketName = "comment-picture-file-model";
+            String filename = "comment_picture"+commentId+"/";
+            for(MultipartFile file : commentPicture) {
+                String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
+                if (StringUtils.isBlank(url)) {
+                    logger.error("[addActivitySignFileModel Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
+                    response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+                    return response;
+                }
+                CommentPicture commentPic = new CommentPicture();
+                commentPic.setCommentId(commentId);
+                commentPic.setFileName(file.getOriginalFilename());
+                commentPic.setFileUrl(url);
+                result= commentPictureDao.addCommentPicture(commentPic) > 0;
+                if(!result){
+                    logger.error("[addCommentPicture Fail], commentPic: {}", SerialUtil.toJsonStr(commentPic));
+                    response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                    return response;
+                }
+            }
+        result = commentDao.updateIsCommentPictureByCommentId(commentId,true) > 0;
+        if(!result){
+            logger.error("[updateIsCommentPictureByCommentId Fail], commentId: {}", commentId);
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
+        }
+
+            response.setSuc(true);
+            return response;
+        }
+
 
 }
