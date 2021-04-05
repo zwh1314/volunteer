@@ -1,6 +1,8 @@
 package com.example.volunteer.Controller;
 
 
+import com.example.volunteer.DTO.ActivityDTO;
+import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
@@ -268,8 +270,8 @@ public class CommentController extends BaseController{
     }
     @GetMapping("/getCommentByNumber")
     @ApiOperation("获得评论 ByNumber")
-    public Response<List<Comment>> getCommentByNumber(long number) {
-        Response<List<Comment>> response = new Response<>();
+    public Response<List<CommentDTO>> getCommentByNumber(long number) {
+        Response<List<CommentDTO>> response = new Response<>();
         try {
             return commentService.getCommentByNumber(number);
         } catch (IllegalArgumentException e) {
