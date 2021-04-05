@@ -1,6 +1,7 @@
 package com.example.volunteer.Controller;
 
 import com.example.volunteer.DTO.UserInfoDTO;
+import com.example.volunteer.Entity.UserInfo;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.UserInfoRequest;
 import com.example.volunteer.Response.Response;
@@ -10,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public class UserInfoController extends BaseController{
     public Response<Boolean> addUserInfo(@RequestBody UserInfoRequest userInfoRequest) {
         Response<Boolean> response = new Response<>();
         try {
-            validateUserInfoRequest(userInfoRequest);
+            //validateUserInfoRequest(userInfoRequest);
             return userInfoService.addUserInfo(userInfoRequest);
         } catch (IllegalArgumentException e) {
             logger.warn("[addUserInfo Illegal Argument], userInfoRequest: {}", userInfoRequest, e);
@@ -102,22 +102,24 @@ public class UserInfoController extends BaseController{
 
     @PostMapping("/updateUserInfoByUserId")
     @ApiOperation("更新用户信息By userId")
-    public Response<Boolean> updateUserInfoByUserId(@RequestBody UserInfoRequest userInfoRequest) {
+    public Response<Boolean> updateUserInfoByUserId(@RequestBody UserInfo userInfo) {
         Response<Boolean> response = new Response<>();
+        long userId = getUserId();
         try {
-            validateUserInfoRequest(userInfoRequest);
+            userInfo.setUserId(userId);
+            validateUserInfo(userInfo);
 
-            return userInfoService.updateUserInfo(userInfoRequest);
+            return userInfoService.updateUserInfo(userInfo);
         } catch (IllegalArgumentException e) {
-            logger.warn("[updateUserInfoByUserId Illegal Argument], userInfoRequest: {}", userInfoRequest, e);
+            logger.warn("[updateUserInfoByUserId Illegal Argument], userInfo: {}", userInfo, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[updateUserInfoByUserId Runtime Exception], userInfoRequest: {}", userInfoRequest, e);
+            logger.error("[updateUserInfoByUserId Runtime Exception], userInfo: {}", userInfo, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[updateUserInfoByUserId Exception], userInfoRequest: {}", userInfoRequest, e);
+            logger.error("[updateUserInfoByUserId Exception], userInfo: {}", userInfo, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
@@ -148,9 +150,8 @@ public class UserInfoController extends BaseController{
         }
     }
 
-    private void validateUserInfoRequest(UserInfoRequest request) {
-        Validate.notNull(request);
-        Validate.isTrue(CollectionUtils.isNotEmpty(request.getUserInfoList()));
+    private void validateUserInfo(UserInfo userInfo) {
+        Validate.notNull(userInfo);
     }
 
     @GetMapping("/getCreditsByUserId")

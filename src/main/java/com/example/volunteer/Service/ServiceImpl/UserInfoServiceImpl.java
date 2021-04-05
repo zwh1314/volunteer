@@ -80,16 +80,14 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    public Response<Boolean> updateUserInfo(UserInfoRequest userInfoRequest){
+    public Response<Boolean> updateUserInfo(UserInfo userInfo){
         Response<Boolean> response=new Response<>();
 
-        for(UserInfo userInfo:userInfoRequest.getUserInfoList()) {
-            boolean updateResult = userInfoDao.updateUserInfo(userInfo) > 0;
-            if (!updateResult) {
-                logger.error("[updateUserInfo Fail], request: {}", SerialUtil.toJsonStr(userInfoRequest));
-                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-                return response;
-            }
+        boolean updateResult = userInfoDao.updateUserInfo(userInfo) > 0;
+        if (!updateResult) {
+            logger.error("[updateUserInfo Fail], userInfo: {}", userInfo);
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
         }
         response.setSuc(true);
         return response;
