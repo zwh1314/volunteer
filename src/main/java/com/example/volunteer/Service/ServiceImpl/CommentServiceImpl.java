@@ -176,6 +176,20 @@ public class CommentServiceImpl implements CommentService {
             response.setSuc(true);
             return response;
         }
+    @Override
+    public Response<List<Comment>> getCommentByNumber(long number){
+        Response<List<Comment>> response=new Response<>();
+
+        List<Comment> commentList = commentDao.findCommentByNumber(number);
+        if (commentList.size() == 0) {
+            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
+        }
+        else
+        {
+            response.setSuc(commentList);
+        }
+        return response;
+    }
 
 
 }

@@ -266,5 +266,25 @@ public class CommentController extends BaseController{
             return response;
         }
     }
+    @GetMapping("/getCommentByNumber")
+    @ApiOperation("获得评论 ByNumber")
+    public Response<List<Comment>> getCommentByNumber(long number) {
+        Response<List<Comment>> response = new Response<>();
+        try {
+            return commentService.getCommentByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getCommentByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getCommentByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getCommentByNumber Exception], number: {}", number, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 
 }

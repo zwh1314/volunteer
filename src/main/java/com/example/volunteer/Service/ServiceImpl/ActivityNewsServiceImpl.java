@@ -205,6 +205,19 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
         }
         return response;
     }
+    @Override
+    public Response<List<ActivityNews>> getActivityNewsByNumber(long number){
+        Response<List<ActivityNews>> response=new Response<>();
+
+        List<ActivityNews> activityNewsList = activityNewsDao.findActivityNewsByNumber(number);
+        if (activityNewsList.size() == 0) {
+            response.setFail(ResponseEnum.ACTIVITY_NEWS_ACTIVITY_NOT_FOUND);
+        }
+        else{
+            response.setSuc(activityNewsList);
+        }
+        return response;
+    }
 
     private ActivityNewsDTO transferActivityNews2DTO(ActivityNews activityNews,List<NewsPicture> newsPictureList){
         ActivityNewsDTO activityNewsDTO = new ActivityNewsDTO();

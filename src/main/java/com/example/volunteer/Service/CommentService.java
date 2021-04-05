@@ -24,4 +24,6 @@ public interface CommentService {
 
     Response<Boolean> addCommentPicture(long commentId, MultipartFile[] commentPicture);
 
+    Response<List<Comment>> getCommentByNumber(long number);
+
 }

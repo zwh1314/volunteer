@@ -30,4 +30,6 @@ public interface CommentResponseService {
     Response<List<CommentResponse>> getVideoCommentResponseByPublisherId(long publisherId);
 
     Response<Boolean> deleteCommentResponseById(long responseId);
+
+    Response<List<CommentResponse>> getVideoCommentResponseByNumber(long number);
 }

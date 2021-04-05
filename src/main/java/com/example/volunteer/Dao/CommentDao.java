@@ -46,4 +46,8 @@ public interface CommentDao {
     @Update("UPDATE comment SET is_comment_picture = #{isCommentPicture} WHERE comment_id = #{commentId}")
     int updateIsCommentPictureByCommentId(@Param("commentId") long commentId,@Param("isCommentPicture") boolean isCommentPicture);
 
+    @ResultType(Comment.class)
+    @Select("SELECT comment_id as commentId,comment_text as commentText,comment_publisher as commentPublisher," +
+            "comment_like as commentLike,comment_date as commentDate FROM comment WHERE comment_id>=(SELECT FLOOR( MAX(comment_id) * RAND()) FROM `comment` ) ORDER BY comment_id LIMIT #{number}")
+    List<Comment>findCommentByNumber(@Param("number")long number);
 }

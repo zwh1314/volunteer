@@ -174,4 +174,27 @@ public class SwiperContorller extends BaseController{
             return response;
         }
     }
+    @GetMapping("/getSwiperByNumber")
+    @ApiOperation("获得轮播图by Number")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "number", value = "需要轮播图个数", paramType = "query", dataType = "long"),
+    })
+    public Response<List<Swiper>> getSwiperByNumber(@RequestParam("number") long number) {
+        Response<List<Swiper>> response = new Response<>();
+        try {
+            return swiperService.getSwiperByNumber(number);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getSwiperByNumber Illegal Argument], number: {}", number, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getSwiperByNumber Runtime Exception], number: {}", number, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getSwiperByNumber Exception], number: {}", number, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 }

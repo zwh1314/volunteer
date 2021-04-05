@@ -61,4 +61,6 @@ public interface ActivityService {
     Response<Boolean> addActivitySignFileModel(long activityId, MultipartFile[] signFileModel);
 
     Response<Boolean> addActivityPicture(long activityId, MultipartFile[] activityPicture);
+
+    Response<List<ActivityDTO>> getActivityByNumber(long number);
 }
