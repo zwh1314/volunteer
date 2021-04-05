@@ -18,4 +18,6 @@ public interface UserInfoService {
 
     Response<Integer> getCreditsByUserId(long userId);
 
+    Response<String> getUserNameByUserId(long userId);
+
 }

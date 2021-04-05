@@ -41,4 +41,8 @@ public interface UserInfoDao {
     @ResultType(UserInfoDTO.class)
     @Select("SELECT credits, user_id as userId FROM user_info WHERE user_id = #{userId}")
     UserInfoDTO getCreditsById(@Param("userId")long userId);
+
+
+    @Select("SELECT user_name as userName FROM user_info WHERE user_id = #{userId}")
+    String getUserNameByUserId(@Param("userId")long userId);
 }
