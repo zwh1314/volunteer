@@ -188,7 +188,7 @@ public class ActivityServiceImpl implements ActivityService {
             Pic.setPictureUrl(url);
             result= activityPictureDao.addActivityPicture(Pic) > 0;
             if(!result){
-                logger.error("[addCommentPicture Fail], Pic: {}", SerialUtil.toJsonStr(Pic));
+                logger.error("[addActivityPicture Fail], Pic: {}", SerialUtil.toJsonStr(Pic));
                 response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
                 return response;
             }

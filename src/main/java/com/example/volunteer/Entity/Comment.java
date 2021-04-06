@@ -32,11 +32,4 @@ public class Comment implements Serializable {
     @ApiModelProperty(value = "评论发布日期")
     private Date commentDate;
 
-    @Column(name = "time_up_2_now")
-    @ApiModelProperty("距今发布时间")
-    private String timeUp2Now;
-
-    @Column(name = "is_comment_picture",nullable = false)
-    @ApiModelProperty(value = "是否已上传报名表")
-    private boolean is_comment_picture;
 }

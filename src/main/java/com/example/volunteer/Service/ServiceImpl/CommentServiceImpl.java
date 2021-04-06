@@ -14,6 +14,7 @@ import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.OSSUtil;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
+import com.example.volunteer.utils.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,9 @@ public class CommentServiceImpl implements CommentService {
     private CommentDao commentDao;
 
     @Autowired
+    private TokenUtil tokenUtil;
+
+    @Autowired
     private CommentPictureDao commentPictureDao;
 
     @Autowired
@@ -41,17 +45,41 @@ public class CommentServiceImpl implements CommentService {
     private OSSUtil ossUtil;
 
     @Override
-    public Response<Boolean> addComment(CommentRequest commentRequest){
+    public Response<Boolean> addComment(long userId, String commentText,MultipartFile[] commentPicture){
         Response<Boolean> response=new Response<>();
-
-        for(Comment comment:commentRequest.getCommentList()) {
+           Comment comment = new Comment();
+           comment.setCommentPublisher(userId);
+           comment.setCommentText(commentText);
+           comment.setCommentLike(0);
             boolean result = commentDao.addComment(comment) > 0;
             if (!result) {
-                logger.error("[addComment Fail], request: {}", SerialUtil.toJsonStr(commentRequest));
+                logger.error("[addComment Fail], userId: {}", SerialUtil.toJsonStr(userId));
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
+            }
+            long commentId = commentDao.findCommentIdByUserId(userId);
+
+        String bucketName = "comment-picture-file-model";
+        String filename = "comment_picture"+commentId+"/";
+        for(MultipartFile file : commentPicture) {
+            String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
+            if (StringUtils.isBlank(url)) {
+                logger.error("[addActivitySignFileModel Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
+                response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+                return response;
+            }
+            CommentPicture commentPic = new CommentPicture();
+            commentPic.setCommentId(commentId);
+            commentPic.setFileName(file.getOriginalFilename());
+            commentPic.setPictureUrl(url);
+            boolean result2 = commentPictureDao.addCommentPicture(commentPic) > 0;
+            if(!result2){
+                logger.error("[addCommentPicture Fail], commentPic: {}", SerialUtil.toJsonStr(commentPic));
                 response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
                 return response;
             }
         }
+
         response.setSuc(true);
         return response;
     }
@@ -169,13 +197,6 @@ public class CommentServiceImpl implements CommentService {
                     return response;
                 }
             }
-        result = commentDao.updateIsCommentPictureByCommentId(commentId,true) > 0;
-        if(!result){
-            logger.error("[updateIsCommentPictureByCommentId Fail], commentId: {}", commentId);
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-            return response;
-        }
-
             response.setSuc(true);
             return response;
         }

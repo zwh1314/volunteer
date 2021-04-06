@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface CommentService {
-    Response<Boolean> addComment(CommentRequest commentRequest);
+    Response<Boolean> addComment(long userId, String commentText, MultipartFile[] commentPicture);
 
     Response<Boolean> updateCommentLikeNumber(long commentLikeNumber, long commentId);
 

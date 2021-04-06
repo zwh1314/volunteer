@@ -106,20 +106,25 @@ public class CommentController extends BaseController{
 
     @PostMapping("/addComment")
         @ApiOperation("添加评论")
-        public Response<Boolean> addComment(@RequestBody CommentRequest commentRequest) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentText", value = "动态文本", paramType = "query", dataType = "String"),
+            @ApiImplicitParam(name = "commentPicture", value = "动态图片", paramType = "query", dataType = "MultipartFile[]"),
+    })
+        public Response<Boolean> addComment(@RequestParam("commentText") String commentText, @RequestParam("commentPicture") MultipartFile[] commentPicture) {
             Response<Boolean> response = new Response<>();
+            long userId = getUserId();
             try {
-                return commentService.addComment(commentRequest);
+                return commentService.addComment(userId, commentText,commentPicture);
             } catch (IllegalArgumentException e) {
-                logger.warn("[addComment Illegal Argument], commentRequest: {}", commentRequest, e);
+                logger.warn("[addComment Illegal Argument], commentText: {}", commentText, e);
                 response.setFail(ResponseEnum.ILLEGAL_PARAM);
                 return response;
             } catch (VolunteerRuntimeException e) {
-                logger.error("[addComment Runtime Exception], commentRequest: {}", commentRequest, e);
+                logger.error("[addComment Runtime Exception], commentText: {}", commentText, e);
                 response.setFail(e.getExceptionCode(), e.getMessage());
                 return response;
             }  catch (Exception e) {
-                logger.error("[addComment Exception], commentRequest: {}", commentRequest, e);
+                logger.error("[addComment Exception], commentText: {}", commentText, e);
                 response.setFail(ResponseEnum.SERVER_ERROR);
                 return response;
             }
