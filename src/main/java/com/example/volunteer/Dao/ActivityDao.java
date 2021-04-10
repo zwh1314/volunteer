@@ -44,7 +44,7 @@ public  interface ActivityDao {
 
     @ResultType(Activity.class)
     @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent,activity_organizer as activityOrganizer,activity_date as activityDate,is_activity_picture as is_activity_picture, is_signfile_model as isSignFileModel,activity_type as activityType, enrolled_number as enrolledNumber, requested_number as requestedNumber  FROM activity" +
-            " WHERE activity_id >= (SELECT FLOOR( MAX(activity_id) * RAND()) FROM `activity` ) ORDER BY activity_id LIMIT #{number}")
+            " ORDER BY Rand(activity_id) LIMIT #{number}")
     List<Activity> findActivityByNumber(@Param("number")long number);
 
 }
