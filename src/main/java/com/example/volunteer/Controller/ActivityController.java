@@ -3,7 +3,6 @@ package com.example.volunteer.Controller;
 import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
-import com.example.volunteer.Request.ActivityRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -61,48 +60,32 @@ public class ActivityController extends BaseController{
 
     @PostMapping("/addActivity")
     @ApiOperation("添加活动")
-    public Response<Boolean> addActivity(@RequestBody ActivityRequest activityRequest) {
-        Response<Boolean> response = new Response<>();
-        try {
-            return activityService.addActivity(activityRequest);
-        } catch (IllegalArgumentException e) {
-            logger.warn("[addActivity Illegal Argument], activityRequest: {}", SerialUtil.toJsonStr(activityRequest), e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivity Runtime Exception], activityRequest: {}", SerialUtil.toJsonStr(activityRequest), e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
-            logger.error("[addActivity Exception], activityRequest: {}", SerialUtil.toJsonStr(activityRequest), e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-    }
-
-    @PostMapping("/addActivitySignFileModel")
-    @ApiOperation("添加活动报名表模板")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "activity", value = "活动主体", paramType = "query", dataType = "Activity"),
             @ApiImplicitParam(name = "signFileModel", value = "报名表模板", paramType = "query", dataType = "MultipartFile[]"),
+            @ApiImplicitParam(name = "activityPicture", value = "活动图片", paramType = "query", dataType = "MultipartFile[]"),
     })
-    public Response<Boolean> addActivitySignFileModel(@RequestParam("activityId")long activityId,
-                                                      @RequestParam("signFileModel") MultipartFile[] signFileModel) {
+    public Response<Boolean> addActivity(@RequestBody Activity activity,
+                                         @RequestParam(value = "signFileModel",required = false) MultipartFile[] signFileModel,
+                                         @RequestParam(value = "activityPicture",required = false) MultipartFile[] activityPicture) {
         Response<Boolean> response = new Response<>();
-
+        long userId =getUserId();
         try {
-
-            return activityService.addActivitySignFileModel(activityId,signFileModel);
+            if(signFileModel==null)
+                signFileModel = new MultipartFile[0];
+            if(activityPicture==null)
+                activityPicture = new MultipartFile[0];
+            return activityService.addActivity(userId,activity,signFileModel,activityPicture);
         } catch (IllegalArgumentException e) {
-            logger.warn("[addActivitySignFileModel Illegal Argument], signFileModel: {}", SerialUtil.toJsonStr(signFileModel), e);
+            logger.warn("[addActivity Illegal Argument], activity: {}", SerialUtil.toJsonStr(activity), e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivitySignFileModel Runtime Exception], signFileModel: {}", SerialUtil.toJsonStr(signFileModel), e);
+            logger.error("[addActivity Runtime Exception], activity: {}", SerialUtil.toJsonStr(activity), e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addActivitySignFileModel Exception], signFileModel: {}", SerialUtil.toJsonStr(signFileModel), e);
+            logger.error("[addActivity Exception], activity: {}", SerialUtil.toJsonStr(activity), e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }
@@ -125,6 +108,10 @@ public class ActivityController extends BaseController{
         long ActivityOrganizer = Long.parseLong(activityOrganizer);
         Activity activity = new Activity();//(activityName, activityContent,ActivityOrganizer,NewActivityDate);
         activity.setActivityId(activityId);
+        activity.setActivityName(activityName);
+        activity.setActivityContent(activityContent);
+        activity.setActivityDate(NewActivityDate);
+        activity.setActivityOrganizer(ActivityOrganizer);
         try {
             return activityService.updateActivity(activity);
         } catch (IllegalArgumentException e) {
@@ -166,33 +153,7 @@ public class ActivityController extends BaseController{
             return response;
         }
     }
-    @PostMapping("/addActivityPicture")
-    @ApiOperation("添加活动图片")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "activityId", value = "活动id", paramType = "query", dataType = "long"),
-            @ApiImplicitParam(name = "activityPicture", value = "活动图片", paramType = "query", dataType = "MultipartFile[]"),
-    })
-    public Response<Boolean> addActivityPicture(@RequestParam("activityId")long activityId,
-                                                @RequestParam("activityPicture") MultipartFile[] activityPicture) {
-        Response<Boolean> response = new Response<>();
 
-        try {
-
-            return activityService.addActivityPicture(activityId,activityPicture);
-        } catch (IllegalArgumentException e) {
-            logger.warn("[addActivityPicture Illegal Argument], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivityPicture Runtime Exception], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
-            logger.error("[addActivityPicture Exception], activityPicture: {}", SerialUtil.toJsonStr(activityPicture), e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-    }
     @GetMapping("/getActivityByNumber")
     @ApiOperation("获得活动by Number")
     @ApiImplicitParams({

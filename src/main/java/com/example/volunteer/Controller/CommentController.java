@@ -1,13 +1,12 @@
 package com.example.volunteer.Controller;
 
 
-import com.example.volunteer.DTO.ActivityDTO;
+
 import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
 import com.example.volunteer.RedisService.CommentRedisService;
-import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 
 import com.example.volunteer.Service.CommentService;
@@ -22,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @Api(tags = "普通评论Controller")
@@ -110,10 +108,12 @@ public class CommentController extends BaseController{
             @ApiImplicitParam(name = "commentText", value = "动态文本", paramType = "query", dataType = "String"),
             @ApiImplicitParam(name = "commentPicture", value = "动态图片", paramType = "query", dataType = "MultipartFile[]"),
     })
-        public Response<Boolean> addComment(@RequestParam("commentText") String commentText, @RequestParam("commentPicture") MultipartFile[] commentPicture) {
+        public Response<Boolean> addComment(@RequestParam("commentText") String commentText, @RequestParam(value = "commentPicture",required = false) MultipartFile[] commentPicture) {
             Response<Boolean> response = new Response<>();
             long userId = getUserId();
             try {
+                if(commentPicture==null)
+                    commentPicture = new MultipartFile[0];
                 return commentService.addComment(userId, commentText,commentPicture);
             } catch (IllegalArgumentException e) {
                 logger.warn("[addComment Illegal Argument], commentText: {}", commentText, e);

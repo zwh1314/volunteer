@@ -1,8 +1,8 @@
 package com.example.volunteer.Controller;
 
 import com.example.volunteer.DTO.ActivityNewsDTO;
+import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
-import com.example.volunteer.Request.ActivityNewsRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityNewsService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -125,20 +125,21 @@ public class ActivityNewsController extends BaseController{
 
     @PostMapping("/addActivityNews")
     @ApiOperation("添加活动新闻")
-    public Response<Boolean> addActivityNews(@RequestBody ActivityNewsRequest activityNewsRequest) {
+    public Response<Boolean> addActivityNews(@RequestBody ActivityNews activityNews) {
         Response<Boolean> response = new Response<>();
+        long userId = getUserId();
         try {
-            return activityNewsService.addActivityNews(activityNewsRequest);
+            return activityNewsService.addActivityNews(userId,activityNews);
         } catch (IllegalArgumentException e) {
-            logger.warn("[addActivityNews Illegal Argument], activityNewsRequest: {}", activityNewsRequest, e);
+            logger.warn("[addActivityNews Illegal Argument], activityNews: {}", activityNews, e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
             return response;
         } catch (VolunteerRuntimeException e) {
-            logger.error("[addActivityNews Runtime Exception], activityNewsRequest: {}", activityNewsRequest, e);
+            logger.error("[addActivityNews Runtime Exception], activityNews: {}", activityNews, e);
             response.setFail(e.getExceptionCode(), e.getMessage());
             return response;
         }  catch (Exception e) {
-            logger.error("[addActivityNews Exception], activityNewsRequest: {}", activityNewsRequest, e);
+            logger.error("[addActivityNews Exception], activityNews: {}", activityNews, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

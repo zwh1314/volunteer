@@ -39,7 +39,7 @@ public class ActivityNewsTest {
         activityNewsList.add(activityNews1);
         activityNewsRequest.setActivityNewsList(activityNewsList);
 
-        activityNewsService.addActivityNews(activityNewsRequest);
+        //activityNewsService.addActivityNews(activityNewsRequest);
         System.out.println(activityNewsService.getActivityNewsByActivityId(1));
         System.out.println(activityNewsService.getActivityNewsByPublisherId(1));
         System.out.println(activityNewsService.getActivityNewsInOneWeek());

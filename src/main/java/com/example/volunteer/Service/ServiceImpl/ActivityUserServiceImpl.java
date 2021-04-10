@@ -3,7 +3,6 @@ package com.example.volunteer.Service.ServiceImpl;
 import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Dao.ActivitySignFileDao;
 import com.example.volunteer.Dao.ActivityUserDao;
-import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Request.ActivityUserRequest;

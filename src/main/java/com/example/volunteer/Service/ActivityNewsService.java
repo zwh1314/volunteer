@@ -2,14 +2,13 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.DTO.ActivityNewsDTO;
 import com.example.volunteer.Entity.ActivityNews;
-import com.example.volunteer.Request.ActivityNewsRequest;
 import com.example.volunteer.Response.Response;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface ActivityNewsService {
-    Response<Boolean> addActivityNews(ActivityNewsRequest activityNewsRequest);
+    Response<Boolean> addActivityNews(long userId, ActivityNews activityNews);
 
     Response<Boolean> updateActivityNewsContent(MultipartFile activityNewsContent, long newsId);
 

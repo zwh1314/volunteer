@@ -5,7 +5,6 @@ import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Dao.ActivityPictureDao;
 import com.example.volunteer.Dao.ActivitySignFileModelDao;
 import com.example.volunteer.Entity.*;
-import com.example.volunteer.Request.ActivityRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.enums.ResponseEnum;
 
@@ -40,16 +39,24 @@ public class ActivityServiceImpl implements ActivityService {
     private OSSUtil ossUtil;
 
     @Override
-    public Response<Boolean> addActivity(ActivityRequest activityRequest){
+    public Response<Boolean> addActivity(long userId, Activity activity, MultipartFile[] signFileModel, MultipartFile[] activityPicture){
         Response<Boolean> response = new Response<>();
 
-        for(Activity activity:activityRequest.getActivityList()) {
-            boolean result = activityDao.insertActivity(activity) > 0;
-            if (!result) {
-                logger.error("[addActivity Fail], request: {}", SerialUtil.toJsonStr(activityRequest));
-                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-                return response;
-            }
+        activity.setActivityOrganizer(userId);
+        int activityId = activityDao.insertActivity(activity);
+        if (activityId <= 0) {
+            logger.error("[addActivity Fail], activity: {}", SerialUtil.toJsonStr(activity));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
+        }
+
+        if(!addActivitySignFileModel(activityId,signFileModel)){
+            response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+            return response;
+        }
+        if(!addActivityPicture(activityId,activityPicture)){
+            response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
+            return response;
         }
         response.setSuc(true);
         return response;
@@ -133,10 +140,7 @@ public class ActivityServiceImpl implements ActivityService {
         return response;
     }
 
-    @Override
-    public Response<Boolean> addActivitySignFileModel(long activityId, MultipartFile[] signFileModel){
-        Response<Boolean> response=new Response<>();
-
+    private boolean addActivitySignFileModel(long activityId, MultipartFile[] signFileModel){
         boolean result;
         String bucketName = "sign-file-model";
         String filename = "activity_"+activityId+"/";
@@ -144,8 +148,7 @@ public class ActivityServiceImpl implements ActivityService {
             String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
             if (StringUtils.isBlank(url)) {
                 logger.error("[addActivitySignFileModel Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
-                response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
-                return response;
+                return false;
             }
             ActivitySignFileModel activitySignFileModel = new ActivitySignFileModel();
             activitySignFileModel.setActivityId(activityId);
@@ -154,24 +157,19 @@ public class ActivityServiceImpl implements ActivityService {
             result=activitySignFileModelDao.addActivitySignFileModel(activitySignFileModel) > 0;
             if(!result){
                 logger.error("[addActivitySignFileModel Fail], signFileModel: {}", SerialUtil.toJsonStr(signFileModel));
-                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-                return response;
+                return false;
             }
         }
 
         result = activityDao.updateIsActivitySignFileModelByActivityId(activityId,true) > 0;
         if(!result){
             logger.error("[updateIsActivitySignFileModelByActivityId Fail], activityId: {}", activityId);
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-            return response;
+            return false;
         }
-        response.setSuc(true);
-        return response;
+        return true;
     }
-    @Override
-    public Response<Boolean> addActivityPicture(long activityId, MultipartFile[] activityPicture) {
-        Response<Boolean> response=new Response<>();
 
+    public boolean addActivityPicture(long activityId, MultipartFile[] activityPicture) {
         boolean result;
         String bucketName = "activity-picture-file-model";
         String filename = "activity_picture"+activityId+"/";
@@ -179,8 +177,7 @@ public class ActivityServiceImpl implements ActivityService {
             String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
             if (StringUtils.isBlank(url)) {
                 logger.error("[addActivitySignFileModel Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
-                response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
-                return response;
+                return false;
             }
             ActivityPicture Pic = new ActivityPicture();
             Pic.setActivityId(activityId);
@@ -189,20 +186,17 @@ public class ActivityServiceImpl implements ActivityService {
             result= activityPictureDao.addActivityPicture(Pic) > 0;
             if(!result){
                 logger.error("[addActivityPicture Fail], Pic: {}", SerialUtil.toJsonStr(Pic));
-                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-                return response;
+                return result;
             }
         }
         result = activityDao.updateIsActivityPictureByActivityId(activityId,true) > 0;
         if(!result){
             logger.error("[updateIsActivityPictureByActivityId Fail], activityId: {}", activityId);
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-            return response;
+            return result;
         }
-
-        response.setSuc(true);
-        return response;
+        return true;
     }
+
     @Override
     public Response<List<ActivityDTO>> getActivityByNumber(long number){
         Response<List<ActivityDTO>> response=new Response<>();

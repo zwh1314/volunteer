@@ -1,12 +1,10 @@
 package com.example.volunteer.Service.ServiceImpl;
 
-import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.DTO.ActivityNewsDTO;
 import com.example.volunteer.Dao.ActivityNewsDao;
 import com.example.volunteer.Dao.NewsPictureDao;
 import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Entity.NewsPicture;
-import com.example.volunteer.Request.ActivityNewsRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityNewsService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -36,16 +34,15 @@ public class ActivityNewsServiceImpl implements ActivityNewsService {
     private OSSUtil ossUtil;
 
     @Override
-    public Response<Boolean> addActivityNews(ActivityNewsRequest activityNewsRequest){
+    public Response<Boolean> addActivityNews(long userId, ActivityNews activityNews){
         Response<Boolean> response=new Response<>();
 
-        for(ActivityNews activityNews:activityNewsRequest.getActivityNewsList()) {
-            boolean result = activityNewsDao.addActivityNews(activityNews) > 0;
-            if (!result) {
-                logger.error("[addActivityNews Fail], request: {}", SerialUtil.toJsonStr(activityNewsRequest));
-                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-                return response;
-            }
+        activityNews.setNewsPublisher(userId);
+        boolean result = activityNewsDao.addActivityNews(activityNews) > 0;
+        if (!result) {
+            logger.error("[addActivityNews Fail], activityNews: {}", SerialUtil.toJsonStr(activityNews));
+            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            return response;
         }
         response.setSuc(true);
         return response;

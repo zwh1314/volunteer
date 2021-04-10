@@ -178,16 +178,6 @@ public class UserController extends BaseController {
         }
     }
 
-    private void validateBaseUserInfo(String tel, String password) {
-        validateUserTel(tel);
-        validateUserPassword(password);
-    }
-
-    private void validateBaseUserInfoByEmail(String mail, String password) {
-        validateUserMail(mail);
-        validateUserPassword(password);
-    }
-
     private void validateBaseTel(String tel) {
         validateUserTel(tel);
     }
@@ -196,32 +186,9 @@ public class UserController extends BaseController {
         validateUserMail(mail);
     }
 
-    private void validateUserPasswordAndMsgCode(String tel, String newPassword, String verifyCode) {
-        validateUserTel(tel);
-        validateUserPassword(newPassword);
-        validateVerifyMsgCode(verifyCode);
-    }
 
     private void validateUserTelAndPassword(String tel, String newPassword) {
         validateUserTel(tel);
         validateUserPassword(newPassword);
-    }
-
-    private void validateUserPasswordAndMsgCodeByEmail(String mail, String newPassword, String verifyCode) {
-        validateUserMail(mail);
-        validateUserPassword(newPassword);
-        validateVerifyMsgCode(verifyCode);
-    }
-
-    private void validateUserPasswordAndMsgCode(String tel, String oldPassword, String newPassword, String verifyCode) {
-        validateUserTel(tel);
-        validateUserPassword(oldPassword);
-        validateUserPassword(newPassword);
-        validateVerifyMsgCode(verifyCode);
-    }
-
-    private void validateUserInfoAndVerifyCode(String tel, String password, String verifyCode) {
-        validateBaseUserInfo(tel, password);
-        validateVerifyMsgCode(verifyCode);
     }
 }
