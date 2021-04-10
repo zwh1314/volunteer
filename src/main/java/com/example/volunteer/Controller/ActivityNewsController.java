@@ -1,7 +1,6 @@
 package com.example.volunteer.Controller;
 
 import com.example.volunteer.DTO.ActivityNewsDTO;
-import com.example.volunteer.Entity.ActivityNews;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 import com.example.volunteer.Request.ActivityNewsRequest;
 import com.example.volunteer.Response.Response;

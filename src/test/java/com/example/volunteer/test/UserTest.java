@@ -19,7 +19,7 @@ public class UserTest {
     public void firstTest() {
 
         User user1=new User();
-        user1.setUserName("张文瀚");
+        //user1.setUserName("张文瀚");
         user1.setPassword("991219");
         user1.setTel("15082361803");
         user1.setPriority("管理员");

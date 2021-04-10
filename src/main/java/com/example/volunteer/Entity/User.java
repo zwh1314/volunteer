@@ -18,10 +18,6 @@ public class User implements Serializable {
     @ApiModelProperty(value = "用户id")
     private long userId;
 
-    @Column(name = "user_name",nullable = false)
-    @ApiModelProperty(value = "用户名")
-    private String userName;
-
     @Column(name = "password",nullable = false)
     @ApiModelProperty(value = "密码")
     private String password;
@@ -33,8 +29,4 @@ public class User implements Serializable {
     @Column(name = "tel")
     @ApiModelProperty(value = "手机")
     private String tel;
-
-    @Column(name = "mail_address")
-    @ApiModelProperty(value = "邮箱地址")
-    private String mailAddress;
 }

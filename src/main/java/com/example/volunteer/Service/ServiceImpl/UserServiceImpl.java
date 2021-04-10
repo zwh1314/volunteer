@@ -1,6 +1,7 @@
 package com.example.volunteer.Service.ServiceImpl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.volunteer.DTO.UserInfoDTO;
 import com.example.volunteer.Dao.UserInfoDao;
 import com.example.volunteer.Entity.UserInfo;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
@@ -30,11 +31,11 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private Cache<String, String> verifyCodeCache = Caffeine.newBuilder()
-            .expireAfterWrite(10, TimeUnit.MINUTES)
-            .initialCapacity(5)
-            .maximumSize(25)
-            .build();
+//    private Cache<String, String> verifyCodeCache = Caffeine.newBuilder()
+//            .expireAfterWrite(10, TimeUnit.MINUTES)
+//            .initialCapacity(5)
+//            .maximumSize(25)
+//            .build();
 
     private Cache<String, String> mailVerifyCodeCache = Caffeine.newBuilder()
             .expireAfterWrite(60, TimeUnit.SECONDS)
@@ -70,52 +71,13 @@ public class UserServiceImpl implements UserService {
     private UserInfoDao userInfoDao;
 
     @Override
-    public Response<Boolean> signUp(String tel, String mail, String userName, String password, String verifyCode) {
-        Response<Boolean> response=new Response<>();
+    public Response<UserInfoDTO> signUpByTel(String tel, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+        Response<UserInfoDTO> response=new Response<>();
 
-        UserDTO userDTO=getUserByTel(tel);
-        if(userDTO != null){
-            response.setFail(ResponseEnum.TEL_HAS_BEEN_USED);
-            return response;
-        }
-
-//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
-//        if (StringUtils.isBlank(tel_verifycode)) {
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-//            return response;
-//        }
-//        else if(!verifyCode.equals(tel_verifycode)){
-//            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-//            return response;
-//        }
-        if(validateVerifyCode(tel, verifyCode)){
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-            return response;
-        }
-
-        User user=new User();
-        user.setTel(tel);
-        user.setPassword(password);
-        user.setUserName(userName);
-        user.setPriority("普通用户");
-        user.setMailAddress(mail);
-        boolean result = userDao.insertUser(user) > 0;
-        if (result) {
-            response.setSuc(true);
-        } else {
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-        }
-
-        return response;
-    }
-    @Override
-    public Response<UserDTO> signUpByTel(String tel,HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
-        Response<UserDTO> response=new Response<>();
-
-        UserDTO userDTO=getUserByTel(tel);
-        if(userDTO != null){
-            response.setSuc(userDTO);
-            tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
+        UserInfoDTO userInfoDTO=userInfoDao.getUserInfoByTel(tel);
+        if(userInfoDTO != null){
+            response.setSuc(userInfoDTO);
+            tokenUtil.generateUserToken(userInfoDTO.getUserId(), servletRequest, servletResponse);
             return response;
         }
 
@@ -130,7 +92,6 @@ public class UserServiceImpl implements UserService {
 
         User user=new User();
         user.setTel(tel);
-        user.setUserName(userName);
         user.setPriority("普通用户");
         user.setPassword(code2);
         boolean result = userDao.insertUser(user) > 0;
@@ -144,7 +105,7 @@ public class UserServiceImpl implements UserService {
 
         if (result && result2) {
             userCache.put(tel,user);
-            response.setSuc(transformUser2UserDTO(user));
+            response.setSuc(userInfoDao.getUserInfoByTel(tel));
         } else {
             response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
         }
@@ -154,51 +115,10 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
-
-
     @Override
-    public Response<Boolean> signUpByMail(String mail, String userName, String tel,String password, String verifyCode) {
-        Response<Boolean> response=new Response<>();
-
-        UserDTO userDTO= getUserByMail(mail);
-        if(userDTO != null){
-            response.setFail(ResponseEnum.TEL_HAS_BEEN_USED);
-            return response;
-        }
-
-
-        String email_verifycode=mailVerifyCodeCache.getIfPresent(mail);
-
-        if (StringUtils.isBlank(email_verifycode)) {
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
-            return response;
-        }
-        else if(!verifyCode.equals(email_verifycode)){
-            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
-            return response;
-        }
-
-        User user=new User();
-        user.setMailAddress(mail);
-        user.setPassword(password);
-        user.setUserName(userName);
-        user.setTel(tel);
-        user.setPriority("普通用户");
-        boolean result = userDao.insertUser(user) > 0;
-        if (result) {
-            response.setSuc(true);
-        } else {
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-        }
-
-        return response;
-    }
-
-
-    @Override
-    public Response<UserDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public Response<UserInfoDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
         // TODO 密码加密
-        Response<UserDTO> response=new Response<>();
+        Response<UserInfoDTO> response=new Response<>();
 
         validateErrorFrequency(tel);
 
@@ -217,14 +137,14 @@ public class UserServiceImpl implements UserService {
 
         tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
 
-        response.setSuc(userDTO);
+        response.setSuc(userInfoDao.getUserInfoByTel(tel));
         return response;
     }
 
     @Override
-    public Response<UserDTO> signInByTel(String tel, String verifyCode, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
+    public Response<UserInfoDTO> signInByTel(String tel, String verifyCode, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
 
-        Response<UserDTO> response=new Response<>();
+        Response<UserInfoDTO> response=new Response<>();
 
         validateErrorFrequency(tel);
 
@@ -244,33 +164,7 @@ public class UserServiceImpl implements UserService {
 
         tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
 
-        response.setSuc(userDTO);
-        return response;
-    }
-
-    @Override
-    public Response<UserDTO> signInByMail(String mail, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse) {
-        // TODO 密码加密
-        Response<UserDTO> response=new Response<>();
-
-        validateErrorFrequency(mail);
-
-        //md5密码加密
-        // String encryptPassword = SecureUtil.md5(password);
-        // User user = userDao.getUserByUserNameAndPassword(userName, encryptPassword);
-
-        UserDTO userDTO = verifyUserByMailAndPassword(mail,password);
-        if (userDTO == null) {
-            int errorFreq = userErrorFrequencyCache.getIfPresent(mail) == null ? 0 : userErrorFrequencyCache.getIfPresent(mail);
-            userErrorFrequencyCache.put(mail, errorFreq + 1);
-            logger.warn("[login User Not Found], mail: {}, password: {}", mail, password);
-            response.setFail(ResponseEnum.TEL_OR_PWD_ERROR);
-            return response;
-        }
-
-        tokenUtil.generateUserToken(userDTO.getUserId(), servletRequest, servletResponse);
-
-        response.setSuc(userDTO);
+        response.setSuc(userInfoDao.getUserInfoByTel(tel));
         return response;
     }
 
@@ -409,15 +303,6 @@ public class UserServiceImpl implements UserService {
         return transformUser2UserDTO(user);
     }
 
-    public UserDTO getUserByMail(String mail) {
-        User user = userCache.getIfPresent(mail);
-        // 缓存中不存在则去db取
-        if (user == null) {
-            return userDao.getUserByMail(mail);
-        }
-        return transformUser2UserDTO(user);
-    }
-
     public UserDTO verifyUserByTelAndPassword(String tel,String password) {
         User user = userCache.getIfPresent(tel);
         // 缓存中不存在则去db取
@@ -427,24 +312,6 @@ public class UserServiceImpl implements UserService {
                 user=transformUserDTO2User(userDTO);
                 user.setPassword(password);
                 userCache.put(tel,user);
-                return userDTO;
-            }
-        }
-        else if(user.getPassword().equals(password)){
-            return transformUser2UserDTO(user);
-        }
-        return null;
-    }
-
-    public UserDTO verifyUserByMailAndPassword(String mail,String password) {
-        User user = userCache.getIfPresent(mail);
-        // 缓存中不存在则去db取
-        if (user == null) {
-            UserDTO userDTO = userDao.getUserByMailAndPassword(mail,password);
-            if(userDTO != null) {
-                user=transformUserDTO2User(userDTO);
-                user.setPassword(password);
-                userCache.put(mail,user);
                 return userDTO;
             }
         }
@@ -465,9 +332,6 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO=new UserDTO();
         userDTO.setUserId(user.getUserId());
         userDTO.setTel(user.getTel());
-        userDTO.setMailAddress(user.getMailAddress());
-        userDTO.setUserId(user.getUserId());
-        userDTO.setUserName(user.getUserName());
         userDTO.setPriority(user.getPriority());
         return userDTO;
     }
@@ -475,9 +339,7 @@ public class UserServiceImpl implements UserService {
     public User transformUserDTO2User(UserDTO userDTO){
         User user=new User();
         user.setTel(userDTO.getTel());
-        user.setMailAddress(userDTO.getMailAddress());
         user.setUserId(userDTO.getUserId());
-        user.setUserName(userDTO.getUserName());
         user.setPriority(userDTO.getPriority());
         return user;
     }

@@ -21,7 +21,7 @@ public class RedisTest {
     public void redisTest(){
         User user=new User();
         user.setUserId(1);
-        user.setUserName("张文瀚");
+        //user.setUserName("张文瀚");
         user.setPassword("991219");
         user.setPriority("超级管理者");
         user.setTel("15082361803");

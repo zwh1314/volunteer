@@ -16,17 +16,10 @@ public class UserDTO {
     @ApiModelProperty(value = "用户id")
     private long userId;
 
-    @ApiModelProperty(value = "用户名")
-    private String userName;
-
     @ApiModelProperty(value = "优先级")
     private String priority;
 
     @ApiModelProperty(value = "手机号")
     private String tel;
-
-    @ApiModelProperty(value = "邮箱地址")
-    private String mailAddress;
-
 
 }

@@ -43,7 +43,7 @@ public class TokenUtil {
         }
 
         String decryptContent = null;
-        String userId = null;
+        String userId;
         try {
             decryptContent = decrypt(token);
             if (StringUtils.isBlank(decryptContent)) {

@@ -9,8 +9,8 @@ public interface UserInfoDao {
 
     @ResultType(UserInfoDTO.class)
     @Select("SELECT user_id as userId, user_name as userName, birthday, priority, major, head_picture as headPicture, " +
-            "address, tel, qq, mail_address as mailAddress, gender, introduction, credits FROM user_info WHERE id = #{id}")
-    UserInfoDTO getUserInfoById(@Param("id")int id);
+            "address, tel, qq, mail_address as mailAddress, gender, introduction, credits FROM user_info WHERE tel = #{tel}")
+    UserInfoDTO getUserInfoByTel(@Param("tel")String tel);
 
     @ResultType(UserInfoDTO.class)
     @Select("SELECT user_id as userId, user_name as userName, birthday, priority, major, head_picture as headPicture, " +

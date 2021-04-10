@@ -7,8 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface ActivityNewsDao {
-    @Insert("INSERT INTO activity_news(activity_id, news_content, news_picture, news_title, " +
-            "news_publisher, news_date) VALUES(#{activityId}, #{newsContent}, #{newsPicture}, " +
+    @Insert("INSERT INTO activity_news(activity_id, news_content, news_title, " +
+            "news_publisher, news_date) VALUES(#{activityId}, #{newsContent}, " +
             "#{newsTitle}, #{newsPublisher}, NOW())")
     int addActivityNews(ActivityNews activityNews);
 
@@ -20,25 +20,25 @@ public interface ActivityNewsDao {
 
     @ResultType(ActivityNews.class)
     @Select("SELECT news_id as newsId, activity_id as activityId, news_content as newsContent, " +
-            "news_picture as newsPicture, news_title as newsTitle, news_publisher as newsPublisher, " +
+            "news_title as newsTitle, news_publisher as newsPublisher, " +
             "news_date as newsDate FROM activity_news WHERE activity_id = #{activityId}")
     List<ActivityNews> findActivityNewsById(@Param("activityId")long activityId);
 
     @ResultType(ActivityNews.class)
     @Select("SELECT news_id as newsId, activity_id as activityId, news_content as newsContent, " +
-            "news_picture as newsPicture, news_title as newsTitle, news_publisher as newsPublisher, " +
+            "news_title as newsTitle, news_publisher as newsPublisher, " +
             "news_date as newsDate FROM activity_news WHERE TO_DAYS(NOW()) - TO_DAYS(news_date) <= 7")
     List<ActivityNews> findActivityNewsInOneWeek();
 
     @ResultType(ActivityNews.class)
     @Select("SELECT news_id as newsId, activity_id as activityId, news_content as newsContent, " +
-            "news_picture as newsPicture, news_title as newsTitle, news_publisher as newsPublisher, " +
+            "news_title as newsTitle, news_publisher as newsPublisher, " +
             "news_date as newsDate FROM activity_news WHERE news_publisher = #{newsPublisher}")
     List<ActivityNews> findActivityNewsByPublisher(@Param("newsPublisher")long newsPublisher);
 
     @ResultType(ActivityNews.class)
     @Select("SELECT news_id as newsId, activity_id as activityId, news_content as newsContent, " +
-            "news_picture as newsPicture, news_title as newsTitle, news_publisher as newsPublisher, " +
+            "news_title as newsTitle, news_publisher as newsPublisher, " +
             "news_date as newsDate FROM activity_news WHERE news_content LIKE CONCAT('%',#{textInclude},'%')")
     List<ActivityNews> findActivityNewsByContent(@Param("textInclude")String textInclude);
 

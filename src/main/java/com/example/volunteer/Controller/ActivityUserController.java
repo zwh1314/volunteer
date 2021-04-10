@@ -1,7 +1,6 @@
 package com.example.volunteer.Controller;
 
 import com.example.volunteer.DTO.ActivityDTO;
-import com.example.volunteer.Entity.Activity;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
@@ -92,9 +91,9 @@ public class ActivityUserController extends BaseController{
     @GetMapping("/getActivityStateByNumber")
     @ApiOperation("获得活动状态by number")
     @ApiImplicitParams({})
-    public Response<List<ActivityDTO>> getActivityStateByNumber(@RequestParam("number") long number, @RequestParam("userId") long userId) {
+    public Response<List<ActivityDTO>> getActivityStateByNumber(@RequestParam("number") long number) {
         Response<List<ActivityDTO>> response = new Response<>();
-
+        long userId = getUserId();
         try {
             validateUserId(userId);
             if(number == 0) {// 已关注
@@ -274,33 +273,6 @@ public class ActivityUserController extends BaseController{
             return response;
         }  catch (Exception e) {
             logger.error("[uploadSignFileByActivityId Exception], signFile: {}", SerialUtil.toJsonStr(signFile), e);
-            response.setFail(ResponseEnum.SERVER_ERROR);
-            return response;
-        }
-    }
-
-    @GetMapping("/getAcitivityStateByNumber")
-    @ApiOperation("通过数字获得活动状态表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", paramType = "query", dataType = "long"),
-            @ApiImplicitParam(name = "number", value = "编码", paramType = "query", dataType = "int"),
-    })
-    public Response<List<ActivityDTO>> getAcitivityStateByNumber (@RequestParam("userId") long userId, @RequestParam("number") int number) {
-        Response<List<ActivityDTO>> response = new Response<>();
-        try {
-            //if(number == 0)  //已关注表
-            return activityUserService.getFocusedByUserId(userId);
-            //return activityUserService.getSignFile(activityId);
-        } catch (IllegalArgumentException e) {
-            logger.warn("[getAcitivityStateByNumber Illegal Argument], activityId: {}", userId, e);
-            response.setFail(ResponseEnum.ILLEGAL_PARAM);
-            return response;
-        } catch (VolunteerRuntimeException e) {
-            logger.error("[getAcitivityStateByNumber Runtime Exception], activityId: {}", userId, e);
-            response.setFail(e.getExceptionCode(), e.getMessage());
-            return response;
-        }  catch (Exception e) {
-            logger.error("[getAcitivityStateByNumber Exception], activityId: {}", userId, e);
             response.setFail(ResponseEnum.SERVER_ERROR);
             return response;
         }

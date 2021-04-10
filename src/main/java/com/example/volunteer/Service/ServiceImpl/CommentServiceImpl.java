@@ -3,18 +3,14 @@ package com.example.volunteer.Service.ServiceImpl;
 import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Dao.CommentDao;
 import com.example.volunteer.Dao.CommentPictureDao;
-import com.example.volunteer.Entity.Activity;
-import com.example.volunteer.Entity.ActivitySignFileModel;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Entity.CommentPicture;
-import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentService;
 import com.example.volunteer.enums.ResponseEnum;
 import com.example.volunteer.utils.OSSUtil;
 import com.example.volunteer.utils.RedisUtil;
 import com.example.volunteer.utils.SerialUtil;
-import com.example.volunteer.utils.TokenUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +27,6 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentDao commentDao;
-
-    @Autowired
-    private TokenUtil tokenUtil;
 
     @Autowired
     private CommentPictureDao commentPictureDao;

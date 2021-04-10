@@ -1,7 +1,7 @@
 package com.example.volunteer.Service;
 
 
-import com.example.volunteer.DTO.UserDTO;
+import com.example.volunteer.DTO.UserInfoDTO;
 import com.example.volunteer.Response.Response;
 import org.springframework.stereotype.Service;
 
@@ -14,32 +14,17 @@ public interface UserService {
     /**
      * 注册1
      */
-    Response<Boolean> signUp(String tel, String mail,String userName, String password, String verifyCode);
-
-    /**
-     * 注册2
-     */
-    Response<Boolean> signUpByMail(String email, String userName, String tel,String password, String verifyCode);
-
-    /**
-     * 注册3
-     */
-    Response<UserDTO>signUpByTel(String tel,HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+    Response<UserInfoDTO>signUpByTel(String tel, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 
     /**
      * 登录
      */
-    Response<UserDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
-
-    /**
-     * 登录2
-     */
-    Response<UserDTO> signInByMail(String email, String password,HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+    Response<UserInfoDTO> signIn(String tel, String password, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 
     /**
      * 登录3
      */
-    Response<UserDTO> signInByTel(String tel, String verifyCode, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
+    Response<UserInfoDTO> signInByTel(String tel, String verifyCode, HttpServletRequest servletRequest, HttpServletResponse servletResponse);
 
     /**
      * 更新密码
