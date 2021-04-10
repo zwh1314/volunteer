@@ -52,10 +52,6 @@ public class UserInfo implements Serializable {
     @ApiModelProperty(value = "专业")
     private String major;
 
-    @Column(name = "fax")
-    @ApiModelProperty(value = "传真")
-    private String fax;
-
     @Column(name = "tel",nullable = false)
     @ApiModelProperty(value = "手机")
     private String tel;

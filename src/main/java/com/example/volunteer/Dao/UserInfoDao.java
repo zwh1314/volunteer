@@ -8,26 +8,26 @@ import org.apache.ibatis.annotations.*;
 public interface UserInfoDao {
 
     @ResultType(UserInfoDTO.class)
-    @Select("SELECT user_id as userId, user_name as userName, priority, head_picture as headPicture, " +
-            "address, fax, tel, qq, mail_address as mailAddress, introduction, credits FROM user_info WHERE id = #{id}")
+    @Select("SELECT user_id as userId, user_name as userName, birthday, priority, major, head_picture as headPicture, " +
+            "address, tel, qq, mail_address as mailAddress, gender, introduction, credits FROM user_info WHERE id = #{id}")
     UserInfoDTO getUserInfoById(@Param("id")int id);
 
     @ResultType(UserInfoDTO.class)
-    @Select("SELECT user_id as userId, user_name as userName, head_picture,birthday,address,major,introduction,credits " +
-            "FROM user_info WHERE user_id = #{userId}")
+    @Select("SELECT user_id as userId, user_name as userName, birthday, priority, major, head_picture as headPicture, " +
+            "address, tel, qq, mail_address as mailAddress, gender, introduction, credits FROM user_info WHERE user_id = #{userId}")
     UserInfoDTO getUserInfoByUserId(@Param("userId") long userId);
 
-    @Insert("INSERT INTO user_info(user_name, priority, head_picture, address, fax, " +
-            "tel, qq, mail_address, introduction,credits) " +
-            "VALUES(#{userName}, #{priority}, #{headPicture}, #{address}, " +
-            "#{fax}, #{tel}, #{qq}, #{mailAddress}, #{introduction}, #{credits})")
+    @Insert("INSERT INTO user_info(user_name, priority, tel) VALUES(#{userName}, #{priority}, #{tel})")
     int addUserInfo(UserInfo userInfo);
 
 
-    @Update("UPDATE user_info SET user_name = #{userName}, head_picture = #{headPicture}, gender =#{gender}, " +
-            "address = #{address},major = #{major}, introduction = #{introduction} " +
+    @Update("UPDATE user_info SET user_name = #{userName}, birthday = #{birthday}, major = #{major}, " +
+            "gender =#{gender}, address = #{address}, qq = #{qq}, mail_address = #{mailAddress}, introduction = #{introduction} " +
             "WHERE user_id = #{userId}")
     int updateUserInfo(UserInfo userInfo);
+
+    @Update("UPDATE user_info SET credits = #{credits} WHERE user_id = #{userId}")
+    int updateCredits(@Param("userId") String userId, @Param("credits") int credits);
 
     @Update("UPDATE user_info SET priority = #{priority} WHERE user_id = #{userId}")
     int updatePriority(@Param("userId") String userId, @Param("priority") String priority);

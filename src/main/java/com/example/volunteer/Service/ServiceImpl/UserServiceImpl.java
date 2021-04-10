@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
 //            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
 //            return response;
 //        }
-        if(!validateVerifyCode(tel,verifyCode)){
+        if(validateVerifyCode(tel, verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
         }
@@ -228,7 +228,7 @@ public class UserServiceImpl implements UserService {
 
         validateErrorFrequency(tel);
 
-        if(!validateVerifyCode(tel,verifyCode)){
+        if(validateVerifyCode(tel, verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
         }
@@ -347,18 +347,11 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
-
-    /**
-     * 验证验证码
-     * @param tel
-     * @param verifyCode
-     * @return
-     */
     @Override
     public Response<Boolean> verifyVerification(String tel, String verifyCode) {
 
         Response <Boolean> response = new Response<>();
-        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
+//        String tel_verifycode=verifyCodeCache.getIfPresent(tel);
 //        if (StringUtils.isBlank(tel_verifycode)) {
 //            response.setFail(ResponseEnum.VERIFY_MSG_CODE_INVALID);
 //            return response;
@@ -367,7 +360,7 @@ public class UserServiceImpl implements UserService {
 //            response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
 //            return response;
 //        }
-        if(!validateVerifyCode(tel,verifyCode)){
+        if(validateVerifyCode(tel, verifyCode)){
             response.setFail(ResponseEnum.VERIFY_MSG_CODE_ERROR);
             return response;
         }
@@ -470,6 +463,7 @@ public class UserServiceImpl implements UserService {
 
     public UserDTO transformUser2UserDTO(User user){
         UserDTO userDTO=new UserDTO();
+        userDTO.setUserId(user.getUserId());
         userDTO.setTel(user.getTel());
         userDTO.setMailAddress(user.getMailAddress());
         userDTO.setUserId(user.getUserId());
@@ -496,9 +490,6 @@ public class UserServiceImpl implements UserService {
         String result = httpRequestUtil.sendPost("https://api2.bmob.cn/1/verifySmsCode/"+verifyCode,jsonObject);
         jsonObject = JSONObject.parseObject(result);
         result = jsonObject.getString("msg");
-        if(StringUtils.isBlank(result))
-            return false;
-        else
-            return true;
+        return StringUtils.isBlank(result);
     }
 }

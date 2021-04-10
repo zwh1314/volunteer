@@ -155,6 +155,7 @@ public class UserController extends BaseController {
             return userService.updatePassword(tel, newPassword);
         } catch (IllegalArgumentException e) {
             logger.warn("[updatePassword Illegal Argument], tel: {}, newPassword: {}", tel, newPassword, e);
+            response.setFail(400,e.getMessage());
             return response;
         } catch (VolunteerRuntimeException e) {
             logger.error("[updatePassword Runtime Exception], tel: {}, newPassword: {}", tel, newPassword, e);

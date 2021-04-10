@@ -27,7 +27,7 @@ public class UserInfoTest {
         userInfo.setUserId(1L);
         userInfo.setUserName("张文瀚");
         userInfo.setAddress("攀枝花");
-        userInfo.setFax("123");
+        //userInfo.setFax("123");
         userInfo.setPriority("管理员");
         userInfo.setTel("15082361803");
         userInfo.setIntroduction("拨开云雾见太阳");
