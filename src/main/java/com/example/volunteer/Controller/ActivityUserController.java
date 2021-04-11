@@ -277,4 +277,32 @@ public class ActivityUserController extends BaseController{
             return response;
         }
     }
+    @PostMapping("/updateIsFocusByUserId")
+    @ApiOperation("更新是否关注")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "activityId", value = "活动Id", paramType = "query", dataType = "long"),
+            @ApiImplicitParam(name = "isFocus", value = "是否关注", paramType = "query", dataType = "boolean")
+    })
+    public Response<Boolean> updateIsFocusByUserId(@RequestParam("activityId") long activityId, @RequestParam("isFocus") boolean isFocus) {
+        Response<Boolean> response = new Response<>();
+        long userId = getUserId();
+        try {
+            validateUserId(userId);
+            return activityUserService.updateActivityIsFocus(activityId, userId, isFocus);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[updateIsFocusByUserId Illegal Argument], : userId {}", userId, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[updateIsFocusByUserId Runtime Exception], :userId {}", userId, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[updateIsFocusByUserId Exception], :userId {}", userId, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
+
+
 }

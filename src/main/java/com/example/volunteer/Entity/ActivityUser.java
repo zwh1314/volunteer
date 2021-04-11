@@ -30,19 +30,19 @@ public class ActivityUser implements Serializable {
 
     @Column(name = "form_status")
     @ApiModelProperty(value = "报名表提交状态")
-    private long formStatus;//1代表提交，0代表未交
-
-    @Column(name = "focus_status")
-    @ApiModelProperty(value = "活动关注状态")
-    private int focusStatus;
+    private boolean formStatus;//1代表提交，0代表未交
 
     @Column(name = "is_focus")
     @ApiModelProperty(value = "是否关注")
-    private String isFocus;
+    private boolean isFocus;
 
     @Column(name = "form_date")
     @ApiModelProperty(value = "报名表提交时间")
     @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date formDate;
+
+    public void setIsFocus(boolean focus) {
+        this.isFocus = focus;
+    }
 
 }

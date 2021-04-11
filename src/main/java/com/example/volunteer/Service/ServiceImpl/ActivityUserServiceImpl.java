@@ -123,6 +123,32 @@ public class ActivityUserServiceImpl implements ActivityUserService {
     }
 
     @Override
+    public Response<Boolean> updateActivityIsFocus(long activityId, long userId, boolean isFocus) {
+        Response<Boolean> response = new Response<>();
+        ActivityUser activityUser = new ActivityUser();
+        activityUser = activityUserDao.findActivityUserByUserIdAndActivityId(activityId, userId);
+        if(activityUser == null){
+            ActivityUser activityU = new ActivityUser();
+            activityU.setActivityId(activityId);
+            activityU.setUserId(userId);
+            activityU.setIsFocus(isFocus);
+            activityU.setFormStatus(false);
+            boolean result = activityUserDao.addActivityUser(activityU) > 0;
+           if(!result){
+               response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+           }
+        }else
+        {
+          boolean result = activityUserDao.updateIsFocus(activityId,userId,isFocus) > 0;
+            if(!result){
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+            }
+        }
+        response.setSuc(true);
+        return response;
+    }
+
+    @Override
     public Response<Boolean> deleteActivityUserByActivityId(long activityId) {
         Response<Boolean> response=new Response<>();
 

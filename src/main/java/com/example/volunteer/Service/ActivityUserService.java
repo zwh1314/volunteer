@@ -86,4 +86,6 @@ public interface  ActivityUserService {
      * @return
      */
     public Response<List<ActivityDTO>> getSignedUpActivityByUserId(long userId);
+
+    Response<Boolean> updateActivityIsFocus(long activityId, long userId, boolean isFocus);
 }
