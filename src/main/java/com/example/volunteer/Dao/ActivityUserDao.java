@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface ActivityUserDao {
-    @Insert("INSERT INTO activity_user(activity_id,user_id,form_status,form_date) VALUES (#{activityId},#{userId},#{formStatus},#{formDate});")
+    @Insert("INSERT INTO activity_user(activity_id,user_id,form_status,form_date,is_focus) VALUES (#{activityId},#{userId},#{formStatus},#{formDate},#{isFocus});")
     int addActivityUser(ActivityUser activityUser);
 
 
@@ -22,6 +22,10 @@ public interface ActivityUserDao {
     @ResultType(ActivityUser.class)
     @Select("SELECT user_id as userId, activity_id as activityId, form_date as formDate, form_status as formStatus FROM activity_user WHERE user_id = #{userId}")
     List<ActivityUser> findActivityUserByUserId(@Param("userId")long userId);
+
+    @ResultType(ActivityUser.class)
+    @Select("SELECT user_id as userId, activity_id as activityId, form_date as formDate, form_status as formStatus FROM activity_user WHERE user_id = #{userId} AND activity_id = #{activityId}")
+    ActivityUser findActivityUserByUserIdAndActivityId(@Param("activityId")long activityId, @Param("userId")long userId);
 
     @ResultType(ActivityUser.class)
     @Select("SELECT user_id as userId, activity_id as activityId, form_date as formDate, form_status as formStatus FROM activity_user WHERE activity_id = #{activityId}")
@@ -53,4 +57,8 @@ public interface ActivityUserDao {
             " activity_type as activityType ,activity_date as activityDate, activity_place as activityPlace FROM activity" +
             " WHERE activity_id in (SELECT activity_id FROM activity_user WHERE user_id = #{userId} AND is_focus = 1 )")
     List<ActivityDTO> getFocusedByUserId(long userId);
+
+    @Update("UPDATE activity_user SET is_focus = #{isFocus} WHERE user_id = #{userId} AND activity_id = #{activityId}")
+    int updateIsFocus(@Param("activityId")long activityId, @Param("userId")long userId, @Param("isFocus")boolean isFocus);
+
 }
