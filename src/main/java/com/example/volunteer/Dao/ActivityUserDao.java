@@ -4,7 +4,6 @@ import com.example.volunteer.DTO.ActivityDTO;
 import com.example.volunteer.Entity.ActivityUser;
 import org.apache.ibatis.annotations.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Mapper
@@ -13,11 +12,11 @@ public interface ActivityUserDao {
     int addActivityUser(ActivityUser activityUser);
 
 
-    @Update("UPDATE activity_user SET form_status = #{formStatus} WHERE user_id = #{userId}")
-    int updateFormStatusByUserId(@Param("formStatus")String formStatus, @Param("userId")long userId);
+    @Update("UPDATE activity_user SET form_status = #{formStatus} WHERE activity_id = #{activityId} AND user_id = #{userId}")
+    int updateFormStatusByUserIdAndActivityId(@Param("activityId") long activityId, @Param("userId")long userId, @Param("formStatus")boolean formStatus);
 
-    @Update("UPDATE activity_user SET form_date = #{formDate} WHERE user_id = #{userId}")
-    int updateFormDateByUserId(@Param("formDate") Date formDate, @Param("userId")long userId);
+    @Update("UPDATE activity_user SET form_date = NOW() WHERE activity_id = #{activityId} AND user_id = #{userId}")
+    int updateFormDateByUserIdAndActivityId(@Param("activityId") long activityId, @Param("userId")long userId);
 
     @ResultType(ActivityUser.class)
     @Select("SELECT user_id as userId, activity_id as activityId, form_date as formDate, form_status as formStatus FROM activity_user WHERE user_id = #{userId}")
