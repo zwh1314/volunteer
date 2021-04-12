@@ -2,18 +2,12 @@ package com.example.volunteer.utils;
 
 import com.example.volunteer.Dao.*;
 import com.example.volunteer.Entity.UserInfo;
-import com.example.volunteer.Service.ServiceImpl.CommentResponseServiceImpl;
-import com.example.volunteer.Service.ServiceImpl.CommentServiceImpl;
-import com.example.volunteer.Service.ServiceImpl.VideoCommentServiceImpl;
-import com.example.volunteer.Service.ServiceImpl.VideoServiceImpl;
-import com.example.volunteer.utils.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,10 +38,9 @@ public class ScheduledTasks {
     //每隔1 day执行一次
     @Scheduled(fixedRate = 60000*60*24)
     public void reportCurrentTime() {
-        Integer likes;
         try{
 
-            Map map = new HashMap();
+            Map map;
             map = redisUtil.hmget("credit");
 
             Iterator<Map.Entry<String, Integer>> entries = map.entrySet().iterator();
@@ -63,19 +56,20 @@ public class ScheduledTasks {
             }
 
 
-        }catch (Exception e){
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void commentLikeSchedule(){
         List<Long> commentIds = commentDao.getCommentIds();
-        Long like;
+        long like;
         for (Long commentId : commentIds) {
             try {
                 Object o = redisUtil.get("commentLike:" + commentId);
                 if (o != null) {
-                    like = Long.valueOf(String.valueOf(o));
+                    like = Long.parseLong(String.valueOf(o));
                     commentDao.updateCommentLike(like, commentId);
                 }
             } catch (Exception e) {
@@ -87,12 +81,12 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 0 0 * * ?")
     public void responseLikeSchedule(){
         List<Long> responseIds = commentResponseDao.getResponseIds();
-        Long like;
+        long like;
         for (Long responseId : responseIds) {
             try {
                 Object o = redisUtil.get("responseLike:" +responseId);
                 if (o != null) {
-                    like = Long.valueOf(String.valueOf(o));
+                    like = Long.parseLong(String.valueOf(o));
                     commentResponseDao.updateResponseLike(like, responseId);
                 }
             } catch (Exception e) {
@@ -104,12 +98,12 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 0 0 * * ?")
     public void VideoCommentLikeSchedule(){
         List<Long> commentIds = videoCommentDao.getCommentIds();
-        Long like;
+        long like;
         for (Long commentId : commentIds) {
             try {
                 Object o = redisUtil.get("videoCommentLike:"+commentId);
                 if (o != null) {
-                    like = Long.valueOf(String.valueOf(o));
+                    like = Long.parseLong(String.valueOf(o));
                     videoCommentDao.updateCommentLike(like, commentId);
                 }
             } catch (Exception e) {
@@ -121,12 +115,12 @@ public class ScheduledTasks {
     @Scheduled(cron = "0 0 0 * * ?")
     public void videoLikeSchedule(){
         List<Long> videoIds = videoDao.getVideoIds();
-        Long like;
+        long like;
         for (Long videoId : videoIds) {
             try {
                 Object o = redisUtil.get("videoLike:"+ videoId);
                 if (o != null) {
-                    like = Long.valueOf(String.valueOf(o));
+                    like = Long.parseLong(String.valueOf(o));
                     videoDao.updateVideoLike(like,videoId);
                 }
             } catch (Exception e) {

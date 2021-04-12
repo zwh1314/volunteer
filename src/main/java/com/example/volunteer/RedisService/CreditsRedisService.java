@@ -1,11 +1,6 @@
 package com.example.volunteer.RedisService;
 
-import com.example.volunteer.DTO.UserInfoDTO;
-import com.example.volunteer.Entity.UserInfo;
 import com.example.volunteer.Response.Response;
-
-import java.util.List;
-import java.util.Map;
 
 public interface CreditsRedisService {
 

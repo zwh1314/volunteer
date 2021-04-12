@@ -6,15 +6,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @param: none
- * @description: 返回给前端的活动信息实体类
- *
- **/
 @ApiModel("活动模型")
 @Data
 public class ActivityDTO{

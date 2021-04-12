@@ -275,7 +275,7 @@ public class CommentController extends BaseController{
     }
     @GetMapping("/getCommentByNumber")
     @ApiOperation("获得评论 ByNumber")
-    public Response<List<CommentDTO>> getCommentByNumber(long number) {
+    public Response<List<CommentDTO>> getCommentByNumber(@RequestParam("number") long number) {
         Response<List<CommentDTO>> response = new Response<>();
         try {
             return commentService.getCommentByNumber(number);

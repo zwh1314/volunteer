@@ -3,6 +3,7 @@ package com.example.volunteer.Service.ServiceImpl;
 import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Dao.CommentDao;
 import com.example.volunteer.Dao.CommentPictureDao;
+import com.example.volunteer.Dao.CommentResponseDao;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Entity.CommentPicture;
 import com.example.volunteer.Response.Response;
@@ -27,6 +28,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentDao commentDao;
+
+    @Autowired
+    private CommentResponseDao commentResponseDao;
 
     @Autowired
     private CommentPictureDao commentPictureDao;
@@ -208,6 +212,7 @@ public class CommentServiceImpl implements CommentService {
             commentDTO.setCommentPublisher(comment.getCommentPublisher());
 
             commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
+            commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
 
             commentDTOList.add(commentDTO);
         }

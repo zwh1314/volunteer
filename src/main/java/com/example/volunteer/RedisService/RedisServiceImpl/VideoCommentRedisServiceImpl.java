@@ -30,12 +30,12 @@ public class VideoCommentRedisServiceImpl implements VideoCommentRedisService {
 
     @Override
     public Long getCommentLikeFromRedis(long commentId) {
-        Long commentLike;
+        long commentLike;
         try{
             Object o = redisUtil.get(videoCommentLikeKey(commentId));
             if (o == null)
                 return null;
-            else commentLike = Long.valueOf(String.valueOf(o));
+            else commentLike = Long.parseLong(String.valueOf(o));
         }catch (Exception e){
             logger.error("[getCommentLikeFromRedis Fail], commentId:{}",SerialUtil.toJsonStr(commentId));
             e.printStackTrace();

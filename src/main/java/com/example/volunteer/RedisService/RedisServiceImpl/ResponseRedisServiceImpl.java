@@ -31,12 +31,12 @@ public class ResponseRedisServiceImpl implements ResponseRedisService {
 
     @Override
     public Long getResponseLikeFromRedis(long responseId) {
-        Long responseLike;
+        long responseLike;
         try{
             Object o = redisUtil.get(responseLikeKey(responseId));
             if (o == null)
                 return null;
-            else responseLike = Long.valueOf(String.valueOf(o));
+            else responseLike = Long.parseLong(String.valueOf(o));
         }catch (Exception e){
             logger.error("[getResponseLikeFromRedis Fail], responseId：{}", SerialUtil.toJsonStr(responseId));
             e.printStackTrace();

@@ -2,7 +2,6 @@ package com.example.volunteer.Controller;
 
 import com.example.volunteer.Entity.VideoComment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
-import com.example.volunteer.RedisService.VideoCommentRedisService;
 import com.example.volunteer.Request.VideoCommentRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.VideoCommentService;
@@ -26,10 +25,6 @@ public class VideoCommentController {
 
     @Autowired
     private VideoCommentService videoCommentService;
-
-    @Autowired
-    private VideoCommentRedisService videoCommentRedisService;
-
 
     @GetMapping("/getVideoCommentByPublisher")
     @ApiOperation("获得视频评论by发布者Id")

@@ -1,6 +1,5 @@
 package com.example.volunteer.Dao;
 
-import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.CommentPicture;
 import org.apache.ibatis.annotations.*;
 

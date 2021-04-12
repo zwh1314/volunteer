@@ -3,11 +3,6 @@ package com.example.volunteer.utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-/**
- * @param: none
- * @description:
- * @author: KingJ
- **/
 public class SerialUtil {
 
     private static final Gson gson = new Gson();

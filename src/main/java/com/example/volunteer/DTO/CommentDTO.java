@@ -1,6 +1,7 @@
 package com.example.volunteer.DTO;
 
 import com.example.volunteer.Entity.CommentPicture;
+import com.example.volunteer.Entity.CommentResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -28,4 +29,7 @@ public class CommentDTO {
 
     @ApiModelProperty(value = "评论图片")
     private List<CommentPicture> commentPictureList;
+
+    @ApiModelProperty(value = "评论回复")
+    private List<CommentResponse> commentResponseList;
 }

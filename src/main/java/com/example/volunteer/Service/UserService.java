@@ -40,7 +40,7 @@ public interface UserService {
     /**
      * 验证登录邮箱验证码
      */
-    public Response<Boolean> getMailVerifyMsgCode(String mail);
+    Response<Boolean> getMailVerifyMsgCode(String mail);
 
     /**
      *  验证验证码

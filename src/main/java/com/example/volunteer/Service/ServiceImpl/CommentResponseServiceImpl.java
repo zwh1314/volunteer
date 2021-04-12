@@ -70,7 +70,7 @@ public class CommentResponseServiceImpl implements CommentResponseService {
     public Response<List<CommentResponse>> getCommentResponseByCommentId(long commentId){
         Response<List<CommentResponse>> response=new Response<>();
 
-        List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByComment(commentId, 0L);
+        List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByCommentId(commentId, 0L);
         if (commentResponseList.size() == 0) {
             response.setFail(ResponseEnum.COMMENT_RESPONSE_COMMENT_NOT_FOUND);
         }
@@ -84,7 +84,7 @@ public class CommentResponseServiceImpl implements CommentResponseService {
     public Response<List<CommentResponse>> getVideoCommentResponseByCommentId(long commentId){
         Response<List<CommentResponse>> response=new Response<>();
 
-        List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByComment(commentId, 1L);
+        List<CommentResponse> commentResponseList = commentResponseDao.findCommentResponseByCommentId(commentId, 1L);
         if (commentResponseList.size() == 0) {
             response.setFail(ResponseEnum.COMMENT_RESPONSE_VIDEO_COMMENT_NOT_FOUND);
         }

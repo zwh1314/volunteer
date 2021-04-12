@@ -4,11 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * @param: none
- * @description: 返回给前端的用户信息实体类
- * @author: KingJ
- **/
 @ApiModel("用户登录注册模型")
 @Data
 public class UserDTO {

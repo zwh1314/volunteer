@@ -3,7 +3,6 @@ package com.example.volunteer.Controller;
 
 import com.example.volunteer.Entity.CommentResponse;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
-import com.example.volunteer.RedisService.ResponseRedisService;
 import com.example.volunteer.Request.CommentResponseRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentResponseService;
@@ -27,9 +26,6 @@ public class CommentResponseController {
 
     @Autowired
     private CommentResponseService responseService;
-
-    @Autowired
-    private ResponseRedisService responseRedisService;
 
     @GetMapping("/getCommentResponseByCommentId")
     @ApiOperation("获得评论Id")

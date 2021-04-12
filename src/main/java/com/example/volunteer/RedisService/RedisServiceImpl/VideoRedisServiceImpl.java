@@ -30,12 +30,12 @@ public class VideoRedisServiceImpl implements VideoRedisService {
 
     @Override
     public Long getVideoLikeFromRedis(long videoId) {
-        Long like;
+        long like;
         try{
             Object o = redisUtil.get(videoLikeKey(videoId));
             if (o == null)
                 return null;
-            else like = Long.valueOf(String.valueOf(o));
+            else like = Long.parseLong(String.valueOf(o));
         }catch (Exception e){
             logger.error("[getVideoLikeFromRedis Fail], videoId：{}", SerialUtil.toJsonStr(videoId));
             e.printStackTrace();

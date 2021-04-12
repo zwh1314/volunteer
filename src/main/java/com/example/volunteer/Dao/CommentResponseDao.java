@@ -23,7 +23,7 @@ public interface CommentResponseDao {
             "responseText, response_publisher as responsePublisher, response_type as responseType, " +
             "response_like as responseLike, response_date as responseDate FROM comment_response WHERE " +
             "response_comment = #{commentId} GROUP BY response_type HAVING response_type = #{responseType}")
-    List<CommentResponse> findCommentResponseByComment(@Param("commentId")long commentId, @Param("responseType")long responseType);
+    List<CommentResponse> findCommentResponseByCommentId(@Param("commentId")long commentId, @Param("responseType")long responseType);
 
     @ResultType(CommentResponse.class)
     @Select("SELECT response_id as responseId, response_comment as commentId, response_text as " +

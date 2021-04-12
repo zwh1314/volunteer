@@ -5,11 +5,6 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @param: none
- * @description:
- * @author: KingJ
- **/
 @Data
 public class VolunteerRuntimeException extends RuntimeException {
     private static final Logger logger = LoggerFactory.getLogger(VolunteerRuntimeException.class);

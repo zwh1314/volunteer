@@ -2,7 +2,6 @@ package com.example.volunteer.Service;
 
 import com.example.volunteer.DTO.CommentDTO;
 import com.example.volunteer.Entity.Comment;
-import com.example.volunteer.Request.CommentRequest;
 import com.example.volunteer.Response.Response;
 import org.springframework.web.multipart.MultipartFile;
 

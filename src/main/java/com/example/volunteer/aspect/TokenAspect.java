@@ -29,10 +29,19 @@ public class TokenAspect {
     @Before("verifyToken()")
     public Long getVerifyToken() {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = requestAttributes.getRequest();
-        HttpServletResponse response = requestAttributes.getResponse();
+        HttpServletRequest request = null;
+        if (requestAttributes != null) {
+            request = requestAttributes.getRequest();
+        }
+        HttpServletResponse response = null;
+        if (requestAttributes != null) {
+            response = requestAttributes.getResponse();
+        }
 
-        String token = tokenUtil.getToken(request, response);
+        String token = null;
+        if (request != null) {
+            token = tokenUtil.getToken(request, response);
+        }
         if (StringUtils.isBlank(token)) {
             return null;
         }

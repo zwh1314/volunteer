@@ -12,7 +12,7 @@ import java.util.Properties;
 public class EmailUtil {
 
     public String sendMail(String recipient) {
-        String code = new String();
+        String code = "";
 
         Properties props = new Properties();
         props.setProperty("mail.host", "smtp.163.com");
@@ -57,7 +57,7 @@ public class EmailUtil {
             e.printStackTrace();
 
         }
-        return code.toString();
+        return code;
     }
 }
 
