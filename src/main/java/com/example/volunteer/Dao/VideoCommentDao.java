@@ -19,8 +19,8 @@ public interface VideoCommentDao {
 
     @ResultType(VideoComment.class)
     @Select("SELECT comment_id as commentId, video_id as videoId, comment_text as commentText, comment_publisher as commentPublisher, " +
-            "comment_like as commentLike, comment_date as commentDate FROM video_comment WHERE comment_publisher " +
-            "= #{commentPublisher}")
+            "comment_like as commentLike, comment_date as commentDate FROM video_comment WHERE video_id " +
+            "= #{videoId}")
     List<VideoComment> findCommentByVideoId(@Param("videoId")long videoId);
 
     @ResultType(VideoComment.class)

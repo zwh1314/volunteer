@@ -1,11 +1,14 @@
 package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.DTO.CommentDTO;
+import com.example.volunteer.DTO.CommentResponseDTO;
 import com.example.volunteer.Dao.CommentDao;
 import com.example.volunteer.Dao.CommentPictureDao;
 import com.example.volunteer.Dao.CommentResponseDao;
+import com.example.volunteer.Dao.UserInfoDao;
 import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Entity.CommentPicture;
+import com.example.volunteer.Entity.CommentResponse;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.CommentService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -28,6 +31,9 @@ public class CommentServiceImpl implements CommentService {
 
     @Autowired
     private CommentDao commentDao;
+
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     @Autowired
     private CommentResponseDao commentResponseDao;
@@ -121,20 +127,8 @@ public class CommentServiceImpl implements CommentService {
         else
         {
             List <CommentDTO> commentDTOList = new ArrayList<>();
-            for(Comment comment : commentList){
-                CommentDTO commentDTO = new CommentDTO();
-
-                commentDTO.setCommentId(comment.getCommentId());
-                commentDTO.setCommentDate(comment.getCommentDate());
-                commentDTO.setCommentLike(comment.getCommentLike());
-                commentDTO.setCommentText(comment.getCommentText());
-                commentDTO.setCommentPublisher(comment.getCommentPublisher());
-
-                commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
-                commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
-
-                commentDTOList.add(commentDTO);
-            }
+            for(Comment comment : commentList)
+                commentDTOList.add(transformComment2CommentDTO(comment));
             response.setSuc(commentDTOList);
         }
         return response;
@@ -150,20 +144,8 @@ public class CommentServiceImpl implements CommentService {
         }
         else{
             List <CommentDTO> commentDTOList = new ArrayList<>();
-            for(Comment comment : commentList){
-                CommentDTO commentDTO = new CommentDTO();
-
-                commentDTO.setCommentId(comment.getCommentId());
-                commentDTO.setCommentDate(comment.getCommentDate());
-                commentDTO.setCommentLike(comment.getCommentLike());
-                commentDTO.setCommentText(comment.getCommentText());
-                commentDTO.setCommentPublisher(comment.getCommentPublisher());
-
-                commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
-                commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
-
-                commentDTOList.add(commentDTO);
-            }
+            for(Comment comment : commentList)
+                commentDTOList.add(transformComment2CommentDTO(comment));
             response.setSuc(commentDTOList);
         }
         return response;
@@ -180,20 +162,8 @@ public class CommentServiceImpl implements CommentService {
         else
         {
             List <CommentDTO> commentDTOList = new ArrayList<>();
-            for(Comment comment : commentList){
-                CommentDTO commentDTO = new CommentDTO();
-
-                commentDTO.setCommentId(comment.getCommentId());
-                commentDTO.setCommentDate(comment.getCommentDate());
-                commentDTO.setCommentLike(comment.getCommentLike());
-                commentDTO.setCommentText(comment.getCommentText());
-                commentDTO.setCommentPublisher(comment.getCommentPublisher());
-
-                commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
-                commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
-
-                commentDTOList.add(commentDTO);
-            }
+            for(Comment comment : commentList)
+                commentDTOList.add(transformComment2CommentDTO(comment));
             response.setSuc(commentDTOList);
         }
         return response;
@@ -247,23 +217,37 @@ public class CommentServiceImpl implements CommentService {
         Response<List<CommentDTO>> response=new Response<>();
         List<Comment> commentList = commentDao.findCommentByNumber(number);
         List <CommentDTO> commentDTOList = new ArrayList<>();
-        for(Comment comment : commentList){
-            CommentDTO commentDTO = new CommentDTO();
-
-            commentDTO.setCommentId(comment.getCommentId());
-            commentDTO.setCommentDate(comment.getCommentDate());
-            commentDTO.setCommentLike(comment.getCommentLike());
-            commentDTO.setCommentText(comment.getCommentText());
-            commentDTO.setCommentPublisher(comment.getCommentPublisher());
-
-            commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
-            commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
-
-            commentDTOList.add(commentDTO);
-        }
+        for(Comment comment : commentList)
+            commentDTOList.add(transformComment2CommentDTO(comment));
         response.setSuc(commentDTOList);
         return response;
     }
+    private CommentDTO transformComment2CommentDTO(Comment comment){
+        CommentDTO commentDTO = new CommentDTO();
 
+        commentDTO.setCommentId(comment.getCommentId());
+        commentDTO.setCommentDate(comment.getCommentDate());
+        commentDTO.setCommentLike(comment.getCommentLike());
+        commentDTO.setCommentText(comment.getCommentText());
+        commentDTO.setCommentPublisher(userInfoDao.getUserInfoByUserId(comment.getCommentPublisher()));
 
+        commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
+        List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
+        for(CommentResponse commentResponse:commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L))
+            commentResponseDTOList.add(transformCommentResponse2CommentResponseDTO(commentResponse));
+        commentDTO.setCommentResponseList(commentResponseDTOList);
+        return commentDTO;
+    }
+
+    private CommentResponseDTO transformCommentResponse2CommentResponseDTO(CommentResponse commentResponse){
+        CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
+        commentResponseDTO.setCommentId(commentResponse.getCommentId());
+        commentResponseDTO.setResponseId(commentResponse.getResponseId());
+        commentResponseDTO.setResponseDate(commentResponse.getResponseDate());
+        commentResponseDTO.setResponseLike(commentResponse.getResponseLike());
+        commentResponseDTO.setResponseText(commentResponse.getResponseText());
+        commentResponseDTO.setResponseType(commentResponse.getResponseType());
+        commentResponseDTO.setResponsePublisher(userInfoDao.getUserInfoByUserId(commentResponse.getResponsePublisher()));
+        return commentResponseDTO;
+    }
 }

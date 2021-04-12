@@ -1,10 +1,13 @@
 package com.example.volunteer.Service.ServiceImpl;
 
+import com.example.volunteer.DTO.CommentResponseDTO;
 import com.example.volunteer.DTO.VideoCommentDTO;
 import com.example.volunteer.DTO.VideoDTO;
 import com.example.volunteer.Dao.CommentResponseDao;
+import com.example.volunteer.Dao.UserInfoDao;
 import com.example.volunteer.Dao.VideoCommentDao;
 import com.example.volunteer.Dao.VideoDao;
+import com.example.volunteer.Entity.CommentResponse;
 import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Entity.VideoComment;
 import com.example.volunteer.Response.Response;
@@ -28,6 +31,9 @@ public class VideoServiceImpl implements VideoService {
 
     @Autowired
     private VideoDao videoDao;
+
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     @Autowired
     private VideoCommentDao videoCommentDao;
@@ -103,39 +109,8 @@ public class VideoServiceImpl implements VideoService {
         }
         else {
             List<VideoDTO> videoDTOList = new ArrayList<>();
-            for(Video video:videoList){
-                VideoDTO videoDTO = new VideoDTO();
-
-                videoDTO.setVideoId(video.getVideoId());
-                videoDTO.setVideoDate(video.getVideoDate());
-                videoDTO.setVideoFace(video.getVideoFace());
-                videoDTO.setVideoLike(video.getVideoLike());
-                videoDTO.setVideoUrl(video.getVideoUrl());
-                videoDTO.setVideoText(video.getVideoText());
-                videoDTO.setVideoTitle(video.getVideoTitle());
-                videoDTO.setVideoPlayNum(video.getVideoPlayNum());
-                videoDTO.setVideoPublisher(video.getVideoPublisher());
-
-                List<VideoComment> videoCommentList = videoCommentDao.findCommentByVideoId(video.getVideoId());
-                List<VideoCommentDTO> videoCommentDTOList = new ArrayList<>();
-                for(VideoComment videoComment:videoCommentList){
-                    VideoCommentDTO videoCommentDTO = new VideoCommentDTO();
-
-                    videoCommentDTO.setCommentId(videoComment.getCommentId());
-                    videoCommentDTO.setVideoId(videoComment.getVideoId());
-                    videoCommentDTO.setCommentDate(videoComment.getCommentDate());
-                    videoCommentDTO.setCommentLike(videoComment.getCommentLike());
-                    videoCommentDTO.setCommentText(videoComment.getCommentText());
-                    videoCommentDTO.setCommentPublisher(videoComment.getCommentPublisher());
-
-                    videoCommentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(videoComment.getCommentId(),1L));
-
-                    videoCommentDTOList.add(videoCommentDTO);
-                }
-                videoDTO.setVideoCommentDTOList(videoCommentDTOList);
-
-                videoDTOList.add(videoDTO);
-            }
+            for(Video video:videoList)
+                videoDTOList.add(transformVideo2VideoDTO(video));
             response.setSuc(videoDTOList);
         }
         return response;
@@ -151,39 +126,8 @@ public class VideoServiceImpl implements VideoService {
         }
         else {
             List<VideoDTO> videoDTOList = new ArrayList<>();
-            for(Video video:videoList){
-                VideoDTO videoDTO = new VideoDTO();
-
-                videoDTO.setVideoId(video.getVideoId());
-                videoDTO.setVideoDate(video.getVideoDate());
-                videoDTO.setVideoFace(video.getVideoFace());
-                videoDTO.setVideoLike(video.getVideoLike());
-                videoDTO.setVideoUrl(video.getVideoUrl());
-                videoDTO.setVideoText(video.getVideoText());
-                videoDTO.setVideoTitle(video.getVideoTitle());
-                videoDTO.setVideoPlayNum(video.getVideoPlayNum());
-                videoDTO.setVideoPublisher(video.getVideoPublisher());
-
-                List<VideoComment> videoCommentList = videoCommentDao.findCommentByVideoId(video.getVideoId());
-                List<VideoCommentDTO> videoCommentDTOList = new ArrayList<>();
-                for(VideoComment videoComment:videoCommentList){
-                    VideoCommentDTO videoCommentDTO = new VideoCommentDTO();
-
-                    videoCommentDTO.setCommentId(videoComment.getCommentId());
-                    videoCommentDTO.setVideoId(videoComment.getVideoId());
-                    videoCommentDTO.setCommentDate(videoComment.getCommentDate());
-                    videoCommentDTO.setCommentLike(videoComment.getCommentLike());
-                    videoCommentDTO.setCommentText(videoComment.getCommentText());
-                    videoCommentDTO.setCommentPublisher(videoComment.getCommentPublisher());
-
-                    videoCommentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(videoComment.getCommentId(),1L));
-
-                    videoCommentDTOList.add(videoCommentDTO);
-                }
-                videoDTO.setVideoCommentDTOList(videoCommentDTOList);
-
-                videoDTOList.add(videoDTO);
-            }
+            for(Video video:videoList)
+                videoDTOList.add(transformVideo2VideoDTO(video));
             response.setSuc(videoDTOList);
         }
         return response;
@@ -199,39 +143,8 @@ public class VideoServiceImpl implements VideoService {
         }
         else {
             List<VideoDTO> videoDTOList = new ArrayList<>();
-            for(Video video:videoList){
-                VideoDTO videoDTO = new VideoDTO();
-
-                videoDTO.setVideoId(video.getVideoId());
-                videoDTO.setVideoDate(video.getVideoDate());
-                videoDTO.setVideoFace(video.getVideoFace());
-                videoDTO.setVideoLike(video.getVideoLike());
-                videoDTO.setVideoUrl(video.getVideoUrl());
-                videoDTO.setVideoText(video.getVideoText());
-                videoDTO.setVideoTitle(video.getVideoTitle());
-                videoDTO.setVideoPlayNum(video.getVideoPlayNum());
-                videoDTO.setVideoPublisher(video.getVideoPublisher());
-
-                List<VideoComment> videoCommentList = videoCommentDao.findCommentByVideoId(video.getVideoId());
-                List<VideoCommentDTO> videoCommentDTOList = new ArrayList<>();
-                for(VideoComment videoComment:videoCommentList){
-                    VideoCommentDTO videoCommentDTO = new VideoCommentDTO();
-
-                    videoCommentDTO.setCommentId(videoComment.getCommentId());
-                    videoCommentDTO.setVideoId(videoComment.getVideoId());
-                    videoCommentDTO.setCommentDate(videoComment.getCommentDate());
-                    videoCommentDTO.setCommentLike(videoComment.getCommentLike());
-                    videoCommentDTO.setCommentText(videoComment.getCommentText());
-                    videoCommentDTO.setCommentPublisher(videoComment.getCommentPublisher());
-
-                    videoCommentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(videoComment.getCommentId(),1L));
-
-                    videoCommentDTOList.add(videoCommentDTO);
-                }
-                videoDTO.setVideoCommentDTOList(videoCommentDTOList);
-
-                videoDTOList.add(videoDTO);
-            }
+            for(Video video:videoList)
+                videoDTOList.add(transformVideo2VideoDTO(video));
             response.setSuc(videoDTOList);
         }
         return response;
@@ -257,41 +170,59 @@ public class VideoServiceImpl implements VideoService {
 
         List<Video> videoList = videoDao.findVideoByNumber(number);
         List<VideoDTO> videoDTOList = new ArrayList<>();
-        for(Video video:videoList){
-            VideoDTO videoDTO = new VideoDTO();
-
-            videoDTO.setVideoId(video.getVideoId());
-            videoDTO.setVideoDate(video.getVideoDate());
-            videoDTO.setVideoFace(video.getVideoFace());
-            videoDTO.setVideoLike(video.getVideoLike());
-            videoDTO.setVideoUrl(video.getVideoUrl());
-            videoDTO.setVideoText(video.getVideoText());
-            videoDTO.setVideoTitle(video.getVideoTitle());
-            videoDTO.setVideoPlayNum(video.getVideoPlayNum());
-            videoDTO.setVideoPublisher(video.getVideoPublisher());
-
-            List<VideoComment> videoCommentList = videoCommentDao.findCommentByVideoId(video.getVideoId());
-            List<VideoCommentDTO> videoCommentDTOList = new ArrayList<>();
-            for(VideoComment videoComment:videoCommentList){
-                VideoCommentDTO videoCommentDTO = new VideoCommentDTO();
-
-                videoCommentDTO.setCommentId(videoComment.getCommentId());
-                videoCommentDTO.setVideoId(videoComment.getVideoId());
-                videoCommentDTO.setCommentDate(videoComment.getCommentDate());
-                videoCommentDTO.setCommentLike(videoComment.getCommentLike());
-                videoCommentDTO.setCommentText(videoComment.getCommentText());
-                videoCommentDTO.setCommentPublisher(videoComment.getCommentPublisher());
-
-                videoCommentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(videoComment.getCommentId(),1L));
-
-                videoCommentDTOList.add(videoCommentDTO);
-            }
-            videoDTO.setVideoCommentDTOList(videoCommentDTOList);
-
-            videoDTOList.add(videoDTO);
-        }
+        for(Video video:videoList)
+            videoDTOList.add(transformVideo2VideoDTO(video));
         response.setSuc(videoDTOList);
         return response;
     }
 
+    private VideoDTO transformVideo2VideoDTO(Video video){
+        VideoDTO videoDTO = new VideoDTO();
+
+        videoDTO.setVideoId(video.getVideoId());
+        videoDTO.setVideoDate(video.getVideoDate());
+        videoDTO.setVideoFace(video.getVideoFace());
+        videoDTO.setVideoLike(video.getVideoLike());
+        videoDTO.setVideoUrl(video.getVideoUrl());
+        videoDTO.setVideoText(video.getVideoText());
+        videoDTO.setVideoTitle(video.getVideoTitle());
+        videoDTO.setVideoPlayNum(video.getVideoPlayNum());
+        videoDTO.setVideoPublisher(video.getVideoPublisher());
+
+        List<VideoComment> videoCommentList = videoCommentDao.findCommentByVideoId(video.getVideoId());
+        List<VideoCommentDTO> videoCommentDTOList = new ArrayList<>();
+        for(VideoComment videoComment:videoCommentList)
+            videoCommentDTOList.add(transformVideoComment2VideoCommentDTO(videoComment));
+        videoDTO.setVideoCommentDTOList(videoCommentDTOList);
+        return videoDTO;
+    }
+
+    private VideoCommentDTO transformVideoComment2VideoCommentDTO(VideoComment videoComment){
+        VideoCommentDTO videoCommentDTO = new VideoCommentDTO();
+
+        videoCommentDTO.setCommentId(videoComment.getCommentId());
+        videoCommentDTO.setVideoId(videoComment.getVideoId());
+        videoCommentDTO.setCommentDate(videoComment.getCommentDate());
+        videoCommentDTO.setCommentLike(videoComment.getCommentLike());
+        videoCommentDTO.setCommentText(videoComment.getCommentText());
+        videoCommentDTO.setCommentPublisher(userInfoDao.getUserInfoByUserId(videoComment.getCommentPublisher()));
+
+        List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
+        for(CommentResponse commentResponse:commentResponseDao.findCommentResponseByCommentId(videoComment.getCommentId(),1L))
+            commentResponseDTOList.add(transformCommentResponse2CommentResponseDTO(commentResponse));
+        videoCommentDTO.setCommentResponseList(commentResponseDTOList);
+        return videoCommentDTO;
+    }
+
+    private CommentResponseDTO transformCommentResponse2CommentResponseDTO(CommentResponse commentResponse){
+        CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
+        commentResponseDTO.setCommentId(commentResponse.getCommentId());
+        commentResponseDTO.setResponseId(commentResponse.getResponseId());
+        commentResponseDTO.setResponseDate(commentResponse.getResponseDate());
+        commentResponseDTO.setResponseLike(commentResponse.getResponseLike());
+        commentResponseDTO.setResponseText(commentResponse.getResponseText());
+        commentResponseDTO.setResponseType(commentResponse.getResponseType());
+        commentResponseDTO.setResponsePublisher(userInfoDao.getUserInfoByUserId(commentResponse.getResponsePublisher()));
+        return commentResponseDTO;
+    }
 }

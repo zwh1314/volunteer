@@ -1,6 +1,5 @@
 package com.example.volunteer.DTO;
 
-import com.example.volunteer.Entity.CommentResponse;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,7 +20,7 @@ public class VideoCommentDTO {
     private String commentText;
 
     @ApiModelProperty(value = "视频评论发布者")
-    private long commentPublisher;
+    private UserInfoDTO commentPublisher;
 
     @ApiModelProperty(value = "视频评论赞数")
     private long commentLike;
@@ -30,5 +29,5 @@ public class VideoCommentDTO {
     private Date commentDate;
 
     @ApiModelProperty(value = "视频评论回复")
-    private List<CommentResponse> commentResponseList;
+    private List<CommentResponseDTO> commentResponseList;
 }
