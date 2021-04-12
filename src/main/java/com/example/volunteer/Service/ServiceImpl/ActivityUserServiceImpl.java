@@ -155,7 +155,7 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         String bucketName = "sign-files";
         String filename = "activity_"+activityId+"/";
         for(MultipartFile file : signFile) {
-            String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
+            String url = ossUtil.uploadFile(bucketName, file, filename+"user_"+userId+"_"+file.getOriginalFilename());
             if (StringUtils.isBlank(url)) {
                 logger.error("[uploadSignFile Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
                 response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
