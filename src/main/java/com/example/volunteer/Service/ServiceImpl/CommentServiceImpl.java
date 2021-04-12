@@ -111,8 +111,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Response<List<Comment>> getCommentByPublisher(long publisherId){
-        Response<List<Comment>> response=new Response<>();
+    public Response<List<CommentDTO>> getCommentByPublisher(long publisherId){
+        Response<List<CommentDTO>> response=new Response<>();
 
         List<Comment> commentList = commentDao.findCommentById(publisherId);
         if (commentList.size() == 0) {
@@ -120,28 +120,58 @@ public class CommentServiceImpl implements CommentService {
         }
         else
         {
-            response.setSuc(commentList);
+            List <CommentDTO> commentDTOList = new ArrayList<>();
+            for(Comment comment : commentList){
+                CommentDTO commentDTO = new CommentDTO();
+
+                commentDTO.setCommentId(comment.getCommentId());
+                commentDTO.setCommentDate(comment.getCommentDate());
+                commentDTO.setCommentLike(comment.getCommentLike());
+                commentDTO.setCommentText(comment.getCommentText());
+                commentDTO.setCommentPublisher(comment.getCommentPublisher());
+
+                commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
+                commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
+
+                commentDTOList.add(commentDTO);
+            }
+            response.setSuc(commentDTOList);
         }
         return response;
     }
 
     @Override
-    public Response<List<Comment>> getCommentInOneWeek(){
-        Response<List<Comment>> response=new Response<>();
+    public Response<List<CommentDTO>> getCommentInOneWeek(){
+        Response<List<CommentDTO>> response=new Response<>();
 
         List<Comment> commentList = commentDao.findCommentInOneWeek();
         if (commentList.size() == 0) {
             response.setFail(ResponseEnum.OBJECT_IN_ONE_WEEK_NOT_FOUND);
         }
         else{
-            response.setSuc(commentList);
+            List <CommentDTO> commentDTOList = new ArrayList<>();
+            for(Comment comment : commentList){
+                CommentDTO commentDTO = new CommentDTO();
+
+                commentDTO.setCommentId(comment.getCommentId());
+                commentDTO.setCommentDate(comment.getCommentDate());
+                commentDTO.setCommentLike(comment.getCommentLike());
+                commentDTO.setCommentText(comment.getCommentText());
+                commentDTO.setCommentPublisher(comment.getCommentPublisher());
+
+                commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
+                commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
+
+                commentDTOList.add(commentDTO);
+            }
+            response.setSuc(commentDTOList);
         }
         return response;
     }
 
     @Override
-    public Response<List<Comment>> getCommentByRelativeText(String relativeText){
-        Response<List<Comment>> response=new Response<>();
+    public Response<List<CommentDTO>> getCommentByRelativeText(String relativeText){
+        Response<List<CommentDTO>> response=new Response<>();
 
         List<Comment> commentList = commentDao.findCommentByText(relativeText);
         if (commentList.size() == 0) {
@@ -149,7 +179,22 @@ public class CommentServiceImpl implements CommentService {
         }
         else
         {
-            response.setSuc(commentList);
+            List <CommentDTO> commentDTOList = new ArrayList<>();
+            for(Comment comment : commentList){
+                CommentDTO commentDTO = new CommentDTO();
+
+                commentDTO.setCommentId(comment.getCommentId());
+                commentDTO.setCommentDate(comment.getCommentDate());
+                commentDTO.setCommentLike(comment.getCommentLike());
+                commentDTO.setCommentText(comment.getCommentText());
+                commentDTO.setCommentPublisher(comment.getCommentPublisher());
+
+                commentDTO.setCommentPictureList(commentPictureDao.getCommentPictureByCommentId(comment.getCommentId()));
+                commentDTO.setCommentResponseList(commentResponseDao.findCommentResponseByCommentId(comment.getCommentId(),0L));
+
+                commentDTOList.add(commentDTO);
+            }
+            response.setSuc(commentDTOList);
         }
         return response;
     }
@@ -216,13 +261,7 @@ public class CommentServiceImpl implements CommentService {
 
             commentDTOList.add(commentDTO);
         }
-        if (commentList.size() == 0) {
-            response.setFail(ResponseEnum.OBJECT_PUBLISHER_NOT_FOUND);
-        }
-        else
-        {
-            response.setSuc(commentDTOList);
-        }
+        response.setSuc(commentDTOList);
         return response;
     }
 

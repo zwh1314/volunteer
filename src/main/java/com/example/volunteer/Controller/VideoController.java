@@ -1,6 +1,7 @@
 package com.example.volunteer.Controller;
 
 
+import com.example.volunteer.DTO.VideoDTO;
 import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
@@ -37,8 +38,8 @@ public class VideoController extends BaseController{
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "视频发布者", paramType = "query", dataType = "long"),
     })
-    public Response<List<Video>> getVideoByPublisherId(@RequestParam("publisherId") long publisherId) {
-        Response<List<Video>> response = new Response<>();
+    public Response<List<VideoDTO>> getVideoByPublisherId(@RequestParam("publisherId") long publisherId) {
+        Response<List<VideoDTO>> response = new Response<>();
         try {
             return videoService.getVideoByPublisherId(publisherId);
         } catch (IllegalArgumentException e) {
@@ -59,8 +60,8 @@ public class VideoController extends BaseController{
     @GetMapping("/getVideoByRelativeText")
     @ApiOperation("获得视频by RelativeText")
 
-    public Response<List<Video>> getVideoByRelativeText(@RequestParam("relativeText") String relativeText) {
-        Response<List<Video>> response = new Response<>();
+    public Response<List<VideoDTO>> getVideoByRelativeText(@RequestParam("relativeText") String relativeText) {
+        Response<List<VideoDTO>> response = new Response<>();
         try {
             return videoService.getVideoByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
@@ -81,8 +82,8 @@ public class VideoController extends BaseController{
 
     @GetMapping("/getVideoInOneWeek")
     @ApiOperation("获得一周视频")
-    public Response<List<Video>> getVideoInOneWeek() {
-        Response<List<Video>> response = new Response<>();
+    public Response<List<VideoDTO>> getVideoInOneWeek() {
+        Response<List<VideoDTO>> response = new Response<>();
         try {
             return videoService.getVideoInOneWeek();
         } catch (VolunteerRuntimeException e) {
@@ -247,8 +248,8 @@ public class VideoController extends BaseController{
     @GetMapping("/getVideoByNumber")
     @ApiOperation("获得视频by number")
 
-    public Response<List<Video>> getVideoByNumber(@RequestParam("number") long number) {
-        Response<List<Video>> response = new Response<>();
+    public Response<List<VideoDTO>> getVideoByNumber(@RequestParam("number") long number) {
+        Response<List<VideoDTO>> response = new Response<>();
         try {
             return videoService.getVideoByNumber(number);
         } catch (IllegalArgumentException e) {

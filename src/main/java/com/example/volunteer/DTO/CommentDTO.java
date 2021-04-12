@@ -9,7 +9,7 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-@ApiModel("评论模型")
+@ApiModel("动态模型")
 @Data
 public class CommentDTO {
     @ApiModelProperty(value = "评论id")

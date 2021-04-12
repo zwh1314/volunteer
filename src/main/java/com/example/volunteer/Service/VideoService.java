@@ -1,5 +1,6 @@
 package com.example.volunteer.Service;
 
+import com.example.volunteer.DTO.VideoDTO;
 import com.example.volunteer.Entity.Video;
 import com.example.volunteer.Response.Response;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,13 +14,13 @@ public interface VideoService {
 
   Response<Boolean> updateVideoLikeNumber(long likeNumber, long videoId);
 
-  Response<List<Video>> getVideoByPublisherId(long publisherId);
+  Response<List<VideoDTO>> getVideoByPublisherId(long publisherId);
 
-  Response<List<Video>> getVideoByRelativeText(String relativeText);
+  Response<List<VideoDTO>> getVideoByRelativeText(String relativeText);
 
-  Response<List<Video>> getVideoInOneWeek();
+  Response<List<VideoDTO>> getVideoInOneWeek();
 
   Response<Boolean> deleteVideoById(long videoId);
 
-  Response<List<Video>> getVideoByNumber(long number);
+  Response<List<VideoDTO>> getVideoByNumber(long number);
 }

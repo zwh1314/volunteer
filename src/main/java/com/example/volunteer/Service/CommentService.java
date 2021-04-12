@@ -1,7 +1,6 @@
 package com.example.volunteer.Service;
 
 import com.example.volunteer.DTO.CommentDTO;
-import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Response.Response;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,11 +13,11 @@ public interface CommentService {
 
     Response<Boolean> updateCommentText(String commentText, long commentId);
 
-    Response<List<Comment>> getCommentByPublisher(long publisherId);
+    Response<List<CommentDTO>> getCommentByPublisher(long publisherId);
 
-    Response<List<Comment>> getCommentInOneWeek();
+    Response<List<CommentDTO>> getCommentInOneWeek();
 
-    Response<List<Comment>> getCommentByRelativeText(String relativeText);
+    Response<List<CommentDTO>> getCommentByRelativeText(String relativeText);
 
     Response<Boolean> deleteCommentById(long commentId);
 

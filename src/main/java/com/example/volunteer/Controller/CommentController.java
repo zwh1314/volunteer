@@ -3,7 +3,6 @@ package com.example.volunteer.Controller;
 
 
 import com.example.volunteer.DTO.CommentDTO;
-import com.example.volunteer.Entity.Comment;
 import com.example.volunteer.Exception.VolunteerRuntimeException;
 
 import com.example.volunteer.RedisService.CommentRedisService;
@@ -40,8 +39,8 @@ public class CommentController extends BaseController{
     @ApiImplicitParams({
             @ApiImplicitParam(name = "publisherId", value = "评论发布者", paramType = "query", dataType = "long"),
     })
-    public Response<List<Comment>> getCommentByPublisher(@RequestParam("publisherId") long publisherId) {
-            Response<List<Comment>> response = new Response<>();
+    public Response<List<CommentDTO>> getCommentByPublisher(@RequestParam("publisherId") long publisherId) {
+            Response<List<CommentDTO>> response = new Response<>();
             try {
                 return commentService.getCommentByPublisher(publisherId);
             } catch (IllegalArgumentException e) {
@@ -64,8 +63,8 @@ public class CommentController extends BaseController{
     @ApiImplicitParams({
             @ApiImplicitParam(name = "relativeText", value = "相似文本", paramType = "query", dataType = "String"),
     })
-    public Response<List<Comment>> getCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
-        Response<List<Comment>> response = new Response<>();
+    public Response<List<CommentDTO>> getCommentByRelativeText(@RequestParam("relativeText") String relativeText) {
+        Response<List<CommentDTO>> response = new Response<>();
         try {
             return commentService.getCommentByRelativeText(relativeText);
         } catch (IllegalArgumentException e) {
@@ -86,8 +85,8 @@ public class CommentController extends BaseController{
 
     @GetMapping("/getCommentInOneWeek")
     @ApiOperation("获得一周评论")
-    public Response<List<Comment>> getCommentInOneWeek() {
-        Response<List<Comment>> response = new Response<>();
+    public Response<List<CommentDTO>> getCommentInOneWeek() {
+        Response<List<CommentDTO>> response = new Response<>();
         try {
             return commentService.getCommentInOneWeek();
         } catch (VolunteerRuntimeException e) {

@@ -7,8 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface VideoCommentDao {
-    @Insert("INSERT INTO video_comment(comment_text, comment_publisher, comment_like, comment_date) VALUES" +
-            "(#{commentText}, #{commentPublisher}, #{commentLike}, NOW())")
+    @Insert("INSERT INTO video_comment(video_id, comment_text, comment_publisher, comment_like, comment_date) VALUES" +
+            "(#{videoId}, #{commentText}, #{commentPublisher}, #{commentLike}, NOW())")
     int addComment(VideoComment videoComment);
 
     @Update("UPDATE video_comment SET comment_like = #{commentLike} WHERE comment_id = #{commentId}")
@@ -17,19 +17,24 @@ public interface VideoCommentDao {
     @Update("UPDATE video_comment SET comment_text = #{commentText} WHERE comment_id = #{commentId}")
     int updateCommentText(@Param("commentText")String commentText, @Param("commentId")long commentId);
 
+    @ResultType(VideoComment.class)
+    @Select("SELECT comment_id as commentId, video_id as videoId, comment_text as commentText, comment_publisher as commentPublisher, " +
+            "comment_like as commentLike, comment_date as commentDate FROM video_comment WHERE comment_publisher " +
+            "= #{commentPublisher}")
+    List<VideoComment> findCommentByVideoId(@Param("videoId")long videoId);
 
     @ResultType(VideoComment.class)
-    @Select("SELECT comment_id as commentId, comment_text as commentText, comment_publisher as commentPublisher, " +
+    @Select("SELECT comment_id as commentId, video_id as videoId, comment_text as commentText, comment_publisher as commentPublisher, " +
             "comment_like as commentLike, comment_date as commentDate FROM video_comment WHERE comment_publisher " +
             "= #{commentPublisher}")
     List<VideoComment> findCommentById(@Param("commentPublisher")long commentPublisher);
 
-    @Select("SELECT comment_id as commentId, comment_text as commentText, comment_publisher as commentPublisher, " +
+    @Select("SELECT comment_id as commentId, video_id as videoId, comment_text as commentText, comment_publisher as commentPublisher, " +
             "comment_like as commentLike, comment_date as commentDate FROM video_comment WHERE TO_DAYS(NOW()) - " +
             "TO_DAYS(comment_date) <= 7")
     List<VideoComment> findCommentInOneWeek();
 
-    @Select("SELECT comment_id as commentId, comment_text as commentText, comment_publisher as commentPublisher, " +
+    @Select("SELECT comment_id as commentId, video_id as videoId, comment_text as commentText, comment_publisher as commentPublisher, " +
             "comment_like as commentLike, comment_date as commentDate FROM video_comment WHERE comment_text LIKE " +
             "CONCAT('%', #{textInclude}, '%')")
     List<VideoComment> findCommentByText(@Param("textInclude")String textInclude);
