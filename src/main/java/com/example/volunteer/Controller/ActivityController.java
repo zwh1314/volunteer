@@ -65,7 +65,7 @@ public class ActivityController extends BaseController{
             @ApiImplicitParam(name = "signFileModel", value = "报名表模板", paramType = "query", dataType = "MultipartFile[]"),
             @ApiImplicitParam(name = "activityPicture", value = "活动图片", paramType = "query", dataType = "MultipartFile[]"),
     })
-    public Response<Boolean> addActivity(@RequestBody Activity activity,
+    public Response<Boolean> addActivity(Activity activity,
                                          @RequestParam(value = "signFileModel",required = false) MultipartFile[] signFileModel,
                                          @RequestParam(value = "activityPicture",required = false) MultipartFile[] activityPicture) {
         Response<Boolean> response = new Response<>();
