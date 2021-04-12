@@ -152,7 +152,7 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         Response<Boolean> response=new Response<>();
 
         boolean result;
-        String bucketName = "sign-file";
+        String bucketName = "sign-files";
         String filename = "activity_"+activityId+"/";
         for(MultipartFile file : signFile) {
             String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
