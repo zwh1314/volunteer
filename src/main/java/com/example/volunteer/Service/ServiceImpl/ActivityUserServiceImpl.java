@@ -1,7 +1,9 @@
 package com.example.volunteer.Service.ServiceImpl;
 
 import com.example.volunteer.DTO.ActivityDTO;
+import com.example.volunteer.Dao.ActivityPictureDao;
 import com.example.volunteer.Dao.ActivitySignFileDao;
+import com.example.volunteer.Dao.ActivitySignFileModelDao;
 import com.example.volunteer.Dao.ActivityUserDao;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
@@ -30,7 +32,13 @@ public class ActivityUserServiceImpl implements ActivityUserService {
     private ActivityUserDao activityUserDao;
 
     @Autowired
+    private ActivityPictureDao activityPictureDao;
+
+    @Autowired
     private ActivitySignFileDao activitySignFileDao;
+
+    @Autowired
+    private ActivitySignFileModelDao activitySignFileModelDao;
 
     @Autowired
     private OSSUtil ossUtil;
@@ -113,10 +121,15 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         Response<List<ActivityDTO>> response=new Response<>();
 
         List<ActivityDTO> ActivityDTOList = activityUserDao.findSignedUpActivityByUserId(userId);
+
         if (ActivityDTOList.size() == 0) {
             response.setFail(ResponseEnum.SIGNED_ACTIVITY_NOT_FOUND);
         }
         else{
+            for(ActivityDTO activityDTO :ActivityDTOList){
+                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityDTO.getActivityId()));
+                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityDTO.getActivityId()));
+            }
             response.setSuc(ActivityDTOList);
         }
         return response;
@@ -233,6 +246,10 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         if(activityFocusedList.size() == 0){
             response.setFail(ResponseEnum.NO_ACTIVITY_FOCUS);
         }else{
+            for(ActivityDTO activityDTO :activityFocusedList){
+                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityDTO.getActivityId()));
+                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityDTO.getActivityId()));
+            }
             response.setSuc(activityFocusedList);
 
         }
@@ -245,10 +262,15 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         Response<List<ActivityDTO>> response=new Response<>();
 
         List<ActivityDTO> ActivityDTOList = activityUserDao.findParticipatedActivityByUserId(userId);
+
         if (ActivityDTOList.size() == 0) {
             response.setFail(ResponseEnum.SIGNED_ACTIVITY_NOT_FOUND);
         }
         else{
+            for(ActivityDTO activityDTO :ActivityDTOList){
+                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityDTO.getActivityId()));
+                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityDTO.getActivityId()));
+            }
             response.setSuc(ActivityDTOList);
         }
         return response;
