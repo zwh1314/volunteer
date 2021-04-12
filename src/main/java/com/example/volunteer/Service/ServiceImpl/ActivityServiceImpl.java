@@ -147,7 +147,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     private boolean addActivitySignFileModel(long activityId, MultipartFile[] signFileModel){
         boolean result;
-        String bucketName = "sign-file-model";
+        String bucketName = "sign-file-models";
         String filename = "activity_"+activityId+"/";
         for(MultipartFile file : signFileModel) {
             String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());

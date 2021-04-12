@@ -7,7 +7,6 @@ import com.example.volunteer.Dao.ActivitySignFileModelDao;
 import com.example.volunteer.Dao.ActivityUserDao;
 import com.example.volunteer.Entity.ActivitySignFile;
 import com.example.volunteer.Entity.ActivityUser;
-import com.example.volunteer.Request.ActivityUserRequest;
 import com.example.volunteer.Response.Response;
 import com.example.volunteer.Service.ActivityUserService;
 import com.example.volunteer.enums.ResponseEnum;
@@ -42,51 +41,6 @@ public class ActivityUserServiceImpl implements ActivityUserService {
 
     @Autowired
     private OSSUtil ossUtil;
-
-    @Override
-    public Response<Boolean> addActivityUser(ActivityUserRequest activityUserRequest) {
-        Response<Boolean> response=new Response<>();
-        for(ActivityUser activityUser:activityUserRequest.getActivityUserList()) {
-            boolean result = activityUserDao.addActivityUser(activityUser) > 0;
-            if (!result) {
-                logger.error("[addActivityUser Fail], request: {}", SerialUtil.toJsonStr(activityUserRequest));
-                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-                return response;
-            }
-        }
-
-        response.setSuc(true);
-        return response;
-    }
-
-    @Override
-    public Response<Boolean> updateFormStatusByUserId(String formStatus, long userId) {
-        Response<Boolean> response=new Response<>();
-
-        boolean result = activityUserDao.updateFormStatusByUserId(formStatus, userId) > 0;
-        if(!result){
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-        }
-        else
-        {
-            response.setSuc(true);
-        }
-        return response;
-    }
-
-    @Override
-    public Response<Boolean> updateFormDateByUserId(Date formDate, long userId) {
-        Response<Boolean> response=new Response<>();
-
-        boolean result = activityUserDao.updateFormDateByUserId(formDate, userId) > 0;
-        if(!result){
-            response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
-        }
-        else{
-            response.setSuc(true);
-        }
-        return response;
-    }
 
     @Override
     public Response<List<ActivityUser>> getActivityUserByUserId(long userId) {
@@ -138,8 +92,7 @@ public class ActivityUserServiceImpl implements ActivityUserService {
     @Override
     public Response<Boolean> updateActivityIsFocus(long activityId, long userId, boolean isFocus) {
         Response<Boolean> response = new Response<>();
-        ActivityUser activityUser = new ActivityUser();
-        activityUser = activityUserDao.findActivityUserByUserIdAndActivityId(activityId, userId);
+        ActivityUser activityUser = activityUserDao.findActivityUserByUserIdAndActivityId(activityId, userId);
         if(activityUser == null){
             ActivityUser activityU = new ActivityUser();
             activityU.setActivityId(activityId);
@@ -212,10 +165,10 @@ public class ActivityUserServiceImpl implements ActivityUserService {
         Response<Boolean> response=new Response<>();
 
         boolean result;
-        String bucketName = "sign-file";
+        String bucketName = "sign-files";
         String filename = "activity_"+activityId+"/";
         for(MultipartFile file : signFile) {
-            String url = ossUtil.uploadFile(bucketName, file, filename+file.getOriginalFilename());
+            String url = ossUtil.uploadFile(bucketName, file, filename+"user_"+userId+"_"+file.getOriginalFilename());
             if (StringUtils.isBlank(url)) {
                 logger.error("[uploadSignFile Fail], file: {}", SerialUtil.toJsonStr(file.getOriginalFilename()));
                 response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
@@ -234,6 +187,25 @@ public class ActivityUserServiceImpl implements ActivityUserService {
             }
         }
 
+        if(activityUserDao.findActivityUserByUserIdAndActivityId(activityId,userId)==null) {
+            ActivityUser activityUser = new ActivityUser();
+            activityUser.setActivityId(activityId);
+            activityUser.setUserId(userId);
+            activityUser.setFormStatus(true);
+            activityUser.setIsFocus(false);
+            activityUser.setFormDate(new Date());
+            if(activityUserDao.addActivityUser(activityUser) <= 0){
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
+            }
+        }
+        else{
+            if(!(activityUserDao.updateFormStatusByUserIdAndActivityId(activityId,userId,true)>0&&activityUserDao.updateFormDateByUserIdAndActivityId(activityId,userId)>0))
+            {
+                response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
+                return response;
+            }
+        }
         response.setSuc(true);
         return response;
     }

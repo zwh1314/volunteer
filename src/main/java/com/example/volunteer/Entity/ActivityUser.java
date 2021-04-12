@@ -9,8 +9,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@Entity(name = "activity_user")
-@IdClass(ActivityUserKey.class)
+@Entity
+@Table(name = "activity_user",
+        indexes = {@Index(columnList = "activity_id"),@Index(columnList = "user_id")})
 public class ActivityUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +19,10 @@ public class ActivityUser implements Serializable {
     @ApiModelProperty(value = "记录id")
     private long id;
 
-    @Id
     @Column(name = "activity_id",nullable = false)
     @ ApiModelProperty(value = "活动id")
     private long activityId;
 
-    @Id
     @Column(name = "user_id",nullable = false)
     @ApiModelProperty(value = "用户id")
     private long userId;
