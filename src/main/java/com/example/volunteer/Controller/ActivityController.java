@@ -177,4 +177,24 @@ public class ActivityController extends BaseController{
             return response;
         }
     }
+    @PostMapping("/getActivityByActivityName")
+    @ApiOperation("获得活动 by活动名字")
+    public Response<List<ActivityDTO>> getActivityByActivityName(@RequestParam("activityName") String activityName) {
+        Response<List<ActivityDTO>> response = new Response<>();
+        try {
+            return activityService.getActivityByActivityName(activityName);
+        } catch (IllegalArgumentException e) {
+            logger.warn("[getActivityByActivityName Illegal Argument], activityName: {}", activityName, e);
+            response.setFail(ResponseEnum.ILLEGAL_PARAM);
+            return response;
+        } catch (VolunteerRuntimeException e) {
+            logger.error("[getActivityByActivityName Runtime Exception], activityName: {}", activityName, e);
+            response.setFail(e.getExceptionCode(), e.getMessage());
+            return response;
+        }  catch (Exception e) {
+            logger.error("[getActivityByActivityName Exception], activityName: {}", activityName, e);
+            response.setFail(ResponseEnum.SERVER_ERROR);
+            return response;
+        }
+    }
 }
