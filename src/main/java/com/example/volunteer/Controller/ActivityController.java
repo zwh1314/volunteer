@@ -66,16 +66,16 @@ public class ActivityController extends BaseController{
             @ApiImplicitParam(name = "activityPicture", value = "活动图片", paramType = "query", dataType = "MultipartFile[]"),
     })
     public Response<Boolean> addActivity(Activity activity,
-                                         @RequestParam(value = "signFileModel",required = false) MultipartFile[] signFileModel,
-                                         @RequestParam(value = "activityPicture",required = false) MultipartFile[] activityPicture) {
+                                         @RequestParam(value = "uploadSignFileModel", required = false) MultipartFile[] uploadSignFileModel,
+                                         @RequestParam(value = "uploadActivityPicture", required = false) MultipartFile[] uploadActivityPicture) {
         Response<Boolean> response = new Response<>();
         long userId =getUserId();
         try {
-            if(signFileModel==null)
-                signFileModel = new MultipartFile[0];
-            if(activityPicture==null)
-                activityPicture = new MultipartFile[0];
-            return activityService.addActivity(userId,activity,signFileModel,activityPicture);
+            if(uploadSignFileModel==null)
+                uploadSignFileModel = new MultipartFile[0];
+            if(uploadActivityPicture==null)
+                uploadActivityPicture = new MultipartFile[0];
+            return activityService.addActivity(userId,activity,uploadSignFileModel,uploadActivityPicture);
         } catch (IllegalArgumentException e) {
             logger.warn("[addActivity Illegal Argument], activity: {}", SerialUtil.toJsonStr(activity), e);
             response.setFail(ResponseEnum.ILLEGAL_PARAM);
