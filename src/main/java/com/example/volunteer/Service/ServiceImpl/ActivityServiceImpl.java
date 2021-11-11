@@ -43,18 +43,18 @@ public class ActivityServiceImpl implements ActivityService {
         Response<Boolean> response = new Response<>();
 
         activity.setActivityOrganizer(userId);
-        int activityId = activityDao.insertActivity(activity);
-        if (activityId <= 0) {
+        int insertResult = activityDao.insertActivity(activity);
+        if (insertResult <= 0) {
             logger.error("[addActivity Fail], activity: {}", SerialUtil.toJsonStr(activity));
             response.setFail(ResponseEnum.OPERATE_DATABASE_FAIL);
             return response;
         }
 
-        if(!addActivitySignFileModel(activityId,signFileModel)){
+        if(signFileModel.length>0&&!addActivitySignFileModel(activity.getActivityId(),signFileModel)){
             response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
             return response;
         }
-        if(!addActivityPicture(activityId,activityPicture)){
+        if(activityPicture.length>0&&!addActivityPicture(activity.getActivityId(),activityPicture)){
             response.setFail(ResponseEnum.UPLOAD_OSS_FAILURE);
             return response;
         }
@@ -78,13 +78,16 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Response<ActivityDTO> getActivityByActivityId(long activityId) {
         Response<ActivityDTO> response=new Response<>();
+        ActivityDTO activityDTO = new ActivityDTO();
 
-        ActivityDTO activityDTO = activityDao.getActivityByActivityId(activityId);
-        if (activityDTO == null) {
+        Activity activityQueryResult = activityDao.getActivityByActivityId(activityId);
+        if (activityQueryResult == null) {
             response.setFail(ResponseEnum.FAIL);
         }
         else {
+            convertActivity2ActivityDTO(activityQueryResult,activityDTO);
             activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityId));
+            activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityId));
             response.setSuc(activityDTO);
         }
         return response;
@@ -94,15 +97,19 @@ public class ActivityServiceImpl implements ActivityService {
     public Response<List<ActivityDTO>> getActivityByOrganizerId(long organizerId) {
         Response<List<ActivityDTO>> response=new Response<>();
 
-        List<ActivityDTO> activityDTOList = activityDao.getActivityByOrganizer(organizerId);
+        List<Activity> activityList = activityDao.getActivityByOrganizer(organizerId);
 
-        if (activityDTOList == null) {
+        if (activityList == null || activityList.size()==0) {
             response.setFail(ResponseEnum.FAIL);
         }
         else {
-            for(ActivityDTO activityDTO :activityDTOList){
-                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityDTO.getActivityId()));
-                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityDTO.getActivityId()));
+            List<ActivityDTO> activityDTOList = new ArrayList<>();
+            for(Activity activity :activityList){
+                ActivityDTO activityDTO = new ActivityDTO();
+                convertActivity2ActivityDTO(activity, activityDTO);
+                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activity.getActivityId()));
+                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activity.getActivityId()));
+                activityDTOList.add(activityDTO);
             }
             response.setSuc(activityDTOList);
         }
@@ -111,15 +118,19 @@ public class ActivityServiceImpl implements ActivityService {
     public Response<List<ActivityDTO>> getActivityByActivityName(String activityName) {
         Response<List<ActivityDTO>> response=new Response<>();
 
-        List<ActivityDTO> activityDTOList = activityDao.getActivityByActivityName(activityName);
+        List<Activity> activityList = activityDao.getActivityByActivityName(activityName);
 
-        if (activityDTOList == null) {
+        if (activityList == null || activityList.size()==0) {
             response.setFail(ResponseEnum.FAIL);
         }
         else {
-            for(ActivityDTO activityDTO :activityDTOList){
-                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityDTO.getActivityId()));
-                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityDTO.getActivityId()));
+            List<ActivityDTO> activityDTOList = new ArrayList<>();
+            for(Activity activity :activityList){
+                ActivityDTO activityDTO = new ActivityDTO();
+                convertActivity2ActivityDTO(activity, activityDTO);
+                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activity.getActivityId()));
+                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activity.getActivityId()));
+                activityDTOList.add(activityDTO);
             }
             response.setSuc(activityDTOList);
         }
@@ -130,8 +141,8 @@ public class ActivityServiceImpl implements ActivityService {
     public Response<Boolean> deleteActivityByActivityId(long activityId){
         Response<Boolean> response=new Response<>();
 
-        ActivityDTO activityDTO=activityDao.getActivityByActivityId(activityId);
-        if (activityDTO == null) {
+        Activity activityQueryResult = activityDao.getActivityByActivityId(activityId);
+        if (activityQueryResult == null) {
             response.setFail(ResponseEnum.FAIL);
         }
         else {
@@ -253,5 +264,17 @@ public class ActivityServiceImpl implements ActivityService {
             response.setSuc(activityDTOList);
         }
         return response;
+    }
+
+    private void convertActivity2ActivityDTO(Activity activity, ActivityDTO activityDTO){
+        activityDTO.setActivityId(activity.getActivityId());
+        activityDTO.setActivityDate(activity.getActivityDate());
+        activityDTO.setActivityContent(activity.getActivityContent());
+        activityDTO.setActivityName(activity.getActivityName());
+        activityDTO.setActivityType(activity.getActivityType());
+        activityDTO.setActivityPlace(activity.getActivityPlace());
+        activityDTO.setActivityOrganizer(activity.getActivityOrganizer());
+        activityDTO.setEnrolledNumber(activity.getEnrolledNumber());
+        activityDTO.setRequestedNumber(activity.getRequestedNumber());
     }
 }
