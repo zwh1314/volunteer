@@ -21,8 +21,8 @@ public  interface ActivityDao {
     @ResultType(ActivityDTO.class)
     @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent,activity_place as activityPlace, " +
             "activity_organizer as activityOrganizer,activity_date as activityDate, is_signfile_model as isSignFileModel,activity_type as activityType,enrolled_number as enrolledNumber,requested_number as requestedNumber " +
-            "FROM activity natural join activity_picture WHERE activity_name = #{activityName}")
-    ActivityDTO getActivityByActivityName(@Param("activityName") String activityName);
+            "FROM activity natural join activity_picture WHERE activity_name LIKE CONCAT('%',#{activityName},'%')")
+    List<ActivityDTO> getActivityByActivityName(@Param("activityName") String activityName);
 
     @ResultType(ActivityDTO.class)
     @Select("SELECT activity_id as activityId,activity_name as activityName,activity_content as activityContent," +

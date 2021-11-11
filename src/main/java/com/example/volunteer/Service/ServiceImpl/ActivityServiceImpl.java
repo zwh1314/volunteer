@@ -108,6 +108,23 @@ public class ActivityServiceImpl implements ActivityService {
         }
         return response;
     }
+    public Response<List<ActivityDTO>> getActivityByActivityName(String activityName) {
+        Response<List<ActivityDTO>> response=new Response<>();
+
+        List<ActivityDTO> activityDTOList = activityDao.getActivityByActivityName(activityName);
+
+        if (activityDTOList == null) {
+            response.setFail(ResponseEnum.FAIL);
+        }
+        else {
+            for(ActivityDTO activityDTO :activityDTOList){
+                activityDTO.setActivityPictureList(activityPictureDao.getActivityPictureByActivityId(activityDTO.getActivityId()));
+                activityDTO.setActivitySignFileModelList(activitySignFileModelDao.getActivitySignFileModelByActivityId(activityDTO.getActivityId()));
+            }
+            response.setSuc(activityDTOList);
+        }
+        return response;
+    }
 
     @Override
     public Response<Boolean> deleteActivityByActivityId(long activityId){
